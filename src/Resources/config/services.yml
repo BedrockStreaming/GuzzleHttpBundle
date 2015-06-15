@@ -1,0 +1,42 @@
+parameters:
+    m6web_guzlehttp.handler.curlfactory.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory
+    m6web_guzlehttp.handler.curlhandler.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlHandler
+    m6web_guzlehttp.handler.curlmultihandler.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler
+
+    m6web_guzzlehttp.guzzle.proxyhandler.class: GuzzleHttp\Handler\Proxy
+    m6web_guzzlehttp.guzzle.handlerstack.class: GuzzleHttp\HandlerStack
+    m6web_guzzlehttp.guzzle.client.class: GuzzleHttp\Client
+
+
+    m6web_guzzlehttp.middleware.eventdispatcher.class: M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware
+
+services:
+    m6web_guzlehttp.handler.curlfactory.sync:
+        class: %m6web_guzlehttp.handler.curlfactory.class%
+        arguments: [3]
+
+    m6web_guzlehttp.handler.curlfactory.normal:
+        class: %m6web_guzlehttp.handler.curlfactory.class%
+        arguments: [50]
+
+    m6web_guzlehttp.handler.curlhandler:
+        class: %m6web_guzlehttp.handler.curlhandler.class%
+        arguments: [ {handle_factory: "@m6web_guzlehttp.handler.curlfactory.sync"} ]
+
+    m6web_guzlehttp.handler.curlmultihandler:
+        class: %m6web_guzlehttp.handler.curlmultihandler.class%
+        arguments: [ {handle_factory : "@m6web_guzlehttp.handler.curlfactory.normal"} ]
+
+    m6web_guzzlehttp.guzzle.proxyhandler:
+        class: %m6web_guzzlehttp.guzzle.proxyhandler.class%
+        factory: [%m6web_guzzlehttp.guzzle.proxyhandler.class%, wrapSync]
+        arguments:
+            - "@m6web_guzlehttp.handler.curlmultihandler"
+            - "@m6web_guzlehttp.handler.curlhandler"
+
+    m6web_guzzlehttp.guzzle.handlerstack:
+        class: %m6web_guzzlehttp.guzzle.handlerstack.class%
+        factory: [%m6web_guzzlehttp.guzzle.handlerstack.class%, create]
+        arguments:
+            - "@m6web_guzzlehttp.guzzle.proxyhandler"
+

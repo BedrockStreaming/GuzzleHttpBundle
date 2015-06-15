@@ -1,0 +1,6 @@
+services:
+    m6web.data_collector.cassandra:
+        class: M6Web\Bundle\GuzzleHttpBundle\DataCollector\GuzzleHttpDataCollector
+        tags:
+            - { name: data_collector, template: 'M6WebGuzzleHttpBundle:Collector:guzzlehttp', id: 'guzzlehttp' }
+            - { name: kernel.event_listener, event: m6web.guzzlehttp, method: onGuzzleHttpCommand }

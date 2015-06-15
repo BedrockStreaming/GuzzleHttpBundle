@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use GuzzleHttp\Promise;
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
 
 class M6WebGuzzleHttpExtension extends test
@@ -19,11 +20,15 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(3)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain.tld')
             ->float($arguments['timeout'])
                 ->isEqualTo(5.0)
+            ->boolean($arguments['http_errors'])
+                ->isTrue()
+            ->string($arguments['redirect_handler'])
+                ->isEqualTo('curl')
             ->array($redirect = $arguments['allow_redirects'])
                 ->hasSize(4)
                 ->hasKeys(['max', 'strict', 'referer', 'protocols'])
@@ -36,6 +41,17 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect['protocols'])
                 ->hasSize(2)
                 ->isEqualTo(['http', 'https'])
+            ->array($curlOpt = $arguments['curl'])
+                ->hasSize(4)
+                ->hasKeys([CURLOPT_FOLLOWLOCATION, CURLOPT_MAXREDIRS, CURLOPT_REDIR_PROTOCOLS, CURLOPT_AUTOREFERER])
+            ->boolean($curlOpt[CURLOPT_FOLLOWLOCATION])
+                ->isTrue()
+            ->integer($curlOpt[CURLOPT_MAXREDIRS])
+                ->isEqualTo(5)
+            ->integer($curlOpt[CURLOPT_REDIR_PROTOCOLS])
+                ->isEqualTo((CURLPROTO_HTTP|CURLPROTO_HTTPS))
+            ->boolean($curlOpt[CURLOPT_AUTOREFERER])
+                ->isTrue()
         ;
     }
 
@@ -48,11 +64,15 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(3)
+                ->hasSize(7)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain.tld')
             ->integer($arguments['timeout'])
                 ->isEqualTo(2)
+            ->boolean($arguments['http_errors'])
+                ->isFalse()
+            ->string($arguments['redirect_handler'])
+                ->isEqualTo('guzzle')
             ->array($redirect = $arguments['allow_redirects'])
                 ->hasSize(4)
                 ->hasKeys(['max', 'strict', 'referer', 'protocols'])
@@ -77,17 +97,19 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(3)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain.tld')
             ->integer($arguments['timeout'])
                 ->isEqualTo(2)
+            ->boolean($arguments['http_errors'])
+                ->isTrue()
             ->boolean($arguments['allow_redirects'])
                 ->isFalse()
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(3)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain2.tld')
             ->float($arguments['timeout'])
@@ -104,6 +126,38 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect['protocols'])
                 ->hasSize(2)
                 ->isEqualTo(['http', 'https'])
+        ;
+    }
+
+    public function testClientConfiguration()
+    {
+        $container = $this->getContainerForConfiguation('default-config');
+        $container->compile();
+
+        $this
+            ->object($client = $container->get('m6web_guzzlehttp'))
+                ->isInstanceOf('\GuzzleHttp\Client')
+        ;
+    }
+
+    public function testEventDispatcherMiddleWare()
+    {
+        $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+        $container = $this->getContainerForConfiguation('default-config');
+        $container->set('event_dispatcher', $mockDispatcher);
+        $container->compile();
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp'))
+            ->and($promises = [
+                'test' => $client->getAsync('http://httpbin.org'),
+                'test2' => $client->getAsync('http://httpbin.org')
+            ])
+            ->and($rep = Promise\unwrap($promises))
+            ->then
+                ->mock($mockDispatcher)
+                    ->call('dispatch')
+                        ->twice()
         ;
     }
 

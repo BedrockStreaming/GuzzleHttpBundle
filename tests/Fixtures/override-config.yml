@@ -3,7 +3,9 @@ m6web_guzzlehttp:
         default:
             base_uri: "http://domain.tld"
             timeout: 2
+            http_errors: false
             allow_redirects: true
+            redirect_handler: guzzle
             redirects:
                 max: 2
                 strict: true
