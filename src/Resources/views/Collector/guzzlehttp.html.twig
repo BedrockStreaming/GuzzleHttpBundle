@@ -3,9 +3,25 @@
 {% block toolbar %}
     {% set icon %}
     <img width="28" height="28" alt="Cassandra" style="vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z"/>
+    <span class="sf-toolbar-status {% if collector.has5x %}sf-toolbar-status-red{% elseif collector.has4x %}sf-toolbar-status-yellow{% else %}sf-toolbar-status-green{% endif %}">{{ collector.commands | length }}</span>
     {% endset %}
     {% set text %}
-    {{ collector.commands | length }} commands (avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }})
+    <div class="sf-toolbar-info-piece">
+        <b>Total commands</b>
+        <span>{{ collector.commands | length }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Time</b>
+        <span>avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Redirect</b>
+        <span>avg : {{ collector.getAvgRedirectionTime|number_format(4) }} - total {{ collector.getTotalRedirectionTime|number_format(4) }}</tot></span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Cache hits</b>
+        <span>{{ collector.getCacheHits }}</span>
+    </div>
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': true } %}
 {% endblock %}
@@ -16,9 +32,9 @@
 
 {% block menu %}
     <span class="label">
-    <span class="icon">{% spaceless %}
-    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z" style="padding-top:5px;" alt="Cassandra" />
-        {% endspaceless %}</span>
+    <span class="icon">
+    <img height="28" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z" alt="GuzzleHttp" />
+    </span>
     <strong>GuzzleHttp</strong>
     <span class="count">
         <span>{{ collector.commands|length }}</span>
@@ -31,22 +47,27 @@
     <p>avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }}</p>
     <table class="routing inline">
         <thead>
-            <th>Method</th>
+            <th colspan="2">Method</th>
             <th>Url</th>
             <th>Response</th>
             <th>Execution time</th>
             <th>Redirect</th>
             <th>Redirect time</th>
+            <th>Cache Hit</th>
+            <th>Cache Ttl</th>
         </thead>
         <tbody>
         {% for command in collector.commands %}
             <tr>
-                <td>{{ command.method }}</td>
+                <td style="width:5px; margin:0;padding:0;border-right: 0; background-color: {% if command.responseCode > 499 %}#a33{% elseif command.responseCode >= 400 and command.responseCode < 500 %}#fa0{% else %}#fff{% endif %};"></td>
+                <td style="border-left:0;">{{ command.method }}</td>
                 <td>{{ command.uri }}</td>
                 <td>{{ command.responseCode }} {{ command.responseReason }}</td>
                 <td>{{ command.executionTime }}</td>
                 <td>{{ command.curl.redirectCount }}</td>
                 <td>{{ command.curl.redirectTime }}</td>
+                <td>{{ command.cache }}</td>
+                <td>{{ command.cacheTtl }}</td>
             </tr>
         {% endfor %}
         </tbody>

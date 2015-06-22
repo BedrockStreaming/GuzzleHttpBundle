@@ -16,7 +16,11 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function __construct()
     {
-        $this->data['guzzleHttp'] = new \SplQueue();
+        $this->data['guzzleHttp'] = [
+            'commands' => new \SplQueue(),
+            'has5x' => false,
+            'has4x' => false
+        ];
     }
 
     /**
@@ -48,20 +52,32 @@ class GuzzleHttpDataCollector extends DataCollector
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode > 499) {
+            $this->data['guzzleHttp']['has5x'] = true;
+        }
+
+        if ($statusCode > 399 && $statusCode < 500) {
+            $this->data['guzzleHttp']['has4x'] = true;
+        }
+
         $data = [
             'uri' => $request->getUri(),
             'method' => $request->getMethod(),
-            'responseCode' => $response->getStatusCode(),
+            'responseCode' => $statusCode,
             'responseReason' => $response->getReasonPhrase(),
             'executionTime' => $event->getExecutionTime(),
             'curl' => [
-                'redirectCount' => $response->curlInfo['redirect_count'],
-                'redirectTime' => $response->curlInfo['redirect_time']
-            ]
+                'redirectCount' => (isset($response->curlInfo['redirect_count'])) ? $response->curlInfo['redirect_count'] : 0,
+                'redirectTime' => (isset($response->curlInfo['redirect_time'])) ? $response->curlInfo['redirect_time'] : 0
+            ],
+            'cache' => (isset($response->cached)) ? 1 : 0,
+            'cacheTtl' => (isset($response->cacheTtl)) ? $response->cacheTtl : 0
 
         ];
 
-        $this->data['guzzleHttp']->enqueue($data);
+        $this->data['guzzleHttp']['commands']->enqueue($data);
     }
 
     /**
@@ -71,7 +87,27 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function getCommands()
     {
-        return $this->data['guzzleHttp'];
+        return $this->data['guzzleHttp']['commands'];
+    }
+
+    /**
+     * Return true error 400 occured
+     *
+     * @return bool
+     */
+    public function has4x()
+    {
+        return $this->data['guzzleHttp']['has4x'];
+    }
+
+    /**
+     * Return true error 500 occured
+     *
+     * @return bool
+     */
+    public function has5x()
+    {
+        return $this->data['guzzleHttp']['has5x'];
     }
 
     /**
@@ -89,7 +125,7 @@ class GuzzleHttpDataCollector extends DataCollector
     }
 
     /**
-     * Return average time spent by cassandra command
+     * Return average time spent by guzzlehttp command
      *
      * @return float
      */
@@ -98,5 +134,59 @@ class GuzzleHttpDataCollector extends DataCollector
         $totalExecutionTime = $this->getTotalExecutionTime();
 
         return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getCommands()) ) : 0;
+    }
+
+    /**
+     * Return total cache hits
+     *
+     * @return int
+     */
+    public function getCacheHits()
+    {
+        return array_reduce(iterator_to_array($this->getCommands()), function ($hits, $value) {
+            $hits += $value['cache'];
+
+            return $hits;
+        });
+    }
+
+    /**
+     * Return total cache hits
+     *
+     * @return int
+     */
+    public function getRedirects()
+    {
+        return array_reduce(iterator_to_array($this->getCommands()), function ($redirect, $value) {
+            $redirect += $value['curl']['redirectCount'];;
+
+            return $redirect;
+        });
+    }
+
+    /**
+     * Return the total time spent by redirection
+     *
+     * @return float
+     */
+    public function getTotalRedirectionTime()
+    {
+        return array_reduce(iterator_to_array($this->getCommands()), function ($time, $value) {
+            $time += $value['curl']['redirectTime'];
+
+            return $time;
+        });
+    }
+
+    /**
+     * Return average time spent by redirection
+     *
+     * @return float
+     */
+    public function getAvgRedirectionTime()
+    {
+        $totalExecutionTime = $this->getTotalRedirectionTime();
+
+        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getRedirects()) ) : 0;
     }
 }

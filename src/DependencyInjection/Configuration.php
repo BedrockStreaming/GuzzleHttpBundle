@@ -48,6 +48,13 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                 ->end()
                             ->end()
+                            ->arrayNode('guzzlehttp_cache')
+                                ->children()
+                                    ->integerNode('default_ttl')->defaultValue(3600)->end()
+                                    ->booleanNode('use_header_ttl')->defaultValue(false)->end()
+                                    ->scalarNode('service')->cannotBeEmpty()->end()
+                                ->end()
+                            ->end()
                         ->end()
                     ->end() // end prototype
                 ->end()

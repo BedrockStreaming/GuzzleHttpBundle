@@ -13,7 +13,7 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/guzzle-http-bundle"": "dev-master",
+        "m6web/guzzle-http-bundle"": "~1.0",
     }
 }
 ```
@@ -42,6 +42,7 @@ $ composer update m6web/guzzle-http-bundle
 Add the `m6web_guzzlehttp` section in your configuration file. Here is the minimal configuration required.
 
 ```yaml
+# app/config/config.yml
 m6web_guzzlehttp:
     clients:
         default:
@@ -76,6 +77,18 @@ The service return a configured guzzle client, for more information on how to us
 The only difference with guzzle6 reside in usage of curl for the redirect responses. You can choose to have the guzzle behavior 
 for redirection by setting the configuration key `redirect_handler` to `guzzle`.
 
+When a cache system is available, you can use `force_cache` and `cache_ttl` in addition of guzzle options than respectively
+ force clear cache before request and use a specific ttl to a request that override configuration.
+ 
+ ```php
+ $client = $this->get('m6web_guzzlehttp');
+ 
+ $response = $client->get('http://domain.tld', ['force_cache' => true]); // remove cache entry and set a new one
+ 
+ $response = $client->get('http://doamin.tld/path', ['cache_ttl' => 200]); // set ttl to 200 seconds instead the default one
+ 
+ ```
+
 ## DataCollector
 
 Datacollector is available when the symfony profiler is enabled. The collector allows you to see the following data :
@@ -86,9 +99,55 @@ Datacollector is available when the symfony profiler is enabled. The collector a
  - Execution time
  - Redirect count
  - Redirect time
+ - Cache hit
+ - Cache ttl
  
-**NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero.
- 
+**NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero. 
+Cache informations are available when a cache system is set.
+
+## Cache system
+
+You can set a cache for request by adding in the config the `guzzlehttp_cache` with `service` subkey who is a reference 
+ to a service implementing `M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface`
+
+```yaml
+# app/config/config.yml
+m6web_guzzlehttp:
+    clients:
+        default:
+            base_uri: "http://domain.tld/"
+            guzzlehttp_cache:
+                service: my_cache_service
+```
+
+We provide a cache interface for Redis with [our RedisBundle](https://github.com/M6Web/RedisBundle) >= 2.4, than you can use in this way:
+
+```yaml
+# app/config/config.yml
+m6web_guzzlehttp:
+    clients:
+        default:
+            base_uri: "http://domain.tld/"
+            guzzlehttp_cache:
+                service: m6_redis.guzzlehttp
+
+m6_redis:
+    servers:
+        default:
+            ip:   '127.0.0.1'
+            port: 6379
+    clients:
+        guzzlehttp:
+            servers:   ["default"]     # list of servers to use
+            namespace: GuzzleHttp\
+            timeout:   2               # timeout in second
+            readwritetimeout: 2        # read-write timeout in second
+            class: M6Web\Bundle\RedisBundle\CacheAdapters\M6WebGuzzleHttp
+    
+```
+
+For more information on how to setup the RedisBundle, refer to the README in the project.
+
 ## Configuration reference
 
 ```yaml
@@ -102,9 +161,16 @@ m6web_guzzlehttp:
             redirect_handler: curl           # guzzle or curl
             redirects:
                 max: 5                       # Maximum redirect to follow
-                strict: false                # use "strict" RFC compliant redirects. (guzzle only)
+                strict: false                # use "strict" RFC compliant redirects. (guzzle redirect handler only)
                 referer: true                # add a Referer header
                 protocols: ["http", "https"] # restrict redirect to a protocol
+            guzzlehttp_cache:                # optional cache
+                service: my_cache_service    # reference to service who implements the cache interface
+                default_ttl: 3600            # defautl ttl for cache entry in seconds
+                use_header_ttl: false        # use the cache-control header to set the ttl
+                
+        otherclient:
+            ...
 ```
 
 ## Contributing

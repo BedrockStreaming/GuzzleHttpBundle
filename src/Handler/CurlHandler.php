@@ -8,5 +8,5 @@ use GuzzleHttp\Handler\CurlHandler as GuzzleCurlHandler;
  */
 class CurlHandler extends GuzzleCurlHandler
 {
-
+    use CacheTrait;
 }
