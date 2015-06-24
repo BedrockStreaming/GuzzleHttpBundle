@@ -63,15 +63,24 @@ class M6WebGuzzleHttpExtension extends Extension
             $config['curl'] = $this->getCurlConfig($config);
         }
 
+        if (array_key_exists('guzzlehttp_cache', $config)) {
+            $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
+            $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
+            $cacheService = new Reference($config['guzzlehttp_cache']['service']);
+
+            $curlHandler = $container->getDefinition('m6web_guzlehttp.handler.curlhandler');
+            $curlMultiHandler = $container->getDefinition('m6web_guzlehttp.handler.curlmultihandler');
+
+            $curlHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
+            $curlMultiHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
+        }
+
 
         $guzzleClientDefintion = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
         $guzzleClientDefintion->addArgument($config);
 
-        //$clientDefinition->addMethodCall('setClient', [$guzzleClient]);
-
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
 
-        //$container->setDefinition($containerKey, $clientDefinition);
         $container->setDefinition($containerKey, $guzzleClientDefintion);
 
     }
