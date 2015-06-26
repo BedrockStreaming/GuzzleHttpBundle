@@ -45,7 +45,8 @@ Add the `m6web_guzzlehttp` section in your configuration file. Here is the minim
 # app/config/config.yml
 m6web_guzzlehttp:
     clients:
-        default:
+        default: ~
+        other:
             base_uri: "http://domain.tld/"
 ```
 
@@ -57,19 +58,24 @@ Then you can ask container for your client :
 ```php
 // in a controller
 
-$client = $this->get('m6web_guzzlehttp');
+$client = $this->get('m6web_guzzlehttp'); // default client
+
 try {
-    $response = $client->get('path/to/resource'); // call http://domain.tld/path/to/resource
+    $response = $client->get('http://domain.tld/path/to/resource');
     
     $promises = [
-        'first' => $client->getAsync('path/to/resource'),
-        'second' => $client->getAsync('http://other.domain.tld/path/to/resource')
+        'first' => $client->getAsync('http://domain.tld/path/to/resource'),
+        'second' => $client->getAsync('http://domain.tld/path/to/other/resource')
     ];
     
     $result = \GuzzleHttp\Promise\unwrap($promises);
 } catch(\GuzzleHttp\Exception\ConnectException $e) {
     // connection problem like timeout
-} 
+}
+
+// use other client
+$otherClient = $this->get('m6web_guzzlehttp_other');
+$response = $otherClient->get('path/to/resource'); // call http://domain.tld/path/to/resource
 ```
 
 The service return a configured guzzle client, for more information on how to use it, you can read the [guzzle6 documentation](http://guzzle.readthedocs.org/en/latest/index.html).
@@ -154,7 +160,7 @@ For more information on how to setup the RedisBundle, refer to the README in the
 m6web_guzzlehttp:
     clients:
         default:
-            base_uri: ""                     # required. Base uri
+            base_uri: ""                     # Base uri to prepend on request uri
             timeout: 5.0                     # request timeout
             http_errors: true                # enable or disable exception on http errors
             allow_redirects: true            # enable or disable follow redirect

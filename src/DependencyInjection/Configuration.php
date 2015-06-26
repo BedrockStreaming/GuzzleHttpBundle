@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('id', false)
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('base_uri')->isRequired()->end()
+                            ->scalarNode('base_uri')->defaultValue("")->end()
                             ->floatNode('timeout')->defaultValue(5.0)->end()
                             ->booleanNode('http_errors')->defaultValue(true)->end()
                             ->booleanNode('allow_redirects')->defaultValue(true)->end()
