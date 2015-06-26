@@ -22,7 +22,7 @@ class M6WebGuzzleHttpExtension extends test
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
                 ->hasSize(8)
             ->string($arguments['base_uri'])
-                ->isEqualTo('http://domain.tld')
+                ->isEqualTo('')
             ->float($arguments['timeout'])
                 ->isEqualTo(5.0)
             ->boolean($arguments['http_errors'])
