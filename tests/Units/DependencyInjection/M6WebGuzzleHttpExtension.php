@@ -143,6 +143,7 @@ class M6WebGuzzleHttpExtension extends test
     public function testEventDispatcherMiddleWare()
     {
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+
         $container = $this->getContainerForConfiguation('default-config');
         $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
@@ -151,7 +152,7 @@ class M6WebGuzzleHttpExtension extends test
             ->if($client = $container->get('m6web_guzzlehttp'))
             ->and($promises = [
                 'test' => $client->getAsync('http://httpbin.org'),
-                'test2' => $client->getAsync('http://httpbin.org')
+                'test2' => $client->getAsync('http://httpbin.org/ip')
             ])
             ->and($rep = Promise\unwrap($promises))
             ->then
