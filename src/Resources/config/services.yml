@@ -34,9 +34,3 @@ services:
             - "@m6web_guzlehttp.handler.curlmultihandler"
             - "@m6web_guzlehttp.handler.curlhandler"
 
-    m6web_guzzlehttp.guzzle.handlerstack:
-        class: %m6web_guzzlehttp.guzzle.handlerstack.class%
-        factory: [%m6web_guzzlehttp.guzzle.handlerstack.class%, create]
-        arguments:
-            - "@m6web_guzzlehttp.guzzle.proxyhandler"
-

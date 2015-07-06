@@ -49,7 +49,12 @@ class M6WebGuzzleHttpExtension extends Extension
         }
         unset($config['redirects']);
 
-        $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack');
+        $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
+        $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
+        $handlerStackDefinition->setArguments([new Reference('m6web_guzzlehttp.guzzle.proxyhandler')]);
+        $container->setDefinition('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId, $handlerStackDefinition);
+
+        $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
 
         $middlewareEventDispatcherDefinition = new Definition('%m6web_guzzlehttp.middleware.eventdispatcher.class%');
         $middlewareEventDispatcherDefinition->setArguments([new Reference('event_dispatcher')]);

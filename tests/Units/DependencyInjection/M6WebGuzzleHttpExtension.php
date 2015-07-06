@@ -143,6 +143,7 @@ class M6WebGuzzleHttpExtension extends test
     public function testEventDispatcherMiddleWare()
     {
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+
         $container = $this->getContainerForConfiguation('default-config');
         $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
@@ -151,13 +152,37 @@ class M6WebGuzzleHttpExtension extends test
             ->if($client = $container->get('m6web_guzzlehttp'))
             ->and($promises = [
                 'test' => $client->getAsync('http://httpbin.org'),
-                'test2' => $client->getAsync('http://httpbin.org')
+                'test2' => $client->getAsync('http://httpbin.org/ip')
             ])
             ->and($rep = Promise\unwrap($promises))
             ->then
                 ->mock($mockDispatcher)
                     ->call('dispatch')
                         ->twice()
+        ;
+    }
+
+    public function testEventDispatcherMulticlient()
+    {
+        $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+
+        $container = $this->getContainerForConfiguation('multiclient-config');
+        $container->set('event_dispatcher', $mockDispatcher);
+        $container->compile();
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp'))
+            ->and($client2 = $container->get('m6web_guzzlehttp_myclient'))
+            ->and($promises = [
+                'test' => $client->getAsync('http://httpbin.org'),
+                'test2' => $client->getAsync('http://httpbin.org/ip')
+            ])
+            ->and($rep = Promise\unwrap($promises))
+            ->and($client2->get('http://httpbin.org'))
+            ->then
+                ->mock($mockDispatcher)
+                ->call('dispatch')
+                    ->exactly(3)
         ;
     }
 
