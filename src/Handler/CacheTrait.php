@@ -25,6 +25,11 @@ trait CacheTrait
     protected $useHeaderTtl;
 
     /**
+     * @var boolean
+     */
+    protected $debug = false;
+
+    /**
      * @var array
      */
     protected static $methods = ['GET', 'HEAD', 'OPTIONS'];
@@ -39,6 +44,16 @@ trait CacheTrait
         $this->cache = $cache;
         $this->defaultTtl = $defaultTtl;
         $this->useHeaderTtl = $useHeaderTtl;
+    }
+
+    /**
+     * Set the debug mode
+     *
+     * @param boolean $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 
     /**
@@ -125,7 +140,12 @@ trait CacheTrait
         $response = new Response($cached[0], $cached[1], $cached[2], $cached[3], $cached[4]);
 
         $response->cached = true;
-        $response->cacheTtl = $this->cache->ttl($cacheKey);
+
+        // set ttl information only on debug mode
+        if ($this->debug) {
+            $response->cacheTtl = $this->cache->ttl($cacheKey);
+        }
+
 
         return $response;
     }
