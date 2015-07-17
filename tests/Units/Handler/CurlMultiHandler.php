@@ -77,6 +77,7 @@ class CurlMultiHandler extends test
         $this
             ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
+            ->and($testedClass->setDebug(true))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
                 ->object($response = $testedClass($request, [])->wait())
@@ -90,6 +91,7 @@ class CurlMultiHandler extends test
                 ->boolean($response->cached)
                     ->isTrue()
                 ->integer($response->cacheTtl)
+                    ->isEqualTo(256)
                 ->mock($cacheMock)
                     ->call('has')
                         ->withArguments(md5($request->getUri()))
@@ -190,6 +192,49 @@ class CurlMultiHandler extends test
                     ->call('release')
                         ->once()
         ;
+    }
+
+    public function testCacheGetDebugOff()
+    {
+        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
+
+        $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+
+
+        $cacheMock->getMockController()->has = true;
+        $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], "The answer is 42", '1.1', 'OK'));
+        $cacheMock->getMockController()->ttl = 256;
+
+        $this
+            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->and($testedClass->setCache($cacheMock, 500, false))
+            ->and($testedClass->setDebug(false))
+            ->and($request = new Request('GET', 'http://httpbin.org'))
+            ->then
+                ->object($response = $testedClass($request, [])->wait())
+                    ->isInstanceOf('GuzzleHttp\Psr7\Response')
+                ->integer($response->getStatuscode())
+                    ->isEqualTo(200)
+                ->string($response->getReasonPhrase())
+                    ->isEqualTo('OK')
+                ->string($response->getBody()->__toString())
+                    ->isEqualTo('The answer is 42')
+                ->boolean($response->cached)
+                    ->isTrue()
+                ->mock($cacheMock)
+                    ->call('has')
+                        ->withArguments(md5($request->getUri()))
+                        ->once()
+                    ->call('get')
+                        ->withArguments(md5($request->getUri()))
+                        ->once()
+                    ->call('ttl')
+                        ->never()
+                ->mock($curlFactoryMock)
+                    ->call('release')
+                        ->never()
+        ;
+
     }
 
     protected function getSerializedResponse(Response $response)
