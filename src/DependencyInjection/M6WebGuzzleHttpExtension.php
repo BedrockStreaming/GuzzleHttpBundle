@@ -92,6 +92,8 @@ class M6WebGuzzleHttpExtension extends Extension
      */
     protected function setGuzzleProxyHandler(ContainerBuilder $container, $clientId, array $config)
     {
+        // arguments in handler factories below represents the maximum number of idle handles.
+        // the values are the default defined in guzzle CurlHanddler and CurlMultiHandler
         $handlerFactorySync = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
         $handlerFactorySync->setArguments([3]);
 
