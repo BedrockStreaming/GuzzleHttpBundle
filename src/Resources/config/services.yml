@@ -11,28 +11,5 @@ parameters:
     m6web_guzzlehttp.middleware.eventdispatcher.class: M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware
 
 services:
-    m6web_guzlehttp.handler.curlfactory.sync:
-        class: %m6web_guzlehttp.handler.curlfactory.class%
-        arguments: [3]
 
-    m6web_guzlehttp.handler.curlfactory.normal:
-        class: %m6web_guzlehttp.handler.curlfactory.class%
-        arguments: [50]
-
-    m6web_guzlehttp.handler.curlhandler:
-        class: %m6web_guzlehttp.handler.curlhandler.class%
-        arguments: [ {handle_factory: "@m6web_guzlehttp.handler.curlfactory.sync"} ]
-        calls: [ ['setDebug', [%kernel.debug%]] ]
-
-    m6web_guzlehttp.handler.curlmultihandler:
-        class: %m6web_guzlehttp.handler.curlmultihandler.class%
-        arguments: [ {handle_factory : "@m6web_guzlehttp.handler.curlfactory.normal"} ]
-        calls: [ ['setDebug', [%kernel.debug%]] ]
-
-    m6web_guzzlehttp.guzzle.proxyhandler:
-        class: %m6web_guzzlehttp.guzzle.proxyhandler.class%
-        factory: [%m6web_guzzlehttp.guzzle.proxyhandler.class%, wrapSync]
-        arguments:
-            - "@m6web_guzlehttp.handler.curlmultihandler"
-            - "@m6web_guzlehttp.handler.curlhandler"
 
