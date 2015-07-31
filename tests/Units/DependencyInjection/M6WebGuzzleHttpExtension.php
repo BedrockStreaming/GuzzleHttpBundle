@@ -8,6 +8,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use GuzzleHttp\Promise;
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
+use GuzzleHttp\Psr7\Response;
 
 class M6WebGuzzleHttpExtension extends test
 {
@@ -129,6 +130,46 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
+    public function testCacheConfig()
+    {
+        $mockCache = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+        $mockCache2 = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+
+        $container = $this->getContainerForConfiguation('cache-config');
+        $container->set('cache_service', $mockCache);
+        $container->set('cache_service2', $mockCache2);
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(9)
+            ->array($cacheConfig = $arguments['guzzlehttp_cache'])
+                ->hasSize(3)
+            ->integer($cacheConfig['default_ttl'])
+                ->isEqualTo(100)
+            ->boolean($cacheConfig['use_header_ttl'])
+                ->isFalse()
+            ->string($cacheConfig['service'])
+                ->isEqualTo('cache_service')
+
+            ->boolean($container->has('m6web_guzzlehttp_myclient'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
+                ->hasSize(9)
+            ->array($cacheConfig = $arguments['guzzlehttp_cache'])
+                ->hasSize(3)
+            ->integer($cacheConfig['default_ttl'])
+                ->isEqualTo(300)
+            ->boolean($cacheConfig['use_header_ttl'])
+                ->isTrue()
+            ->string($cacheConfig['service'])
+                ->isEqualTo('cache_service2')
+        ;
+
+    }
+
     public function testClientConfiguration()
     {
         $container = $this->getContainerForConfiguation('default-config');
@@ -186,6 +227,57 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
+    public function testMulticlientCache()
+    {
+        $mockCache = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+        $mockCache2 = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+
+        $container = $this->getContainerForConfiguation('cache-config');
+        $container->set('cache_service', $mockCache);
+        $container->set('cache_service2', $mockCache2);
+        $container->compile();
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp'))
+            ->and($client2 = $container->get('m6web_guzzlehttp_myclient'))
+            ->and($response = $client->get('http://httpbin.org/robots.txt'))
+            ->and($response2 = $client->get('http://httpbin.org/cache/10'))
+            ->then
+                ->mock($mockCache)
+                    ->call('set')
+                        ->withArguments(md5('http://httpbin.org/robots.txt'), $this->getSerializedResponse($response), 100)
+                            ->once()
+                        ->withArguments(md5('http://httpbin.org/cache/10'), $this->getSerializedResponse($response2), 100)
+                            ->once()
+                        ->withAnyArguments()
+                            ->twice()
+            ->if($response = $client2->get('http://httpbin.org'))
+            ->and($response2 = $client2->get('http://httpbin.org/cache/10'))
+            ->then
+                ->mock($mockCache2)
+                    ->call('set')
+                        ->withArguments(md5('http://httpbin.org'), $this->getSerializedResponse($response), 300)
+                            ->once()
+                        ->withArguments(md5('http://httpbin.org/cache/10'), $this->getSerializedResponse($response2), 10)
+                            ->once()
+                        ->withAnyArguments()
+                            ->twice()
+        ;
+
+    }
+
+    protected function getSerializedResponse(Response $response)
+    {
+        $cached = new \SplFixedArray(5);
+        $cached[0] = $response->getStatusCode();
+        $cached[1] = $response->getHeaders();
+        $cached[2] = $response->getBody()->__toString();
+        $cached[3] = $response->getProtocolVersion();
+        $cached[4] = $response->getReasonPhrase();
+
+        return serialize($cached);
+    }
+
     protected function getContainerForConfiguation($fixtureName)
     {
         $extension = new TestedClass();
@@ -193,6 +285,8 @@ class M6WebGuzzleHttpExtension extends test
         $parameterBag = new ParameterBag(array('kernel.debug' => true));
         $container = new ContainerBuilder($parameterBag);
         $container->set('event_dispatcher', new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface());
+        $container->set('cache_service', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
+        $container->set('cache_service2', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
         $container->registerExtension($extension);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Fixtures/'));

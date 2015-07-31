@@ -49,9 +49,12 @@ class M6WebGuzzleHttpExtension extends Extension
         }
         unset($config['redirects']);
 
+       $this->setGuzzleProxyHandler($container, $clientId, $config);
+
         $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
         $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
-        $handlerStackDefinition->setArguments([new Reference('m6web_guzzlehttp.guzzle.proxyhandler')]);
+        $handlerStackDefinition->setArguments([new Reference('m6web_guzzlehttp.guzzle.proxyhandler_'.$clientId)]);
+
         $container->setDefinition('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId, $handlerStackDefinition);
 
         $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
@@ -68,17 +71,7 @@ class M6WebGuzzleHttpExtension extends Extension
             $config['curl'] = $this->getCurlConfig($config);
         }
 
-        if (array_key_exists('guzzlehttp_cache', $config)) {
-            $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
-            $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
-            $cacheService = new Reference($config['guzzlehttp_cache']['service']);
 
-            $curlHandler = $container->getDefinition('m6web_guzlehttp.handler.curlhandler');
-            $curlMultiHandler = $container->getDefinition('m6web_guzlehttp.handler.curlmultihandler');
-
-            $curlHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
-            $curlMultiHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
-        }
 
 
         $guzzleClientDefintion = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
@@ -88,6 +81,47 @@ class M6WebGuzzleHttpExtension extends Extension
 
         $container->setDefinition($containerKey, $guzzleClientDefintion);
 
+    }
+
+    /**
+     * Set proxy handler definition for the client
+     *
+     * @param ContainerBuilder $container
+     * @param string           $clientId
+     * @param array            $config
+     */
+    protected function setGuzzleProxyHandler(ContainerBuilder $container, $clientId, array $config)
+    {
+        // arguments (3 and 50) in handler factories below represents the maximum number of idle handles.
+        // the values are the default defined in guzzle CurlHanddler and CurlMultiHandler
+        $handlerFactorySync = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
+        $handlerFactorySync->setArguments([3]);
+
+        $handlerFactoryNormal = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
+        $handlerFactoryNormal->setArguments([50]);
+
+        $curlhandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
+        $curlhandler->setArguments([ ['handle_factory' => $handlerFactorySync] ]);
+        $curlhandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+
+        $curlMultihandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
+        $curlMultihandler->setArguments([ ['handle_factory' => $handlerFactoryNormal] ]);
+        $curlMultihandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+
+        if (array_key_exists('guzzlehttp_cache', $config)) {
+            $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
+            $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
+            $cacheService = new Reference($config['guzzlehttp_cache']['service']);
+
+            $curlhandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
+            $curlMultihandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
+        }
+
+        $proxyHandler = new Definition('%m6web_guzzlehttp.guzzle.proxyhandler.class%');
+        $proxyHandler->setFactory(['%m6web_guzzlehttp.guzzle.proxyhandler.class%', 'wrapSync']);
+        $proxyHandler->setArguments([$curlMultihandler, $curlhandler]);
+
+        $container->setDefinition('m6web_guzzlehttp.guzzle.proxyhandler_'.$clientId, $proxyHandler);
     }
 
     protected function getCurlConfig(array $config)
