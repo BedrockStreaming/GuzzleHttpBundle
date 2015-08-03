@@ -55,6 +55,10 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('service')->cannotBeEmpty()->end()
                                 ->end()
                             ->end()
+                            ->arrayNode('default_headers')
+                                ->useAttributeAsKey('headerKey', true)
+                                ->prototype('scalar')->end()
+                            ->end() // end arrayNode('default_headers')
                         ->end()
                     ->end() // end prototype
                 ->end()

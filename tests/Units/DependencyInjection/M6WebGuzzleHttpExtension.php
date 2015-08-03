@@ -65,7 +65,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(7)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain.tld')
             ->integer($arguments['timeout'])
@@ -86,6 +86,17 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect['protocols'])
                 ->hasSize(1)
                 ->isEqualTo(['http'])
+            ->array($headers = $arguments['headers'])
+                ->hasSize(4)
+                ->hasKeys(['User-Agent', 'X-Question', 'X-Answer', 'Escape_Underscore'])
+            ->string($headers['User-Agent'])
+                ->isEqualTo('Towel/1.0')
+            ->string($headers['X-Question'])
+                ->isEqualTo('The Ultimate Question of Life, the Universe and Everything')
+            ->integer($headers['X-Answer'])
+                ->isEqualTo(42)
+            ->string($headers['Escape_Underscore'])
+                ->isEqualTo('Why not?')
         ;
     }
 
@@ -110,7 +121,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(8)
+                ->hasSize(9)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain2.tld')
             ->float($arguments['timeout'])
@@ -127,6 +138,9 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect['protocols'])
                 ->hasSize(2)
                 ->isEqualTo(['http', 'https'])
+            ->array($headers = $arguments['headers'])
+                ->hasSize(1)
+                ->hasKey('User-Agent')
         ;
     }
 
@@ -178,6 +192,29 @@ class M6WebGuzzleHttpExtension extends test
         $this
             ->object($client = $container->get('m6web_guzzlehttp'))
                 ->isInstanceOf('\GuzzleHttp\Client')
+        ;
+    }
+
+    public function testClietnConfigurationWithHeaders()
+    {
+        $container = $this->getContainerForConfiguation('override-config');
+        $container->compile();
+
+        $this
+            ->object($client = $container->get('m6web_guzzlehttp'))
+                ->isInstanceOf('\GuzzleHttp\Client')
+            ->array($config = $client->getConfig())
+                ->hasKey('headers')
+            ->array($headers = $config['headers'])
+                ->hasKeys(['User-Agent', 'X-Question', 'X-Answer', 'Escape_Underscore'])
+            ->string($headers['User-Agent'])
+                ->isEqualTo('Towel/1.0')
+            ->string($headers['X-Question'])
+                ->isEqualTo('The Ultimate Question of Life, the Universe and Everything')
+            ->integer($headers['X-Answer'])
+                ->isEqualTo(42)
+            ->string($headers['Escape_Underscore'])
+                ->isEqualTo('Why not?')
         ;
     }
 

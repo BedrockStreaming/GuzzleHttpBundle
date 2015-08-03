@@ -6,3 +6,5 @@ m6web_guzzlehttp:
             allow_redirects: false
         myclient:
             base_uri: "http://domain2.tld"
+            default_headers:
+                User_Agent: "Towel/1.0"
