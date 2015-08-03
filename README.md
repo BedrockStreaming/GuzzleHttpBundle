@@ -174,10 +174,16 @@ m6web_guzzlehttp:
                 service: my_cache_service    # reference to service who implements the cache interface
                 default_ttl: 3600            # defautl ttl for cache entry in seconds
                 use_header_ttl: false        # use the cache-control header to set the ttl
+            default_headers:                 # optionnal. Default request headers
+                User_Agent: "m6web/1.0"      # set header "User-Agent" with the value "m6web/1.0"
+                header\_name: "my value"     # set header "header_name" with value "my value"
                 
         otherclient:
             ...
 ```
+
+For the `default_headers` options, the key in array represent the header name. The underscore will be transformed to hyphen
+ except if is escaped by a backslash.
 
 ## Contributing
 
