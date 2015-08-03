@@ -13,7 +13,7 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/guzzle-http-bundle"": "~1.0",
+        "m6web/guzzle-http-bundle": "~1.0",
     }
 }
 ```
