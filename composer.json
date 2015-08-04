@@ -14,7 +14,8 @@
   "require": {
     "php": ">=5.5",
     "ext-curl": "*",
-    "guzzlehttp/guzzle": "~6.0"
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/symfony": "~2.6"
   },
   "require-dev": {
     "atoum/atoum": "~2.1",
