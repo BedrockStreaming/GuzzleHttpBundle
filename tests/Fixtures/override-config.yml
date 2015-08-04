@@ -11,3 +11,8 @@ m6web_guzzlehttp:
                 strict: true
                 referer: false
                 protocols: ["http"]
+            default_headers:
+                User_Agent: "Towel/1.0"
+                X_Question: "The Ultimate Question of Life, the Universe and Everything"
+                X_Answer: 42
+                Escape\_Underscore: "Why not?"

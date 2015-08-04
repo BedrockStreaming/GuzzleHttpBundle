@@ -72,7 +72,21 @@ class M6WebGuzzleHttpExtension extends Extension
         }
 
 
+        // process default headers if set
+        if (!empty($config['default_headers'])) {
+            $headers = [];
+            array_walk($config['default_headers'], function ($value, $key) use (&$headers) {
+                // replace underscore by hyphen in key
+                $key = preg_replace('`(?<!\\\)_`', '-', $key);
+                // replace escaped underscore by underscore
+                $key = str_replace('\\_', '_', $key);
 
+                $headers[$key] = $value;
+            });
+
+            $config['headers'] = $headers;
+        }
+        unset($config['default_headers']);
 
         $guzzleClientDefintion = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
         $guzzleClientDefintion->addArgument($config);
