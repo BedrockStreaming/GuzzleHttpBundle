@@ -1,7 +1,7 @@
 {
   "name": "m6web/guzzle-http-bundle",
   "type" : "symfony-bundle",
-  "description": "Symfony2 bundle on top of guzzle http client",
+  "description": "Symfony2 bundle on top of guzzle 6",
   "keywords": ["bundle", "http", "client", "HTTP client"],
   "license" : "MIT",
   "authors": [
