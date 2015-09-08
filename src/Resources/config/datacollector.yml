@@ -1,5 +1,5 @@
 services:
-    m6web.data_collector.cassandra:
+    m6web.data_collector.guzzlehttp:
         class: M6Web\Bundle\GuzzleHttpBundle\DataCollector\GuzzleHttpDataCollector
         tags:
             - { name: data_collector, template: 'M6WebGuzzleHttpBundle:Collector:guzzlehttp', id: 'guzzlehttp' }

@@ -6,8 +6,6 @@ The GuzzleHttpBundle provide a guzzle client as symfony service.
 
 ## Installation
 
-**NOTE :** Work in progress
-
 Require the bundle in your composer.json file :
 
 ```json
