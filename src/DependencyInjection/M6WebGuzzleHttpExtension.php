@@ -60,7 +60,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
 
         $middlewareEventDispatcherDefinition = new Definition('%m6web_guzzlehttp.middleware.eventdispatcher.class%');
-        $middlewareEventDispatcherDefinition->setArguments([new Reference('event_dispatcher')]);
+        $middlewareEventDispatcherDefinition->setArguments([new Reference('event_dispatcher'), $clientId]);
         $middlewareEventDispatcherDefinition->addMethodCall('push', [$handlerStackReference]);
 
         // we must assign middleware for build process
