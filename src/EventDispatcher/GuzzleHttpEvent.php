@@ -37,6 +37,11 @@ class GuzzleHttpEvent extends Event
     protected $response;
 
     /**
+     * @var string
+     */
+    protected $clientId;
+
+    /**
      * Set request
      *
      * @param Request $request
@@ -133,5 +138,29 @@ class GuzzleHttpEvent extends Event
     public function getTiming()
     {
         return $this->getExecutionTime() * 1000;
+    }
+
+    /**
+     * Get client ID
+     *
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * Set client ID
+     *
+     * @param string $clientId
+     *
+     * @return GuzzleHttpEvent
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+
+        return $this;
     }
 }

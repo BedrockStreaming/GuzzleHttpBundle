@@ -28,15 +28,22 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     protected $events;
 
     /**
+     * @var string
+     */
+    protected $clientId;
+
+    /**
      * Constructor
      *
      * @param EventDispatcherInterface $eventDispatcher
+     * @param string                   $clientId
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, $clientId)
     {
 
         $this->eventDispatcher = $eventDispatcher;
         $this->events = [];
+        $this->clientId = $clientId;
     }
 
     /**
@@ -96,6 +103,7 @@ class EventDispatcherMiddleware implements MiddlewareInterface
         $event = new GuzzleHttpEvent();
         $event->setExecutionStart();
         $event->setRequest($request);
+        $event->setClientId($this->clientId);
 
         $this->events[$this->getEventKey($request)] = $event;
     }
