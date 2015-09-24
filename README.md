@@ -163,6 +163,7 @@ m6web_guzzlehttp:
             http_errors: true                # enable or disable exception on http errors
             allow_redirects: true            # enable or disable follow redirect
             redirect_handler: curl           # guzzle or curl
+            proxy: proxy:port                # Optional. Set the proxy for client.
             redirects:
                 max: 5                       # Maximum redirect to follow
                 strict: false                # use "strict" RFC compliant redirects. (guzzle redirect handler only)
