@@ -5,6 +5,7 @@ m6web_guzzlehttp:
             timeout: 2
             http_errors: false
             allow_redirects: true
+            proxy: 127.0.0.1:80
             redirect_handler: guzzle
             redirects:
                 max: 2
