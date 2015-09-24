@@ -127,7 +127,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(10)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain2.tld')
             ->float($arguments['timeout'])
