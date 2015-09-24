@@ -32,6 +32,7 @@ class Configuration implements ConfigurationInterface
                             ->floatNode('timeout')->defaultValue(5.0)->end()
                             ->booleanNode('http_errors')->defaultValue(true)->end()
                             ->booleanNode('allow_redirects')->defaultValue(true)->end()
+                            ->scalarNode('proxy')->defaultValue("")->end()
                             ->enumNode('redirect_handler')
                                 ->values(['curl', 'guzzle'])
                                 ->defaultValue('curl')
