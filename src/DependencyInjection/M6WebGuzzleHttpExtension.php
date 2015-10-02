@@ -147,7 +147,8 @@ class M6WebGuzzleHttpExtension extends Extension
         $curlInfo = [
             CURLOPT_FOLLOWLOCATION => $followLocation,
             CURLOPT_MAXREDIRS => $maxRedir,
-            CURLOPT_AUTOREFERER => $autoReferer
+            CURLOPT_AUTOREFERER => $autoReferer,
+            CURLOPT_NOSIGNAL => 1
         ];
 
         if ($followLocation) {
