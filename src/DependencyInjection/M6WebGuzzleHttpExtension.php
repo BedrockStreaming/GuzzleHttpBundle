@@ -150,6 +150,9 @@ class M6WebGuzzleHttpExtension extends Extension
             CURLOPT_AUTOREFERER => $autoReferer
         ];
 
+        // There is a bug/"feature" on "Unix-like systems" that causes libcurl to timeout immediately
+        // if the value is < 1000 ms
+        // The solution is to disable signals using CURLOPT_NOSIGNAL (no guarantee)
         if ($config['timeout'] < 1) {
             $curlInfo[CURLOPT_NOSIGNAL] = 1;
         }
