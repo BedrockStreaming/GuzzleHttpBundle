@@ -1,0 +1,6 @@
+m6web_guzzlehttp:
+    clients:
+        default:
+            timeout: 0.6
+        myclient:
+            timeout: 1.2

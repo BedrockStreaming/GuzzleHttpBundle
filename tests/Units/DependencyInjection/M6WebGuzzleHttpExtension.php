@@ -104,6 +104,29 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
+    public function testTimeoutConfig()
+    {
+        $container = $this->getContainerForConfiguation('timeout-config');
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(9)
+            ->float($arguments['timeout'])
+                ->isEqualTo(0.6)
+            ->array($curlOpt = $arguments['curl'])
+                ->hasKey(CURLOPT_NOSIGNAL)
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
+                ->hasSize(9)
+            ->float($arguments['timeout'])
+                ->isEqualTo(1.2)
+            ->array($curlOpt = $arguments['curl'])
+                ->notHasKey(CURLOPT_NOSIGNAL)
+        ;
+    }
+
     public function testMulticlientConfig()
     {
         $container = $this->getContainerForConfiguation('multiclient-config');
