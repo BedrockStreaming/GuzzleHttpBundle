@@ -150,6 +150,10 @@ class M6WebGuzzleHttpExtension extends Extension
             CURLOPT_AUTOREFERER => $autoReferer
         ];
 
+        if ($config['timeout'] < 1) {
+            $curlInfo[CURLOPT_NOSIGNAL] = 1;
+        }
+
         if ($followLocation) {
             $redirProtocols = 0;
 
