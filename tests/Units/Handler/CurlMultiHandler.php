@@ -54,9 +54,6 @@ class CurlMultiHandler extends test
                 ->array($response->curlInfo)
                     ->isNotEmpty()
                 ->mock($cacheMock)
-                    ->call('has')
-                        ->withArguments(md5($request->getUri()))
-                            ->once()
                     ->call('set')
                         ->withArguments(md5($request->getUri()), $this->getSerializedResponse($response), 500)
                             ->once()
@@ -93,9 +90,6 @@ class CurlMultiHandler extends test
                 ->integer($response->cacheTtl)
                     ->isEqualTo(256)
                 ->mock($cacheMock)
-                    ->call('has')
-                        ->withArguments(md5($request->getUri()))
-                            ->once()
                     ->call('get')
                         ->withArguments(md5($request->getUri()))
                             ->once()
@@ -105,6 +99,28 @@ class CurlMultiHandler extends test
                 ->mock($curlFactoryMock)
                     ->call('release')
                         ->never()
+        ;
+
+        // Test unserialize issue
+        $cacheMock->getMockController()->get = serialize(\SplFixedArray::fromArray([null, null, null, null, null]));
+
+        $this
+                ->object($response = $testedClass($request, [])->wait())
+                    ->isInstanceOf('GuzzleHttp\Psr7\Response')
+                ->integer($response->getStatuscode())
+                    ->isEqualTo(200)
+                ->boolean(isset($response->cached) ? $response->cached : false)
+                    ->isFalse()
+                ->mock($cacheMock)
+                    ->call('get')
+                        ->withArguments(md5($request->getUri()))
+                            ->twice()
+                    ->call('ttl')
+                        ->withArguments(md5($request->getUri()))
+                            ->once()
+                ->mock($curlFactoryMock)
+                    ->call('release')
+                        ->once()
         ;
 
     }
@@ -222,9 +238,6 @@ class CurlMultiHandler extends test
                 ->boolean($response->cached)
                     ->isTrue()
                 ->mock($cacheMock)
-                    ->call('has')
-                        ->withArguments(md5($request->getUri()))
-                        ->once()
                     ->call('get')
                         ->withArguments(md5($request->getUri()))
                         ->once()

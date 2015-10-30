@@ -130,11 +130,16 @@ trait CacheTrait
     protected function getCached(RequestInterface $request)
     {
         $cacheKey = self::getKey($request);
-        if (!$this->cache->has($cacheKey)) {
+        if (is_null($cachedContent = $this->cache->get($cacheKey))) {
             return null;
         }
 
-        $cached = unserialize($this->cache->get($cacheKey));
+        $cached = unserialize($cachedContent);
+        foreach ($cached as $value) {
+            if (is_null($value)) {
+                return null;
+            }
+        }
 
         // rebuild response with cache entry : status, headers, body, protocol version, reason
         $response = new Response($cached[0], $cached[1], $cached[2], $cached[3], $cached[4]);
