@@ -73,6 +73,11 @@ class EventDispatcherMiddleware implements MiddlewareInterface
                         $this->sendEvent($request, $response);
 
                         return $response;
+                    },
+                    function ($reason) use ($request) {
+                        $this->sendErrorEvent($request, $reason);
+
+                        return $this;
                     }
                 );
             };
@@ -84,11 +89,11 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Get key for request object
      *
-     * @param Request $request
+     * @param RequestInterface $request
      *
      * @return string
      */
-    protected function getEventKey(Request $request)
+    protected function getEventKey(RequestInterface $request)
     {
         return spl_object_hash($request);
     }
@@ -96,9 +101,9 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Initialize event
      *
-     * @param Request $request
+     * @param RequestInterface $request
      */
-    protected function initEvent(Request $request)
+    protected function initEvent(RequestInterface $request)
     {
         $event = new GuzzleHttpEvent();
         $event->setExecutionStart();
@@ -111,10 +116,10 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Dispatch event
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
      */
-    protected function sendEvent(Request $request, Response $response)
+    protected function sendEvent(RequestInterface $request, ResponseInterface $response)
     {
         $key = $this->getEventKey($request);
         $event = $this->events[$key];
@@ -124,5 +129,23 @@ class EventDispatcherMiddleware implements MiddlewareInterface
         $event->setExecutionStop();
         $event->setResponse($response);
         $this->eventDispatcher->dispatch(GuzzleHttpEvent::EVENT_NAME, $event);
+    }
+
+    /**
+     * Dispatch event
+     *
+     * @param RequestInterface $request
+     * @param mixed            $reason
+     */
+    protected function sendErrorEvent(RequestInterface $request, $reason)
+    {
+        $key = $this->getEventKey($request);
+        $event = $this->events[$key];
+
+        unset($this->events[$key]);
+
+        $event->setExecutionStop();
+        $event->setReason($reason);
+        $this->eventDispatcher->dispatch(GuzzleHttpEvent::EVENT_ERROR_NAME, $event);
     }
 }
