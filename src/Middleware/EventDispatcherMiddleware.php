@@ -74,10 +74,10 @@ class EventDispatcherMiddleware implements MiddlewareInterface
 
                         return $response;
                     },
-                    function ($reason) use ($request) {
+                    function (\Exception $reason) use ($request) {
                         $this->sendErrorEvent($request, $reason);
 
-                        return $this;
+                        throw $reason;
                     }
                 );
             };
