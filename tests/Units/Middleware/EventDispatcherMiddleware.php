@@ -110,8 +110,12 @@ class EventDispatcherMiddleware extends test
 
                 ->object($errorCallable)
                     ->isCallable()
-                ->object($errorCallable("reason"))
-                    ->isEqualTo($eventMid)
+                ->exception(
+                    function() use ($errorCallable) {
+                        $errorCallable(new \Exception("connexion error"));
+                    }
+                )
+                    ->hasMessage('connexion error')
                 ->mock($dispatcherMock)
                     ->call('dispatch')
                         ->withArguments(GuzzleHttpEvent::EVENT_ERROR_NAME, $eventSend)
