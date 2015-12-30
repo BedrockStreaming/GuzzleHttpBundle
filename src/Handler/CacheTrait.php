@@ -65,7 +65,7 @@ trait CacheTrait
      */
     protected static function getKey(RequestInterface $request)
     {
-        return md5($request->getUri());
+        return md5($request->getMethod().$request->getUri());
     }
 
     /**
@@ -99,7 +99,7 @@ trait CacheTrait
      */
     protected function cacheResponse(RequestInterface $request, Response $response, $ttl = null)
     {
-        if (!in_array(strtoupper($request->getMethod()), self::$methods)) {
+        if (!$this->isSupportedMethod($request)) {
             return;
         }
 
@@ -129,6 +129,10 @@ trait CacheTrait
      */
     protected function getCached(RequestInterface $request)
     {
+        if (!$this->isSupportedMethod($request)) {
+            return null;
+        }
+
         $cacheKey = self::getKey($request);
         if (is_null($cachedContent = $this->cache->get($cacheKey))) {
             return null;
@@ -192,5 +196,17 @@ trait CacheTrait
         });
 
         return $result;
+    }
+
+    /**
+     * Check if request method is cachable
+     *
+     * @param RequestInterface $request
+     *
+     * @return boolean
+     */
+    protected function isSupportedMethod(RequestInterface $request)
+    {
+        return in_array(strtoupper($request->getMethod()), self::$methods);
     }
 }
