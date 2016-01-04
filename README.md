@@ -49,7 +49,7 @@ m6web_guzzlehttp:
 ```
 
 All subkey under clients defines an instance of guzzle http client. These services are named `m6web_guzzlehttp_`+subkey expect for the
- `default` subkey that define the main service `m6web_guzzlehttp`. 
+ `default` subkey that define the main service `m6web_guzzlehttp`.
 
 Then you can ask container for your client :
 
@@ -60,12 +60,12 @@ $client = $this->get('m6web_guzzlehttp'); // default client
 
 try {
     $response = $client->get('http://domain.tld/path/to/resource');
-    
+
     $promises = [
         'first' => $client->getAsync('http://domain.tld/path/to/resource'),
         'second' => $client->getAsync('http://domain.tld/path/to/other/resource')
     ];
-    
+
     $result = \GuzzleHttp\Promise\unwrap($promises);
 } catch(\GuzzleHttp\Exception\ConnectException $e) {
     // connection problem like timeout
@@ -78,19 +78,19 @@ $response = $otherClient->get('path/to/resource'); // call http://domain.tld/pat
 
 The service return a configured guzzle client, for more information on how to use it, you can read the [guzzle6 documentation](http://guzzle.readthedocs.org/en/latest/index.html).
 
-The only difference with guzzle6 reside in usage of curl for the redirect responses. You can choose to have the guzzle behavior 
+The only difference with guzzle6 reside in usage of curl for the redirect responses. You can choose to have the guzzle behavior
 for redirection by setting the configuration key `redirect_handler` to `guzzle`.
 
 When a cache system is available, you can use `force_cache` and `cache_ttl` in addition of guzzle options than respectively
  force clear cache before request and use a specific ttl to a request that override configuration.
- 
+
  ```php
  $client = $this->get('m6web_guzzlehttp');
- 
+
  $response = $client->get('http://domain.tld', ['force_cache' => true]); // remove cache entry and set a new one
- 
+
  $response = $client->get('http://doamin.tld/path', ['cache_ttl' => 200]); // set ttl to 200 seconds instead the default one
- 
+
  ```
 
 ## DataCollector
@@ -105,13 +105,13 @@ Datacollector is available when the symfony profiler is enabled. The collector a
  - Redirect time
  - Cache hit
  - Cache ttl
- 
-**NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero. 
+
+**NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero.
 Cache informations are available when a cache system is set.
 
 ## Cache system
 
-You can set a cache for request by adding in the config the `guzzlehttp_cache` with `service` subkey who is a reference 
+You can set a cache for request by adding in the config the `guzzlehttp_cache` with `service` subkey who is a reference
  to a service implementing `M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface`
 
 ```yaml
@@ -124,7 +124,22 @@ m6web_guzzlehttp:
                 service: my_cache_service
 ```
 
-We provide a cache interface for Redis with [our RedisBundle](https://github.com/M6Web/RedisBundle) >= 2.4, than you can use in this way:
+We provide an "In memory" cache class that you can use by defining a new cache service and use it in Guzzle configuration :
+
+```yaml
+# app/config/config.yml
+services:
+    company.guzzle.cache.inmemory:
+        class: M6Web\Bundle\GuzzleHttpBundle\Cache\InMemory
+
+m6web_guzzlehttp:
+    clients:
+        default:
+            guzzlehttp_cache:
+                service: company.guzzle.cache.inmemory
+```
+
+We also provide a cache interface for Redis with [our RedisBundle](https://github.com/M6Web/RedisBundle) >= 2.4, than you can use in this way:
 
 ```yaml
 # app/config/config.yml
@@ -147,7 +162,7 @@ m6_redis:
             timeout:   2               # timeout in second
             readwritetimeout: 2        # read-write timeout in second
             class: M6Web\Bundle\RedisBundle\CacheAdapters\M6WebGuzzleHttp
-    
+
 ```
 
 For more information on how to setup the RedisBundle, refer to the README in the project.
@@ -176,7 +191,7 @@ m6web_guzzlehttp:
             default_headers:                 # optionnal. Default request headers
                 User_Agent: "m6web/1.0"      # set header "User-Agent" with the value "m6web/1.0"
                 header\_name: "my value"     # set header "header_name" with value "my value"
-                
+
         otherclient:
             ...
 ```
