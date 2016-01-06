@@ -50,7 +50,10 @@ class InMemory implements CacheInterface
      */
     public function remove($key)
     {
-        unset($this->cache[$key]);
+        unset(
+            $this->cache[$key],
+            $this->ttl[$key]
+        );
     }
 
     /**
