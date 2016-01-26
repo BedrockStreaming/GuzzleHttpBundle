@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('redirects')
                                 ->addDefaultsIfNotSet()
                                 ->children()
-                                    ->integerNode('max')->cannotBeEmpty()->defaultValue(5)->end()
+                                    ->integerNode('max')->defaultValue(5)->end()
                                     ->booleanNode('strict')->defaultValue(false)->end()
                                     ->booleanNode('referer')->defaultValue(true)->end()
                                     ->arrayNode('protocols')->requiresAtLeastOneElement()
