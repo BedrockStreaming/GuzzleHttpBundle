@@ -65,7 +65,11 @@ trait CacheTrait
      */
     protected static function getKey(RequestInterface $request)
     {
-        return md5($request->getMethod().$request->getUri());
+        $hearderLine = '';
+        foreach (array_keys($request->getHeaders()) as $key) {
+            $hearderLine .= $request->getHeaderLine($key);
+        }
+        return $request->getMethod().$request->getUri().md5($hearderLine);
     }
 
     /**
