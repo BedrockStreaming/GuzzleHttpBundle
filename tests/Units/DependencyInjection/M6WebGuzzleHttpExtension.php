@@ -313,9 +313,9 @@ class M6WebGuzzleHttpExtension extends test
             ->then
                 ->mock($mockCache)
                     ->call('set')
-                        ->withArguments(md5('GEThttp://httpbin.org/robots.txt'), $this->getSerializedResponse($response), 100)
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 100])
                             ->once()
-                        ->withArguments(md5('GEThttp://httpbin.org/cache/10'), $this->getSerializedResponse($response2), 100)
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2), '2' => 100])
                             ->once()
                         ->withAnyArguments()
                             ->twice()
@@ -324,9 +324,9 @@ class M6WebGuzzleHttpExtension extends test
             ->then
                 ->mock($mockCache2)
                     ->call('set')
-                        ->withArguments(md5('GEThttp://httpbin.org'), $this->getSerializedResponse($response), 300)
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 300])
                             ->once()
-                        ->withArguments(md5('GEThttp://httpbin.org/cache/10'), $this->getSerializedResponse($response2), 10)
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2), '2' => 10])
                             ->once()
                         ->withAnyArguments()
                             ->twice()
