@@ -69,6 +69,7 @@ trait CacheTrait
         foreach (array_keys($request->getHeaders()) as $key) {
             $hearderLine .= $request->getHeaderLine($key);
         }
+
         return $request->getMethod().$request->getUri().md5($hearderLine);
     }
 
