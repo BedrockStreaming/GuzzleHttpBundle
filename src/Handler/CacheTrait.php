@@ -108,6 +108,13 @@ trait CacheTrait
             return;
         }
 
+        $cacheTtl = $ttl ?: $this->getCachettl($response);
+
+        // do we have a valid ttl to set the cache ?
+        if ($cacheTtl <= 0) {
+            return;
+        }
+
         // copy response in array to  store
         $cached = new \SplFixedArray(5);
         $cached[0] = $response->getStatusCode();
@@ -121,7 +128,7 @@ trait CacheTrait
         return $this->cache->set(
             self::getKey($request),
             serialize($cached),
-            $ttl ?: $this->getCachettl($response)
+            $cacheTtl
         );
     }
 
