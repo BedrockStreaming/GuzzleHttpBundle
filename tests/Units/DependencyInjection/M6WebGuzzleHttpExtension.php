@@ -14,7 +14,7 @@ class M6WebGuzzleHttpExtension extends test
 {
     public function testDefaultConfig()
     {
-        $container = $this->getContainerForConfiguation('default-config');
+        $container = $this->getContainerForConfiguration('default-config');
         $container->compile();
 
         $this
@@ -60,7 +60,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testOverrideConfig()
     {
-        $container = $this->getContainerForConfiguation('override-config');
+        $container = $this->getContainerForConfiguration('override-config');
         $container->compile();
 
         $this
@@ -106,7 +106,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testTimeoutConfig()
     {
-        $container = $this->getContainerForConfiguation('timeout-config');
+        $container = $this->getContainerForConfiguration('timeout-config');
         $container->compile();
 
         $this
@@ -129,7 +129,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testMulticlientConfig()
     {
-        $container = $this->getContainerForConfiguation('multiclient-config');
+        $container = $this->getContainerForConfiguration('multiclient-config');
         $container->compile();
 
         $this
@@ -180,7 +180,7 @@ class M6WebGuzzleHttpExtension extends test
         $mockCache = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
         $mockCache2 = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
-        $container = $this->getContainerForConfiguation('cache-config');
+        $container = $this->getContainerForConfiguration('cache-config');
         $container->set('cache_service', $mockCache);
         $container->set('cache_service2', $mockCache2);
         $container->compile();
@@ -217,7 +217,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testClientConfiguration()
     {
-        $container = $this->getContainerForConfiguation('default-config');
+        $container = $this->getContainerForConfiguration('default-config');
         $container->compile();
 
         $this
@@ -228,7 +228,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testClietnConfigurationWithHeaders()
     {
-        $container = $this->getContainerForConfiguation('override-config');
+        $container = $this->getContainerForConfiguration('override-config');
         $container->compile();
 
         $this
@@ -253,7 +253,7 @@ class M6WebGuzzleHttpExtension extends test
     {
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
 
-        $container = $this->getContainerForConfiguation('default-config');
+        $container = $this->getContainerForConfiguration('default-config');
         $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
 
@@ -275,7 +275,7 @@ class M6WebGuzzleHttpExtension extends test
     {
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
 
-        $container = $this->getContainerForConfiguation('multiclient-config');
+        $container = $this->getContainerForConfiguration('multiclient-config');
         $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
 
@@ -300,7 +300,7 @@ class M6WebGuzzleHttpExtension extends test
         $mockCache = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
         $mockCache2 = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
-        $container = $this->getContainerForConfiguation('cache-config');
+        $container = $this->getContainerForConfiguration('cache-config');
         $container->set('cache_service', $mockCache);
         $container->set('cache_service2', $mockCache2);
         $container->compile();
@@ -346,7 +346,7 @@ class M6WebGuzzleHttpExtension extends test
         return serialize($cached);
     }
 
-    protected function getContainerForConfiguation($fixtureName)
+    protected function getContainerForConfiguration($fixtureName)
     {
         $extension = new TestedClass();
 
