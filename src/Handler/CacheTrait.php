@@ -70,7 +70,7 @@ trait CacheTrait
             $hearderLine .= $request->getHeaderLine($key);
         }
 
-        return $request->getMethod().$request->getUri().md5($hearderLine);
+        return $request->getMethod().'-'.$request->getUri().'-'.md5($hearderLine);
     }
 
     /**

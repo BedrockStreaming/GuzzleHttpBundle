@@ -4,6 +4,10 @@ use atoum\test;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler as TestedClass;
+use M6Web\Bundle\GuzzleHttpBundle\tests\Units\Handler\FakeCurlMultiHandler as ConcreteTestedClass;
+
+
+require_once 'FakeCurlMultiHandler.php';
 
 /**
  * Class CurlMultiHandler
@@ -260,6 +264,46 @@ class CurlMultiHandler extends test
         $cached[4] = $response->getReasonPhrase();
 
         return serialize($cached);
+    }
+
+
+    public function testGetKey()
+    {
+        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
+
+        $testedClass = new FakeCurlMultiHandler(['handle_factory' => $curlFactoryMock]);
+
+        $this->if(
+            $request = new \mock\GuzzleHttp\Psr7\Request(
+                'GET',
+                'https://httpbin.org/get'
+            ))
+            ->then
+                ->string($testedClass->getPublicKey($request))
+                ->isEqualTo('GET-https://httpbin.org/get-012c059df30be6f6c77e1b8447d7a15c')
+            ;
+
+        $this->if(
+            $request = new \mock\GuzzleHttp\Psr7\Request(
+                'GET',
+                'https://httpbin.org/get',
+                ['User-Agent' => 'Netscape4']
+            ))
+            ->then
+            ->string($testedClass->getPublicKey($request))
+            ->isEqualTo('GET-https://httpbin.org/get-c6876950b1556c0808a7f5f59b42ffb7')
+        ;
+
+        $this->if(
+            $request = new \mock\GuzzleHttp\Psr7\Request(
+                'POST',
+                'https://httpbin.org/get',
+                ['User-Agent' => 'Netscape4']
+            ))
+            ->then
+            ->string($testedClass->getPublicKey($request))
+            ->isEqualTo('POST-https://httpbin.org/get-c6876950b1556c0808a7f5f59b42ffb7')
+        ;
     }
 
 }
