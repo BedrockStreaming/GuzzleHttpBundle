@@ -197,6 +197,7 @@ class CurlMultiHandler extends test
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
 
+        // use header ttl
         $this
             ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, true))
@@ -211,7 +212,54 @@ class CurlMultiHandler extends test
                 ->mock($curlFactoryMock)
                     ->call('release')
                         ->once()
+            ->and($this->resetMock($cacheMock))
         ;
+
+        // 200s of cache but force to 500
+        $this
+            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->and($testedClass->setCache($cacheMock, 500, false))
+            ->and($request = new Request('GET', 'http://httpbin.org/cache/200'))
+            ->then
+                ->object($response = $testedClass($request, [])->wait())
+                    ->isInstanceOf('GuzzleHttp\Psr7\Response')
+                 ->mock($cacheMock)
+                    ->call('set')
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 500])
+                     ->once()
+            ->and($this->resetMock($cacheMock))
+        ;
+
+        // use header ttl and no cache
+        $this
+            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->and($testedClass->setCache($cacheMock, 500, true))
+            ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
+            ->then
+               ->object($response = $testedClass($request, [])->wait())
+                    ->isInstanceOf('GuzzleHttp\Psr7\Response')
+                ->mock($cacheMock)
+                    ->call('set')
+                    ->never()
+            ->and($this->resetMock($cacheMock))
+        ;
+
+        // no cache in header but forced to 500
+        $this
+            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->and($testedClass->setCache($cacheMock, 500, false))
+            ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
+            ->then
+               ->object($response = $testedClass($request, [])->wait())
+                    ->isInstanceOf('GuzzleHttp\Psr7\Response')
+                ->mock($cacheMock)
+                    ->call('set')
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 500])
+                    ->once()
+            ->and($this->resetMock($cacheMock))
+        ;
+
+
     }
 
     public function testCacheGetDebugOff()
