@@ -191,27 +191,53 @@ class M6WebGuzzleHttpExtension extends test
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
                 ->hasSize(10)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
-                ->hasSize(3)
+                ->hasSize(4)
             ->integer($cacheConfig['default_ttl'])
                 ->isEqualTo(100)
             ->boolean($cacheConfig['use_header_ttl'])
                 ->isFalse()
             ->string($cacheConfig['service'])
                 ->isEqualTo('cache_service')
+            ->boolean($cacheConfig['cache_server_errors'])
+                ->isTrue()
 
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
                 ->hasSize(10)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
-                ->hasSize(3)
+                ->hasSize(4)
             ->integer($cacheConfig['default_ttl'])
                 ->isEqualTo(300)
             ->boolean($cacheConfig['use_header_ttl'])
                 ->isTrue()
             ->string($cacheConfig['service'])
                 ->isEqualTo('cache_service2')
+            ->boolean($cacheConfig['cache_server_errors'])
+                ->isTrue()
         ;
+
+        $container = $this->getContainerForConfiguration('cache-config-no-server-errors');
+        $container->set('cache_service', $mockCache);
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(10)
+            ->array($cacheConfig = $arguments['guzzlehttp_cache'])
+                ->hasSize(4)
+            ->integer($cacheConfig['default_ttl'])
+                ->isEqualTo(100)
+            ->boolean($cacheConfig['use_header_ttl'])
+                ->isFalse()
+            ->string($cacheConfig['service'])
+                ->isEqualTo('cache_service')
+            ->boolean($cacheConfig['cache_server_errors'])
+                ->isFalse()
+        ;
+
 
     }
 
@@ -332,6 +358,46 @@ class M6WebGuzzleHttpExtension extends test
                             ->twice()
         ;
 
+    }
+
+
+    public function testNoServerErrorsCache()
+    {
+        $mockCache = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+        $container = $this->getContainerForConfiguration('cache-config-no-server-errors');
+        $container->set('cache_service', $mockCache);
+        $container->compile();
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp'))
+            ->and($response = $client->get('http://httpbin.org/status/500'))
+            ->then
+                ->mock($mockCache)
+                    ->call('set')
+                        ->never()
+            ->and($this->resetMock($mockCache))
+        ;
+
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp'))
+            ->and($response = $client->get('http://httpbin.org/status/201'))
+            ->then
+                ->mock($mockCache)
+                    ->call('set')
+                        ->once()
+            ->and($this->resetMock($mockCache))
+        ;
+
+        $this
+            ->if($client = $container->get('m6web_guzzlehttp_myclient'))
+            ->and($response = $client->get('http://httpbin.org/status/500'))
+            ->then
+                ->mock($mockCache)
+                    ->call('set')
+                        ->once()
+            ->and($this->resetMock($mockCache))
+        ;
     }
 
     protected function getSerializedResponse(Response $response)
