@@ -25,6 +25,12 @@ trait CacheTrait
     protected $useHeaderTtl;
 
     /**
+     * do we have to cache 5* responses
+     * @var boolean
+     */
+    protected $cacheServerErrors;
+
+    /**
      * @var boolean
      */
     protected $debug = false;
@@ -38,12 +44,14 @@ trait CacheTrait
      * @param CacheInterface $cache
      * @param int            $defaultTtl
      * @param boolean        $useHeaderTtl
+     * @param boolean        $cacheServerErrors
      */
-    public function setCache(CacheInterface $cache, $defaultTtl, $useHeaderTtl)
+    public function setCache(CacheInterface $cache, $defaultTtl, $useHeaderTtl, $cacheServerErrors = true)
     {
         $this->cache = $cache;
         $this->defaultTtl = $defaultTtl;
         $this->useHeaderTtl = $useHeaderTtl;
+        $this->cacheServerErrors = $cacheServerErrors;
     }
 
     /**
@@ -115,9 +123,13 @@ trait CacheTrait
             return;
         }
 
+        if (($statusCode = $response->getStatusCode()) >= 500 && !$this->cacheServerErrors) {
+            return;
+        }
+
         // copy response in array to  store
         $cached = new \SplFixedArray(5);
-        $cached[0] = $response->getStatusCode();
+        $cached[0] = $statusCode;
         $cached[1] = $response->getHeaders();
         $cached[2] = $response->getBody()->__toString();
         $cached[3] = $response->getProtocolVersion();
