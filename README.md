@@ -189,6 +189,7 @@ m6web_guzzlehttp:
                 default_ttl: 3600            # defautl ttl for cache entry in seconds
                 use_header_ttl: false        # use the cache-control header to set the ttl
                 cache_server_errors: true    # at false, no server errors will be cached
+                cache_client_errors: true    # at false, no client errors will be cached 
             default_headers:                 # optionnal. Default request headers
                 User_Agent: "m6web/1.0"      # set header "User-Agent" with the value "m6web/1.0"
                 header\_name: "my value"     # set header "header_name" with value "my value"

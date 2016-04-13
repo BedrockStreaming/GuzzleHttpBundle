@@ -31,6 +31,12 @@ trait CacheTrait
     protected $cacheServerErrors;
 
     /**
+     * do we have to cache 4* responses
+     * @var boolean
+     */
+    protected $cacheClientErrors;
+
+    /**
      * @var boolean
      */
     protected $debug = false;
@@ -45,13 +51,15 @@ trait CacheTrait
      * @param int            $defaultTtl
      * @param boolean        $useHeaderTtl
      * @param boolean        $cacheServerErrors
+     * @param boolean        $cacheClientErrors
      */
-    public function setCache(CacheInterface $cache, $defaultTtl, $useHeaderTtl, $cacheServerErrors = true)
+    public function setCache(CacheInterface $cache, $defaultTtl, $useHeaderTtl, $cacheServerErrors = true, $cacheClientErrors = true)
     {
         $this->cache = $cache;
         $this->defaultTtl = $defaultTtl;
         $this->useHeaderTtl = $useHeaderTtl;
         $this->cacheServerErrors = $cacheServerErrors;
+        $this->cacheClientErrors = $cacheClientErrors;
     }
 
     /**
@@ -124,6 +132,10 @@ trait CacheTrait
         }
 
         if (($statusCode = $response->getStatusCode()) >= 500 && !$this->cacheServerErrors) {
+            return;
+        }
+
+        if (($statusCode < 500 && $statusCode >= 400) && !$this->cacheClientErrors) {
             return;
         }
 

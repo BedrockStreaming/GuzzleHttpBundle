@@ -126,9 +126,10 @@ class M6WebGuzzleHttpExtension extends Extension
             $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
             $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
             $cacheServerErrors = $config['guzzlehttp_cache']['cache_server_errors'];
+            $cacheClientErrors = $config['guzzlehttp_cache']['cache_client_errors'];
             $cacheService = new Reference($config['guzzlehttp_cache']['service']);
 
-            $curlhandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors]);
+            $curlhandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors]);
             $curlMultihandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
         }
 
