@@ -54,6 +54,7 @@ class Configuration implements ConfigurationInterface
                                     ->integerNode('default_ttl')->defaultValue(3600)->end()
                                     ->booleanNode('use_header_ttl')->defaultValue(false)->end()
                                     ->booleanNode('cache_server_errors')->defaultValue(true)->end()
+                                    ->booleanNode('cache_client_errors')->defaultValue(true)->end()
                                     ->scalarNode('service')->cannotBeEmpty()->end()
                                 ->end()
                             ->end()
