@@ -81,9 +81,15 @@ trait CacheTrait
      */
     protected static function getKey(RequestInterface $request)
     {
+        // Generate headerline for the cache key. X- headers are ignored
         $headerLine = implode('', array_map(
             [$request, 'getHeaderLine'],
-            array_keys($request->getHeaders())
+            array_filter(
+                array_keys($request->getHeaders()),
+                function ($header) {
+                    return (strtolower(substr($header, 0, 2)) !== 'x-');
+                }
+            )
         ));
 
         return $request->getMethod().'-'.$request->getUri().'-'.md5($headerLine);
