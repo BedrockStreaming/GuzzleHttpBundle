@@ -64,6 +64,56 @@ class CurlMultiHandler extends test
         ;
     }
 
+    public function testCacheSetWithHeader()
+    {
+        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
+
+        $cacheData = [];
+        $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
+        $cacheMock->getMockController()->set = function($key, $value) use (&$cacheData) {
+            $cacheData[$key] = $value;
+        };
+        $cacheMock->getMockController()->get = function($key) use (&$cacheData) {
+            if (isset($cacheData[$key])) {
+                return $cacheData[$key];
+            }
+
+            return null;
+        };
+
+        // Add Header as part of the cache key but "X-" headers must be ignored
+        $this
+        ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+        ->and($testedClass->setCache($cacheMock, 500, false))
+        ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
+        ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
+        ->and($request3 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 2', 'X-Ddos-Me' => uniqid()]))
+            ->then
+            ->object($response1 = $testedClass($request1, [])->wait())
+                ->isInstanceOf('GuzzleHttp\Psr7\Response')
+            ->object($response2 = $testedClass($request2, [])->wait())
+                ->isInstanceOf('GuzzleHttp\Psr7\Response')
+            ->object($response3 = $testedClass($request3, [])->wait())
+                ->isInstanceOf('GuzzleHttp\Psr7\Response')
+            ->integer($response1->getStatusCode())
+                ->isEqualTo(200)
+            ->integer($response2->getStatusCode())
+                ->isEqualTo(200)
+            ->integer($response3->getStatusCode())
+                ->isEqualTo(200)
+            ->mock($curlFactoryMock)
+                ->call('release')
+                    ->twice()
+            ->mock($cacheMock)
+                ->call('get')
+                    ->thrice()
+                ->call('set')
+                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
+                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
+                    ->twice()
+            ;
+    }
+
     public function testCacheGet()
     {
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
