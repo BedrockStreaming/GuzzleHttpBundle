@@ -404,6 +404,20 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
+    public function testRequestDefaults()
+    {
+        $container = $this->getContainerForConfiguration('request-defaults-config');
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(11)
+                ->hasKeys(['foo', 'bar'])
+        ;
+    }
+
     protected function getSerializedResponse(Response $response)
     {
         $cached = new \SplFixedArray(5);

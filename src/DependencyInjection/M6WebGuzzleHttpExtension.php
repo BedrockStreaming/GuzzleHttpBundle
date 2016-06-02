@@ -43,7 +43,6 @@ class M6WebGuzzleHttpExtension extends Extension
      */
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
     {
-
         if ($config['allow_redirects']) {
             $config['allow_redirects'] = $config['redirects'];
         }
@@ -88,13 +87,18 @@ class M6WebGuzzleHttpExtension extends Extension
         }
         unset($config['default_headers']);
 
+        // process request defaults
+        if (!empty($config['request_defaults'])) {
+            $config = array_merge($config['request_defaults'], $config);
+        }
+        unset($config['request_defaults']);
+
         $guzzleClientDefintion = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
         $guzzleClientDefintion->addArgument($config);
 
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
 
         $container->setDefinition($containerKey, $guzzleClientDefintion);
-
     }
 
     /**

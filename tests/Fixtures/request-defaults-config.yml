@@ -1,0 +1,6 @@
+m6web_guzzlehttp:
+    clients:
+        default:
+            request_defaults:
+                foo: bar
+                bar: foo

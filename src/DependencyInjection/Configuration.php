@@ -62,6 +62,10 @@ class Configuration implements ConfigurationInterface
                                 ->useAttributeAsKey('headerKey', true)
                                 ->prototype('scalar')->end()
                             ->end() // end arrayNode('default_headers')
+                            ->arrayNode('request_defaults')
+                                ->prototype('variable')
+                                ->end()
+                            ->end()
                         ->end()
                     ->end() // end prototype
                 ->end()
