@@ -43,12 +43,18 @@ class M6WebGuzzleHttpExtension extends Extension
      */
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
     {
-        if ($config['allow_redirects']) {
-            $config['allow_redirects'] = $config['redirects'];
-        }
-        unset($config['redirects']);
+        // clear empty arrays
+        array_walk($config, function($item, $key) use (&$config) {
+            if (is_array($item) && count($item) == 0) {
+                unset($config[$key]);
+            }
+        });
 
-       $this->setGuzzleProxyHandler($container, $clientId, $config);
+        if ($config['allow_redirects']['max'] == 0) {
+            $config['allow_redirects'] = false;
+        }
+
+        $this->setGuzzleProxyHandler($container, $clientId, $config);
 
         $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
         $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
@@ -70,11 +76,10 @@ class M6WebGuzzleHttpExtension extends Extension
             $config['curl'] = $this->getCurlConfig($config);
         }
 
-
         // process default headers if set
-        if (!empty($config['default_headers'])) {
+        if (!empty($config['headers'])) {
             $headers = [];
-            array_walk($config['default_headers'], function ($value, $key) use (&$headers) {
+            array_walk($config['headers'], function ($value, $key) use (&$headers) {
                 // replace underscore by hyphen in key
                 $key = preg_replace('`(?<!\\\)_`', '-', $key);
                 // replace escaped underscore by underscore
@@ -85,20 +90,41 @@ class M6WebGuzzleHttpExtension extends Extension
 
             $config['headers'] = $headers;
         }
-        unset($config['default_headers']);
 
-        // process request defaults
-        if (!empty($config['request_defaults'])) {
-            $config = array_merge($config['request_defaults'], $config);
+
+        if (!empty($config['cookies']) && is_array($config['cookies'])) {
+            $config['cookies'] = $this->getCookiesJarServiceReference($container, $config['cookies'], $clientId);
         }
-        unset($config['request_defaults']);
 
-        $guzzleClientDefintion = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
-        $guzzleClientDefintion->addArgument($config);
+        // String or service entries
+        foreach (['body', 'sink'] as $key) {
+            if (!empty($config[$key])
+                && $service = $this->getServiceReference($container, $config[$key])
+            ) {
+                $config[$key] = $service;
+            }
+        }
+
+        // Services entries
+        foreach (['on_headers', 'on_stats'] as $key) {
+            if (!empty($config[$key])) {
+                if (is_null($serviceReference = $this->getServiceReference($container, $config[$key]))) {
+                    throw new \InvalidArgumentException(sprintf(
+                        '"%s" configuration entry requires a valid service reference, "%s" given',
+                        $key,
+                        $config[$key]
+                    ));
+                }
+                $config[$key] = $serviceReference;
+            }
+        }
+
+        $guzzleClientDefinition = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
+        $guzzleClientDefinition->addArgument($config);
 
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
 
-        $container->setDefinition($containerKey, $guzzleClientDefintion);
+        $container->setDefinition($containerKey, $guzzleClientDefinition);
     }
 
     /**
@@ -180,6 +206,40 @@ class M6WebGuzzleHttpExtension extends Extension
         }
 
         return $curlInfo;
+    }
+
+    protected function getServiceReference(ContainerBuilder $container, $id)
+    {
+        if (substr($id, 0, 1) == '@') {
+            $serviceId = substr($id, 1);
+            if ($container->has($serviceId)) {
+                return new Reference($serviceId);
+            }
+            throw new \InvalidArgumentException(sprintf('Service id "%s" not found', $serviceId));
+        }
+
+        return null;
+    }
+
+    protected function getCookiesJarServiceReference(ContainerBuilder $container, array $cookies, $clientId)
+    {
+        array_walk($cookies, function(&$item) {
+            $item = array_combine(
+                array_map(
+                    function($key) {
+                        return ucwords($key, ' -');
+                    },
+                    array_keys($item)
+                ),
+                array_values($item)
+            );
+        });
+
+        $container->register(
+            sprintf('m6web_guzzlehttp.guzzle.cookies_jar.%s', $clientId),
+            'GuzzleHttp\Cookie\CookieJar'
+        )
+        ->setArguments([false, $cookies]);
     }
 
     /**
