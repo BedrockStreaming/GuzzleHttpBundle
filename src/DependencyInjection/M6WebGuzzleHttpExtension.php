@@ -83,7 +83,7 @@ class M6WebGuzzleHttpExtension extends Extension
 
         // process multipart headers
         if (!empty($config['multipart'])) {
-            foreach($config['multipart'] as &$multipart) {
+            foreach ($config['multipart'] as &$multipart) {
                 if (!empty($multipart['headers'])) {
                     $multipart['headers'] = $this->parseHeaders($multipart['headers']);
                 }
@@ -217,10 +217,10 @@ class M6WebGuzzleHttpExtension extends Extension
 
     protected function getCookiesJarServiceReference(ContainerBuilder $container, array $cookies, $clientId)
     {
-        array_walk($cookies, function(&$item) {
+        array_walk($cookies, function (&$item) {
             $item = array_combine(
                 array_map(
-                    function($key) {
+                    function ($key) {
                         return ucwords($key, ' -');
                     },
                     array_keys($item)

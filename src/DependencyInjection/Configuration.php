@@ -149,7 +149,9 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('allow_redirects')
                                 ->beforeNormalization()
                                     ->ifInArray([true, false])
-                                    ->then(function ($v) { return ['max' => 0]; })
+                                    ->then(function ($v) {
+                                        return ['max' => 0];
+                                    })
                                 ->end()
                                 ->addDefaultsIfNotSet()
                                 ->children()
