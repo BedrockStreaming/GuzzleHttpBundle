@@ -4,15 +4,14 @@ m6web_guzzlehttp:
             base_uri: "http://domain.tld"
             timeout: 2
             http_errors: false
-            allow_redirects: true
             proxy: 127.0.0.1:80
             redirect_handler: guzzle
-            redirects:
+            allow_redirects:
                 max: 2
                 strict: true
                 referer: false
                 protocols: ["http"]
-            default_headers:
+            headers:
                 User_Agent: "Towel/1.0"
                 X_Question: "The Ultimate Question of Life, the Universe and Everything"
                 X_Answer: 42
