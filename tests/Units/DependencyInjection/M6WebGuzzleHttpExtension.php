@@ -21,7 +21,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('')
             ->float($arguments['timeout'])
@@ -33,8 +33,6 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect = $arguments['allow_redirects'])
                 ->hasSize(4)
                 ->hasKeys(['max', 'strict', 'referer', 'protocols'])
-            ->string($arguments['proxy'])
-                ->isEqualTo('')
             ->integer($redirect['max'])
                 ->isEqualTo(5)
             ->boolean($redirect['strict'])
@@ -113,13 +111,13 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(8)
             ->float($arguments['timeout'])
                 ->isEqualTo(0.6)
             ->array($curlOpt = $arguments['curl'])
                 ->hasKey(CURLOPT_NOSIGNAL)
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(8)
             ->float($arguments['timeout'])
                 ->isEqualTo(1.2)
             ->array($curlOpt = $arguments['curl'])
@@ -136,7 +134,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(8)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain.tld')
             ->integer($arguments['timeout'])
@@ -145,12 +143,10 @@ class M6WebGuzzleHttpExtension extends test
                 ->isTrue()
             ->boolean($arguments['allow_redirects'])
                 ->isFalse()
-            ->string($arguments['proxy'])
-                ->isEqualTo('')
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(10)
+                ->hasSize(9)
             ->string($arguments['base_uri'])
                 ->isEqualTo('http://domain2.tld')
             ->float($arguments['timeout'])
@@ -158,8 +154,6 @@ class M6WebGuzzleHttpExtension extends test
             ->array($redirect = $arguments['allow_redirects'])
                 ->hasSize(4)
                 ->hasKeys(['max', 'strict', 'referer', 'protocols'])
-            ->string($arguments['proxy'])
-                ->isEqualTo('')
             ->integer($redirect['max'])
                 ->isEqualTo(5)
             ->boolean($redirect['strict'])
@@ -189,7 +183,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(10)
+                ->hasSize(9)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
                 ->hasSize(5)
             ->integer($cacheConfig['default_ttl'])
@@ -197,7 +191,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($cacheConfig['use_header_ttl'])
                 ->isFalse()
             ->string($cacheConfig['service'])
-                ->isEqualTo('cache_service')
+                ->isEqualTo('@cache_service')
             ->boolean($cacheConfig['cache_server_errors'])
                 ->isTrue()
             ->boolean($cacheConfig['cache_client_errors'])
@@ -206,7 +200,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
-                ->hasSize(10)
+                ->hasSize(9)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
                 ->hasSize(5)
             ->integer($cacheConfig['default_ttl'])
@@ -214,7 +208,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($cacheConfig['use_header_ttl'])
                 ->isTrue()
             ->string($cacheConfig['service'])
-                ->isEqualTo('cache_service2')
+                ->isEqualTo('@cache_service2')
             ->boolean($cacheConfig['cache_server_errors'])
                 ->isTrue()
             ->boolean($cacheConfig['cache_client_errors'])
@@ -229,7 +223,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(10)
+                ->hasSize(9)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
                 ->hasSize(5)
             ->integer($cacheConfig['default_ttl'])
@@ -237,7 +231,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($cacheConfig['use_header_ttl'])
                 ->isFalse()
             ->string($cacheConfig['service'])
-                ->isEqualTo('cache_service')
+                ->isEqualTo('@cache_service')
             ->boolean($cacheConfig['cache_server_errors'])
                 ->isFalse()
         ;
@@ -416,12 +410,123 @@ class M6WebGuzzleHttpExtension extends test
         return serialize($cached);
     }
 
-    protected function getContainerForConfiguration($fixtureName)
+    public function testRequestConfig()
+    {
+        $container = $this->getContainerBuilder();
+        $container->set('invokable.service.id', new \StdClass);
+
+        $container = $this->getContainerForConfiguration('request-config', $container);
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(31)
+            ->string($arguments['base_uri'])
+                ->isEqualTo('http://foo.bar/')
+            ->float($arguments['timeout'])
+                ->isEqualTo(3.1)
+            ->array($arguments['auth'])
+                ->isEqualTo(['user', 'passwd'])
+            ->boolean($arguments['allow_redirects'])
+                ->isFalse()
+            ->string($arguments['body'])
+                ->isEqualTo('body')
+            ->array($arguments['cert'])
+                ->isEqualTo(['/path/to/.pem', 'password'])
+            ->float($arguments['connect_timeout'])
+                ->isEqualTo(1.1)
+            ->boolean($arguments['debug'])
+                ->isTrue()
+            ->boolean($arguments['decode_content'])
+                ->isTrue()
+            ->integer($arguments['delay'])
+                ->isEqualTo(10)
+            ->boolean($arguments['expect'])
+                ->isTrue()
+            ->array($arguments['form_params'])
+                ->isEqualTo(['foo' => 'bar'])
+            ->array($arguments['headers'])
+                ->isEqualTo(['X-Foo' => 'bar', 'X-bar' => 'foo'])
+            ->boolean($arguments['http_errors'])
+                ->isFalse()
+            ->array($arguments['json'])
+                ->isEqualTo([['foo' => 'bar']])
+            ->array($arguments['multipart'])
+                ->isEqualTo([
+                    [
+                        'name' => 'foo',
+                        'contents' => 'bar',
+                        'headers' => [
+                            'X-foo' => 'bar',
+                            'X-bar' => 'foo',
+                        ]
+                    ]
+                ])
+            ->object($arguments['on_headers'])
+                ->isInstanceOf('Symfony\Component\DependencyInjection\Reference')
+            ->object($arguments['on_stats'])
+                ->isInstanceOf('Symfony\Component\DependencyInjection\Reference')
+            ->array($arguments['proxy'])
+                ->isEqualTo(['http' => 'tcp://localhost:8125'])
+            ->array($arguments['query'])
+                ->isEqualTo(['foo' => 'bar'])
+            ->string($arguments['sink'])
+                ->isEqualTo('/path/to/file')
+            ->array($arguments['ssl_key'])
+                ->isEqualTo(['/path/to/.pem', 'password'])
+            ->boolean($arguments['stream'])
+                ->isTrue()
+            ->boolean($arguments['synchronous'])
+                ->isTrue()
+            ->boolean($arguments['verify'])
+                ->isTrue()
+            ->float($arguments['version'])
+                ->isEqualTo(1.0)
+            ->object($cookiesReference = $arguments['cookies'])
+                ->isInstanceOf('Symfony\Component\DependencyInjection\Reference')
+            ->string($cookiesServiceId = (string)$cookiesReference)
+                ->isEqualTo('m6web_guzzlehttp.guzzle.cookies_jar.default')
+            ->object($cookiesJar = $container->get($cookiesServiceId))
+                ->isInstanceOf('GuzzleHttp\Cookie\CookieJar')
+            ->array($cookies = $cookiesJar->toArray())
+                ->isEqualTo([
+                    [
+                        'Name' => 'bar',
+                        'Value' => 'foo',
+                        'Domain' => 'foobar.com',
+                        'Path' => '/my/path',
+                        'Max-Age' => null,
+                        'Expires' => null,
+                        'Secure' => false,
+                        'Discard' => false,
+                        'HttpOnly' => false,
+                        'Max' => 100,
+                    ],
+                    [
+                        'Name' => 'tracker',
+                        'Value' => 'trackerid',
+                        'Domain' => 'foobar.com',
+                        'Path' => '/',
+                        'Max-Age' => null,
+                        'Expires' => null,
+                        'Secure' => false,
+                        'Discard' => false,
+                        'HttpOnly' => false,
+                    ],
+                ])
+        ;
+    }
+
+    protected function getContainerForConfiguration($fixtureName, ContainerBuilder $container = null)
     {
         $extension = new TestedClass();
 
-        $parameterBag = new ParameterBag(array('kernel.debug' => true));
-        $container = new ContainerBuilder($parameterBag);
+        if (is_null($container)) {
+            $container = $this->getContainerBuilder();
+        }
+
         $container->set('event_dispatcher', new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface());
         $container->set('cache_service', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
         $container->set('cache_service2', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
@@ -431,5 +536,11 @@ class M6WebGuzzleHttpExtension extends test
         $loader->load($fixtureName.'.yml');
 
         return $container;
+    }
+
+    protected function getContainerBuilder()
+    {
+        $parameterBag = new ParameterBag(array('kernel.debug' => true));
+        return new ContainerBuilder($parameterBag);
     }
 }

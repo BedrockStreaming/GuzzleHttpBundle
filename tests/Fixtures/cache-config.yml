@@ -5,10 +5,10 @@ m6web_guzzlehttp:
             guzzlehttp_cache:
                 default_ttl: 100
                 use_header_ttl: false
-                service: cache_service
+                service: '@cache_service'
         myclient:
             base_uri: "http://domain2.tld"
             guzzlehttp_cache:
                 default_ttl: 300
                 use_header_ttl: true
-                service: cache_service2
+                service: '@cache_service2'

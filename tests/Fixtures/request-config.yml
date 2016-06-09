@@ -1,0 +1,57 @@
+m6web_guzzlehttp:
+    clients:
+        default:
+            base_uri: 'http://foo.bar/'
+            timeout: 3.1
+            auth: ['user', 'passwd']
+            allow_redirects: false
+            auth: ['user', 'password']
+            body: 'body'
+            cert: ['/path/to/.pem', 'password']
+            cookies:
+                -
+                    name: "bar"
+                    value: "foo"
+                    domain: "foobar.com"
+                    path: "/my/path"
+                    max: 100
+                    expires: null
+                    secure: false
+                    discard: false
+                    httpOnly: false
+                    max-age: null
+                -
+                    name: "tracker"
+                    value: "trackerid"
+                    domain: "foobar.com"
+            connect_timeout: 1.1
+            debug: true
+            decode_content: true
+            delay: 10
+            expect: true
+            form_params:
+                foo: 'bar'
+            headers:
+                X-Foo: 'bar'
+                X-bar: 'foo'
+            http_errors: false
+            json: [ foo: 'bar' ]
+            multipart:
+                -
+                    name: 'foo'
+                    contents: 'bar'
+                    headers:
+                        X-foo: 'bar'
+                        X-bar: 'foo'
+            on_headers: '@invokable.service.id'
+            on_stats: '@invokable.service.id'
+            proxy:
+                http: 'tcp://localhost:8125'
+            query:
+                foo: 'bar'
+            sink: '/path/to/file'
+            ssl_key: ['/path/to/.pem', 'password']
+            stream: true
+            synchronous: true
+            verify: true
+            version: 1.0

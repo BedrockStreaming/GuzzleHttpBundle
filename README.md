@@ -169,37 +169,85 @@ For more information on how to setup the RedisBundle, refer to the README in the
 
 ## Configuration reference
 
+As some configuration options accept multiples data types, all services references must sart with a `@` character.
+
 ```yaml
 m6web_guzzlehttp:
     clients:
         default:
-            base_uri: ""                     # Base uri to prepend on request uri
-            timeout: 5.0                     # request timeout
-            http_errors: true                # enable or disable exception on http errors
-            allow_redirects: true            # enable or disable follow redirect
-            redirect_handler: curl           # guzzle or curl
-            proxy: proxy:port                # Optional. Set the proxy for client.
-            redirects:
-                max: 5                       # Maximum redirect to follow
-                strict: false                # use "strict" RFC compliant redirects. (guzzle redirect handler only)
-                referer: true                # add a Referer header
-                protocols: ["http", "https"] # restrict redirect to a protocol
-            guzzlehttp_cache:                # optional cache
-                service: my_cache_service    # reference to service who implements the cache interface
-                default_ttl: 3600            # defautl ttl for cache entry in seconds
-                use_header_ttl: false        # use the cache-control header to set the ttl
-                cache_server_errors: true    # at false, no server errors will be cached
-                cache_client_errors: true    # at false, no client errors will be cached 
-            default_headers:                 # optionnal. Default request headers
-                User_Agent: "m6web/1.0"      # set header "User-Agent" with the value "m6web/1.0"
-                header\_name: "my value"     # set header "header_name" with value "my value"
+            base_uri: ""                           # Base uri to prepend on request uri
+            timeout: 5.0                           # request timeout
+            http_errors: true                      # enable or disable exception on http errors
+            redirect_handler: curl                 # guzzle or curl
+            proxy: proxy:port                      # Optional. Set the proxy for client.
+            guzzlehttp_cache:                      # optional cache
+                service: @my_cache_service         # reference to service who implements the cache interface
+                default_ttl: 3600                  # defautl ttl for cache entry in seconds
+                use_header_ttl: false              # use the cache-control header to set the ttl
+                cache_server_errors: true          # at false, no server errors will be cached
+                cache_client_errors: true          # at false, no client errors will be cached
+            headers:                               # optionnal. Default request headers
+                User_Agent: "m6web/1.0"            # set header "User-Agent" with the value "m6web/1.0"
+                header\_name: "my value"           # set header "header_name" with value "my value"
+            auth: ["user", "password"]             # optionnal, http auth user and password
+            allow_redirects:                       # false to disallow redirection or an array describing the redirect behavior of a request
+                max: 5                             # Maximum redirect to follow
+                strict: false                      # use "strict" RFC compliant redirects. (guzzle redirect handler only)
+                referer: true                      # add a Referer header
+                protocols: ['http', 'https']       # restrict redirect to a protocol
+            body: @my.body.service                 # string | service reference, request body
+            cert: ['/path/to/.pem', 'password']    # string | array, Set to a string to specify client side certificate, an array if a password is required
+            cookies:                               # boolean | array, false disable cookies
+                -
+                    name: "bar"
+                    value: "foo"
+                    domain: "foobar.com"
+                    path: "/my/path"
+                    max: 100
+                    expires: null
+                    secure: false
+                    discard: false
+                    httpOnly: false
+                    max-age: null
+                -
+                    name: tracker
+                    value: tracker
+            connect_timeout: 1                     # float, Float describing the number of seconds to wait while trying to connect to a server
+            debug: true                            # boolean, Set to true to enable debug output with the handler used to send a request
+            decode_content: true                   # string | boolean, specify whether or not Content-Encoding responses are automatically decoded
+            delay: 10                              # boolean | float, the number of milliseconds to delay before sending the request
+            expect: true                           # boolean | integer, controls the behavior of the "Expect: 100-Continue" header
+            form_params:                           # array, Used to send an application/x-www-form-urlencoded POST request.
+                foo: 'bar'
+                bar: 'foo'
+            http_errors: false                     # set to false to disable throwing exceptions on an HTTP protocol errors.
+            json: [ foo: 'bar' ]                   # mixed, the json option is used to easily upload JSON encoded data as the body of a request
+            multipart:                             # array, Sets the body of the request to a multipart/form-data form.
+                -
+                    name: 'foo'
+                    contents: 'bar'
+                    headers:
+                        X-foo: 'bar'
+                        X-bar: 'foo'
+            on_headers: '@invokable.service.id'    # A callable that is invoked when the HTTP headers of the response have been received
+            on_stats: '@invokable.service.id'      # on_stats allows you to get access to transfer statistics
+            proxy:                                 # string | array, Pass a string to specify an HTTP proxy, or an array to specify different proxies for different protocols.
+                http: 'tcp://localhost:8125'
+            query:                                 # array, Associative array of query string values or query string to add to the request.
+                foo: 'bar'
+                bar: 'foo'
+            sink: '/path/to/file'                  # String or Psr\Http\Message\StreamInterface service, Specify where the body of a response will be saved.
+            ssl_key: ['/path/to/.pem', 'password'] # string | array, Specify the path to a file containing a private SSL key in PEM format.
+            stream: true                           # Boolean, Set to true to stream a response rather than download it all up-front.
+            synchronous: true                      # Boolean, Set to true to inform HTTP handlers that you intend on waiting on the response. This can be useful for optimizations.
+            verify: true                           # Boolean Describes the SSL certificate verification behavior of a request.
+            version: 1.0                           # String Protocol version to use with the request.
 
         otherclient:
             ...
 ```
 
-For the `default_headers` options, the key in array represent the header name. The underscore will be transformed to hyphen
- except if is escaped by a backslash.
+For the `headers` options, the key in array represent the header name. The underscore will be transformed to hyphen except if it's escaped by a backslash.
 
 ## Contributing
 
