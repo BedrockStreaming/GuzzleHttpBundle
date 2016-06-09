@@ -247,8 +247,7 @@ m6web_guzzlehttp:
             ...
 ```
 
-For the `default_headers` options, the key in array represent the header name. The underscore will be transformed to hyphen
- except if is escaped by a backslash.
+For the `headers` options, the key in array represent the header name. The underscore will be transformed to hyphen except if it's escaped by a backslash.
 
 ## Contributing
 
