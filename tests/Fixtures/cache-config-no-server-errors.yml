@@ -6,12 +6,12 @@ m6web_guzzlehttp:
             guzzlehttp_cache:
                 default_ttl: 100
                 use_header_ttl: false
-                service: @cache_service
+                service: '@cache_service'
                 cache_server_errors: false
         myclient:
             http_errors: false
             guzzlehttp_cache:
                 default_ttl: 100
                 use_header_ttl: false
-                service: @cache_service
+                service: '@cache_service'
                 cache_server_errors: true
