@@ -178,11 +178,10 @@ m6web_guzzlehttp:
             base_uri: ""                           # Base uri to prepend on request uri
             timeout: 5.0                           # request timeout
             http_errors: true                      # enable or disable exception on http errors
-            allow_redirects: true                  # enable or disable follow redirect
             redirect_handler: curl                 # guzzle or curl
             proxy: proxy:port                      # Optional. Set the proxy for client.
             guzzlehttp_cache:                      # optional cache
-                service: my_cache_service          # reference to service who implements the cache interface
+                service: @my_cache_service         # reference to service who implements the cache interface
                 default_ttl: 3600                  # defautl ttl for cache entry in seconds
                 use_header_ttl: false              # use the cache-control header to set the ttl
                 cache_server_errors: true          # at false, no server errors will be cached
