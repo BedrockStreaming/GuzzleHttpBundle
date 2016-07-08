@@ -167,6 +167,8 @@ m6_redis:
 
 For more information on how to setup the RedisBundle, refer to the README in the project.
 
+We provide also the same cache system for APCU throught the [ApcuBundle](https://github.com/M6Web/ApcuBundle).
+
 ## Configuration reference
 
 As some configuration options accept multiples data types, all services references must sart with a `@` character.
