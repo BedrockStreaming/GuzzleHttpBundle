@@ -81,13 +81,13 @@ The service return a configured guzzle client, for more information on how to us
 The only difference with guzzle6 reside in usage of curl for the redirect responses. You can choose to have the guzzle behavior
 for redirection by setting the configuration key `redirect_handler` to `guzzle`.
 
-When a cache system is available, you can use `force_cache` and `cache_ttl` in addition of guzzle options than respectively
+When a cache system is available, you can use `cache_force` and `cache_ttl` in addition of guzzle options than respectively
  force clear cache before request and use a specific ttl to a request that override configuration.
 
  ```php
  $client = $this->get('m6web_guzzlehttp');
 
- $response = $client->get('http://domain.tld', ['force_cache' => true]); // remove cache entry and set a new one
+ $response = $client->get('http://domain.tld', ['cache_force' => true]); // remove cache entry and set a new one
 
  $response = $client->get('http://doamin.tld/path', ['cache_ttl' => 200]); // set ttl to 200 seconds instead the default one
 
