@@ -163,7 +163,7 @@ class M6WebGuzzleHttpExtension extends Extension
             }
 
             $curlhandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors]);
-            $curlMultihandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl]);
+            $curlMultihandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors]);
         }
 
         $proxyHandler = new Definition('%m6web_guzzlehttp.guzzle.proxyhandler.class%');
