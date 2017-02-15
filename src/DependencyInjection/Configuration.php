@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                                     ->booleanNode('use_header_ttl')->defaultValue(false)->end()
                                     ->booleanNode('cache_server_errors')->defaultValue(true)->end()
                                     ->booleanNode('cache_client_errors')->defaultValue(true)->end()
-                                    ->scalarNode('service')->cannotBeEmpty()->end()
+                                    ->variableNode('service')->isRequired()->cannotBeEmpty()->end()
                                 ->end()
                             ->end()
                             ->scalarNode('proxy')->defaultValue("")->end()
