@@ -213,6 +213,11 @@ class M6WebGuzzleHttpExtension extends Extension
 
     protected function getServiceReference(ContainerBuilder $container, $id)
     {
+        // if $id is already a Reference (e.g. if parts of the config are defined as parameters), return it
+        if ($id instanceof Reference) {
+            return $id;
+        }
+
         if (substr($id, 0, 1) == '@') {
             return new Reference(substr($id, 1));
         }
