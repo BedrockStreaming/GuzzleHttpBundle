@@ -64,6 +64,9 @@ class CurlMultiHandler extends test
         ;
     }
 
+    /**
+     * @tags fail
+     */
     public function testCacheSetWithHeader()
     {
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
@@ -108,9 +111,9 @@ class CurlMultiHandler extends test
                 ->call('get')
                     ->thrice()
                 ->call('set')
-                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
-                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
                     ->twice()
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
             ;
     }
 
