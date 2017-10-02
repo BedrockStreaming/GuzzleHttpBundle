@@ -87,7 +87,7 @@ trait CacheTrait
             array_filter(
                 array_keys($request->getHeaders()),
                 function ($header) {
-                    return (strtolower(substr($header, 0, 2)) !== 'x-');
+                    return (0 !== stripos($header, 'x-'));
                 }
             )
         ));
