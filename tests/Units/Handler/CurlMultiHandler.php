@@ -112,6 +112,25 @@ class CurlMultiHandler extends test
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
             ;
+
+        // A header in the Vary should be in the cache even if it's an X-
+        $cacheMock->getMockController()->resetCalls();
+        $this
+        ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+        ->and($testedClass->setCache($cacheMock, 500, false))
+        ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul', 'Vary' => 'X-Important']))
+        ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul2', 'Vary' => 'X-Important']))
+            ->then
+            ->object($response1 = $testedClass($request1, [])->wait())
+                ->isInstanceOf('GuzzleHttp\Psr7\Response')
+            ->object($response2 = $testedClass($request2, [])->wait())
+                ->isInstanceOf('GuzzleHttp\Psr7\Response')
+            ->mock($cacheMock)
+                ->call('get')
+                    ->twice()
+                ->call('set')
+                    ->twice()
+            ;
     }
 
     public function testCacheGet()
