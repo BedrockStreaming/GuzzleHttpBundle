@@ -108,9 +108,9 @@ class CurlMultiHandler extends test
                 ->call('get')
                     ->thrice()
                 ->call('set')
-                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
-                    ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
                     ->twice()
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
             ;
     }
 

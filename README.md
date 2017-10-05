@@ -219,6 +219,7 @@ m6web_guzzlehttp:
             decode_content: true                   # string | boolean, specify whether or not Content-Encoding responses are automatically decoded
             delay: 10                              # boolean | float, the number of milliseconds to delay before sending the request
             expect: true                           # boolean | integer, controls the behavior of the "Expect: 100-Continue" header
+            force_ip_resolve:                      # Set to "v4" if you want the HTTP handlers to use only ipv4 protocol or "v6" for ipv6 protocol.
             form_params:                           # array, Used to send an application/x-www-form-urlencoded POST request.
                 foo: 'bar'
                 bar: 'foo'
