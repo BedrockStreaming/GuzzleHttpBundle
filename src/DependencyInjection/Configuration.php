@@ -83,10 +83,13 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('expect')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_integer($v) && !is_bool($v);
+                                        return !is_int($v) && !is_bool($v);
                                     })
                                     ->theninvalid('Requires an integer or a boolean')
                                 ->end()
+                            ->end()
+                            ->enumNode('force_ip_resolve')
+                                ->values(['v4', 'v6'])
                             ->end()
                             ->arrayNode('form_params')
                                 ->prototype('variable')->end()

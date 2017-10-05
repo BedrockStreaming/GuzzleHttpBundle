@@ -2,6 +2,7 @@ m6web_guzzlehttp:
     clients:
         default:
             base_uri: "http://domain.tld"
+            force_ip_resolve: 'v4'
             guzzlehttp_cache:
                 default_ttl: 100
                 use_header_ttl: false

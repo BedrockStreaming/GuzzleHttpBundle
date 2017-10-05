@@ -183,7 +183,7 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($container->has('m6web_guzzlehttp'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
-                ->hasSize(9)
+                ->hasSize(10)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
                 ->hasSize(5)
             ->integer($cacheConfig['default_ttl'])
