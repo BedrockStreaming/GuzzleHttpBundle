@@ -29,6 +29,9 @@ class GuzzleHttpDataCollector extends DataCollector
     {
     }
 
+    /**
+     * Reset the data colector
+     */
     public function reset()
     {
         $this->data['guzzleHttp'] = [
