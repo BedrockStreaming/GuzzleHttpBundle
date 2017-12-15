@@ -16,11 +16,7 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function __construct()
     {
-        $this->data['guzzleHttp'] = [
-            'commands' => new \SplQueue(),
-            'has5x' => false,
-            'has4x' => false
-        ];
+        $this->reset();
     }
 
     /**
@@ -31,6 +27,18 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
+    }
+
+    /**
+     * Reset the data colector
+     */
+    public function reset()
+    {
+        $this->data['guzzleHttp'] = [
+            'commands' => new \SplQueue(),
+            'has5x' => false,
+            'has4x' => false
+        ];
     }
 
     /**
@@ -158,7 +166,7 @@ class GuzzleHttpDataCollector extends DataCollector
     public function getRedirects()
     {
         return array_reduce(iterator_to_array($this->getCommands()), function ($redirect, $value) {
-            $redirect += $value['curl']['redirectCount'];;
+            $redirect += $value['curl']['redirectCount'];
 
             return $redirect;
         });
