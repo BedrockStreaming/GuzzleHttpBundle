@@ -153,6 +153,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $curlhandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
         $curlMultihandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
+        $curlMultihandler->setPublic(true);
         $curlMultihandler->setArguments([ ['handle_factory' => $handlerFactoryNormal] ]);
         $curlMultihandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
@@ -245,7 +246,8 @@ class M6WebGuzzleHttpExtension extends Extension
             $id = sprintf('m6web_guzzlehttp.guzzle.cookies_jar.%s', $clientId),
             'GuzzleHttp\Cookie\CookieJar'
         )
-        ->setArguments([false, $cookies]);
+        ->setArguments([false, $cookies])
+        ->setPublic(true);
 
         return new Reference($id);
     }
