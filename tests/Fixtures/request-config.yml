@@ -5,7 +5,6 @@ m6web_guzzlehttp:
             timeout: 3.1
             auth: ['user', 'passwd']
             allow_redirects: false
-            auth: ['user', 'password']
             body: 'body'
             cert: ['/path/to/.pem', 'password']
             cookies:
