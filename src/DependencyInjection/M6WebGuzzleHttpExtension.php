@@ -57,6 +57,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $this->setGuzzleProxyHandler($container, $clientId, $config);
 
         $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
+        $handlerStackDefinition->setPublic(true);
         $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
         $handlerStackDefinition->setArguments([new Reference('m6web_guzzlehttp.guzzle.proxyhandler_'.$clientId)]);
 
@@ -65,6 +66,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
 
         $middlewareEventDispatcherDefinition = new Definition('%m6web_guzzlehttp.middleware.eventdispatcher.class%');
+        $middlewareEventDispatcherDefinition->setPublic(true);
         $middlewareEventDispatcherDefinition->setArguments([new Reference('event_dispatcher'), $clientId]);
         $middlewareEventDispatcherDefinition->addMethodCall('push', [$handlerStackReference]);
 
@@ -118,6 +120,7 @@ class M6WebGuzzleHttpExtension extends Extension
         }
 
         $guzzleClientDefinition = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
+        $guzzleClientDefinition->setPublic(true);
         $guzzleClientDefinition->addArgument($config);
 
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
@@ -137,16 +140,20 @@ class M6WebGuzzleHttpExtension extends Extension
         // arguments (3 and 50) in handler factories below represents the maximum number of idle handles.
         // the values are the default defined in guzzle CurlHanddler and CurlMultiHandler
         $handlerFactorySync = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
+        $handlerFactorySync->setPublic(true);
         $handlerFactorySync->setArguments([3]);
 
         $handlerFactoryNormal = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
+        $handlerFactoryNormal->setPublic(true);
         $handlerFactoryNormal->setArguments([50]);
 
         $curlhandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
+        $curlhandler->setPublic(true);
         $curlhandler->setArguments([ ['handle_factory' => $handlerFactorySync] ]);
         $curlhandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
         $curlMultihandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
+        $curlMultihandler->setPublic(true);
         $curlMultihandler->setArguments([ ['handle_factory' => $handlerFactoryNormal] ]);
         $curlMultihandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
@@ -167,6 +174,7 @@ class M6WebGuzzleHttpExtension extends Extension
         }
 
         $proxyHandler = new Definition('%m6web_guzzlehttp.guzzle.proxyhandler.class%');
+        $proxyHandler->setPublic(true);
         $proxyHandler->setFactory(['%m6web_guzzlehttp.guzzle.proxyhandler.class%', 'wrapSync']);
         $proxyHandler->setArguments([$curlMultihandler, $curlhandler]);
 
@@ -238,7 +246,8 @@ class M6WebGuzzleHttpExtension extends Extension
             $id = sprintf('m6web_guzzlehttp.guzzle.cookies_jar.%s', $clientId),
             'GuzzleHttp\Cookie\CookieJar'
         )
-        ->setArguments([false, $cookies]);
+        ->setArguments([false, $cookies])
+        ->setPublic(true);
 
         return new Reference($id);
     }
