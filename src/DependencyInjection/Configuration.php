@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                                 ->values(['curl', 'guzzle'])
                                 ->defaultValue('curl')
                             ->end()
-                            ->scalarNode('handler_stack')->end()
+                            ->scalarNode('stack_handler')->end()
                             ->arrayNode('guzzlehttp_cache')
                                 ->children()
                                     ->integerNode('default_ttl')->defaultValue(3600)->end()

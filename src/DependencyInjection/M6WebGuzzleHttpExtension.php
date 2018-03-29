@@ -54,22 +54,21 @@ class M6WebGuzzleHttpExtension extends Extension
             $config['allow_redirects'] = false;
         }
 
-        if (!isset($config['handler_stack'])) {
+        $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
+        $handlerStackDefinition->setPublic(true);
+        $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
+
+        if (!isset($config['stack_handler'])) {
             $this->setGuzzleProxyHandler($container, $clientId, $config);
 
-            $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
-            $handlerStackDefinition->setPublic(true);
-            $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
             $handlerStackDefinition->setArguments([new Reference('m6web_guzzlehttp.guzzle.proxyhandler_' . $clientId)]);
-
-            $container->setDefinition('m6web_guzzlehttp.guzzle.handlerstack.' . $clientId, $handlerStackDefinition);
-
-            $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
         } else {
-            // If the congiguration has an overload handler stack, we use it.
-            $handlerStackReference = new Reference($config['handler_stack']);
+            $handlerStackDefinition->setArguments([new Reference($config['stack_handler'])]);
         }
 
+        $container->setDefinition('m6web_guzzlehttp.guzzle.handlerstack.' . $clientId, $handlerStackDefinition);
+
+        $handlerStackReference = new Reference('m6web_guzzlehttp.guzzle.handlerstack.'.$clientId);
 
         $middlewareEventDispatcherDefinition = new Definition('%m6web_guzzlehttp.middleware.eventdispatcher.class%');
         $middlewareEventDispatcherDefinition->setPublic(true);
