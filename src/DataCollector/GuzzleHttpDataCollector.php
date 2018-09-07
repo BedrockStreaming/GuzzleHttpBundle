@@ -37,7 +37,7 @@ class GuzzleHttpDataCollector extends DataCollector
         $this->data['guzzleHttp'] = [
             'commands' => new \SplQueue(),
             'has5x' => false,
-            'has4x' => false
+            'has4x' => false,
         ];
     }
 
@@ -78,11 +78,10 @@ class GuzzleHttpDataCollector extends DataCollector
             'executionTime' => $event->getExecutionTime(),
             'curl' => [
                 'redirectCount' => (isset($response->curlInfo['redirect_count'])) ? $response->curlInfo['redirect_count'] : 0,
-                'redirectTime' => (isset($response->curlInfo['redirect_time'])) ? $response->curlInfo['redirect_time'] : 0
+                'redirectTime' => (isset($response->curlInfo['redirect_time'])) ? $response->curlInfo['redirect_time'] : 0,
             ],
             'cache' => (isset($response->cached)) ? 1 : 0,
-            'cacheTtl' => (isset($response->cacheTtl)) ? $response->cacheTtl : 0
-
+            'cacheTtl' => (isset($response->cacheTtl)) ? $response->cacheTtl : 0,
         ];
 
         $this->data['guzzleHttp']['commands']->enqueue($data);

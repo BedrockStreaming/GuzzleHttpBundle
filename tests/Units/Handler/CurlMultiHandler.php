@@ -4,8 +4,6 @@ use atoum\test;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler as TestedClass;
-use M6Web\Bundle\GuzzleHttpBundle\tests\Units\Handler\FakeCurlMultiHandler as ConcreteTestedClass;
-
 
 require_once 'FakeCurlMultiHandler.php';
 
@@ -15,13 +13,12 @@ require_once 'FakeCurlMultiHandler.php';
  */
 class CurlMultiHandler extends test
 {
-
     public function testNoCache()
     {
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
 
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
                 ->object($response = $testedClass($request, [])->wait())
@@ -42,9 +39,8 @@ class CurlMultiHandler extends test
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
-
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
                 ->then
@@ -83,7 +79,7 @@ class CurlMultiHandler extends test
 
         // Add Header as part of the cache key but "X-" headers must be ignored
         $this
-        ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+        ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
         ->and($testedClass->setCache($cacheMock, 500, false))
         ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
         ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
@@ -116,7 +112,7 @@ class CurlMultiHandler extends test
         // A header in the Vary should be in the cache even if it's an X-
         $cacheMock->getMockController()->resetCalls();
         $this
-        ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+        ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
         ->and($testedClass->setCache($cacheMock, 500, false))
         ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul', 'Vary' => 'X-Important']))
         ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul2', 'Vary' => 'X-Important']))
@@ -139,13 +135,12 @@ class CurlMultiHandler extends test
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
-
         $cacheMock->getMockController()->has = true;
         $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], "The answer is 42", '1.1', 'OK'));
         $cacheMock->getMockController()->ttl = 256;
 
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($testedClass->setDebug(true))
             ->and($request = new Request('GET', 'http://httpbin.org'))
@@ -209,7 +204,7 @@ class CurlMultiHandler extends test
         $cacheMock->getMockController()->get = null;
 
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
@@ -240,7 +235,7 @@ class CurlMultiHandler extends test
         $cacheMock->getMockController()->get = null;
 
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
@@ -268,7 +263,7 @@ class CurlMultiHandler extends test
 
         // use header ttl
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, true))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/200'))
             ->then
@@ -286,7 +281,7 @@ class CurlMultiHandler extends test
 
         // 200s of cache but force to 500
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/200'))
             ->then
@@ -301,7 +296,7 @@ class CurlMultiHandler extends test
 
         // use header ttl and no cache
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, true))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
             ->then
@@ -315,7 +310,7 @@ class CurlMultiHandler extends test
 
         // no cache in header but forced to 500
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
             ->then
@@ -343,7 +338,7 @@ class CurlMultiHandler extends test
         $cacheMock->getMockController()->ttl = 256;
 
         $this
-            ->if($testedClass = new TestedClass(['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($testedClass->setDebug(false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
@@ -383,12 +378,11 @@ class CurlMultiHandler extends test
         return serialize($cached);
     }
 
-
     public function testGetKey()
     {
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
 
-        $testedClass = new FakeCurlMultiHandler(['handle_factory' => $curlFactoryMock]);
+        $testedClass = new FakeCurlMultiHandler($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]);
 
         $this->if(
             $request = new \mock\GuzzleHttp\Psr7\Request(
@@ -423,4 +417,10 @@ class CurlMultiHandler extends test
         ;
     }
 
+    /**
+     * @return \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    private function getMockDispatcher() {
+        return new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+    }
 }
