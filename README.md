@@ -11,7 +11,7 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/guzzle-http-bundle": "~2.0",
+        "m6web/guzzle-http-bundle": "~2.0"
     }
 }
 ```
@@ -179,19 +179,19 @@ m6web_guzzlehttp:
         default:
             base_uri: ""                           # Base uri to prepend on request uri
             timeout: 5.0                           # request timeout
-            http_errors: true                      # enable or disable exception on http errors
+            http_errors: true                      # set to false to disable throwing exceptions on HTTP protocol errors
             redirect_handler: curl                 # guzzle or curl
-            proxy: proxy:port                      # Optional. Set the proxy for client.
             guzzlehttp_cache:                      # optional cache
-                service: '@my_cache_service'       # reference to service who implements the cache interface
-                default_ttl: 3600                  # defautl ttl for cache entry in seconds
-                use_header_ttl: false              # use the cache-control header to set the ttl
                 cache_server_errors: true          # at false, no server errors will be cached
                 cache_client_errors: true          # at false, no client errors will be cached
-            headers:                               # optionnal. Default request headers
+                default_ttl: 3600                  # default ttl for cache entry in seconds
+                ignore_cache_errors: false          # at true, no Exception would be throw when cache is unavailable
+                use_header_ttl: false              # use the cache-control header to set the ttl
+                service: '@my_cache_service'       # reference to service who implements the cache interface
+            headers:                               # optional. Default request headers
                 User_Agent: "m6web/1.0"            # set header "User-Agent" with the value "m6web/1.0"
                 header\_name: "my value"           # set header "header_name" with value "my value"
-            auth: ["user", "password"]             # optionnal, http auth user and password
+            auth: ["user", "password"]             # optional, http auth user and password
             allow_redirects:                       # false to disallow redirection or an array describing the redirect behavior of a request
                 max: 5                             # Maximum redirect to follow
                 strict: false                      # use "strict" RFC compliant redirects. (guzzle redirect handler only)
@@ -223,7 +223,6 @@ m6web_guzzlehttp:
             form_params:                           # array, Used to send an application/x-www-form-urlencoded POST request.
                 foo: 'bar'
                 bar: 'foo'
-            http_errors: false                     # set to false to disable throwing exceptions on an HTTP protocol errors.
             json: [ foo: 'bar' ]                   # mixed, the json option is used to easily upload JSON encoded data as the body of a request
             multipart:                             # array, Sets the body of the request to a multipart/form-data form.
                 -

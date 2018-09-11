@@ -3,69 +3,64 @@ namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface;
 use GuzzleHttp\Psr7\Response;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleCacheEvent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Trait CacheTrait
+ * @package M6Web\Bundle\GuzzleHttpBundle\Handler
+ */
 trait CacheTrait
 {
-    /**
-     * @var CacheInterface
-     */
+    /** @var CacheInterface */
     protected $cache;
 
-    /**
-     * @var int
-     */
-    protected $defaultTtl;
-
-    /**
-     * @var boolean
-     */
-    protected $useHeaderTtl;
-
-    /**
-     * do we have to cache 5* responses
-     * @var boolean
-     */
-    protected $cacheServerErrors;
-
-    /**
-     * do we have to cache 4* responses
-     * @var boolean
-     */
+    /** @var bool Do we have to cache 4* responses */
     protected $cacheClientErrors;
 
-    /**
-     * @var boolean
-     */
+    /** @var bool Do we have to cache 5* responses */
+    protected $cacheServerErrors;
+
+    /** @var bool  */
     protected $debug = false;
 
-    /**
-     * @var array
-     */
+    /** @var int */
+    protected $defaultTtl;
+
+    /** @var bool  */
+    protected $isIgnoreCacheErrors = false;
+
+    /** @var array  */
     protected static $methods = ['GET', 'HEAD', 'OPTIONS'];
+
+    /** @var bool */
+    protected $useHeaderTtl;
 
     /**
      * @param CacheInterface $cache
      * @param int            $defaultTtl
-     * @param boolean        $useHeaderTtl
-     * @param boolean        $cacheServerErrors
-     * @param boolean        $cacheClientErrors
+     * @param bool           $useHeaderTtl
+     * @param bool           $cacheServerErrors
+     * @param bool           $cacheClientErrors
+     * @param bool           $isIgnoreCacheErrors
      */
-    public function setCache(CacheInterface $cache, $defaultTtl, $useHeaderTtl, $cacheServerErrors = true, $cacheClientErrors = true)
+    public function setCache(CacheInterface $cache, int $defaultTtl, bool $useHeaderTtl, bool $cacheServerErrors = true, bool $cacheClientErrors = true, bool $isIgnoreCacheErrors = false)
     {
         $this->cache = $cache;
-        $this->defaultTtl = $defaultTtl;
-        $this->useHeaderTtl = $useHeaderTtl;
-        $this->cacheServerErrors = $cacheServerErrors;
         $this->cacheClientErrors = $cacheClientErrors;
+        $this->cacheServerErrors = $cacheServerErrors;
+        $this->defaultTtl = $defaultTtl;
+        $this->isIgnoreCacheErrors = $isIgnoreCacheErrors;
+        $this->useHeaderTtl = $useHeaderTtl;
     }
 
     /**
      * Set the debug mode
      *
-     * @param boolean $debug
+     * @param bool $debug
      */
     public function setDebug($debug)
     {
@@ -125,7 +120,7 @@ trait CacheTrait
      * @param Response         $response
      * @param int              $ttl
      *
-     * @return booelan
+     * @return mixed
      */
     protected function cacheResponse(RequestInterface $request, Response $response, $ttl = null)
     {
@@ -156,8 +151,6 @@ trait CacheTrait
         $cached[3] = $response->getProtocolVersion();
         $cached[4] = $response->getReasonPhrase();
 
-
-
         return $this->cache->set(
             self::getKey($request),
             serialize($cached),
@@ -166,7 +159,7 @@ trait CacheTrait
     }
 
     /**
-     * Get resposne if available in cache
+     * Get response if available in cache
      *
      * @param RequestInterface $request
      *
@@ -200,7 +193,6 @@ trait CacheTrait
             $response->cacheTtl = $this->cache->ttl($cacheKey);
         }
 
-
         return $response;
     }
 
@@ -213,6 +205,7 @@ trait CacheTrait
      * @param array            $options
      *
      * @return FulfilledPromise
+     * @throws \Exception
      */
     public function __invoke(RequestInterface $request, array $options)
     {
@@ -226,8 +219,19 @@ trait CacheTrait
             $this->cache->remove(self::getKey($request));
         }
 
-        if ($response = $this->getCached($request)) {
-            return new FulfilledPromise($response);
+        try {
+            if ($response = $this->getCached($request)) {
+                return new FulfilledPromise($response);
+            }
+        } catch (\Exception $e) {
+            if (!$this->isIgnoreCacheErrors) {
+                throw $e;
+            }
+
+            // Send event, when cache error is ignored.
+            $ignoreCacheEvent = new GuzzleCacheEvent($request);
+            $ignoreCacheEvent->setException($e);
+            $this->getEventDispatcher()->dispatch(GuzzleCacheEvent::NAME_ERROR, $ignoreCacheEvent);
         }
 
         // no response in cache so we ask parent for response
@@ -254,4 +258,11 @@ trait CacheTrait
     {
         return in_array(strtoupper($request->getMethod()), self::$methods);
     }
+
+    /**
+     * Classes implementing this trait must to have an EventDispatcher.
+     *
+     * @return EventDispatcherInterface
+     */
+    abstract public function getEventDispatcher(): EventDispatcherInterface;
 }

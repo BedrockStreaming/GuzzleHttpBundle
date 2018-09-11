@@ -36,6 +36,15 @@ class M6WebGuzzleHttpExtension extends Extension
         }
     }
 
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return 'm6web_guzzlehttp';
+    }
+
     /**
      * @param ContainerBuilder $container
      * @param string           $clientId
@@ -147,21 +156,17 @@ class M6WebGuzzleHttpExtension extends Extension
         $handlerFactoryNormal->setPublic(true);
         $handlerFactoryNormal->setArguments([50]);
 
-        $curlhandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
-        $curlhandler->setPublic(true);
-        $curlhandler->setArguments([ ['handle_factory' => $handlerFactorySync] ]);
-        $curlhandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+        $curlHandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
+        $curlHandler->setPublic(true);
+        $curlHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactorySync] ]);
+        $curlHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
-        $curlMultihandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
-        $curlMultihandler->setPublic(true);
-        $curlMultihandler->setArguments([ ['handle_factory' => $handlerFactoryNormal] ]);
-        $curlMultihandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+        $curlMultiHandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
+        $curlMultiHandler->setPublic(true);
+        $curlMultiHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactoryNormal] ]);
+        $curlMultiHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
         if (array_key_exists('guzzlehttp_cache', $config)) {
-            $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
-            $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
-            $cacheServerErrors = $config['guzzlehttp_cache']['cache_server_errors'];
-            $cacheClientErrors = $config['guzzlehttp_cache']['cache_client_errors'];
             if (is_null($cacheService = $this->getServiceReference($container, $config['guzzlehttp_cache']['service']))) {
                 throw new \InvalidArgumentException(sprintf(
                     '"guzzlehttp_cache.service" requires a valid service reference, "%s" given',
@@ -169,14 +174,20 @@ class M6WebGuzzleHttpExtension extends Extension
                 ));
             }
 
-            $curlhandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors]);
-            $curlMultihandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors]);
+            $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];
+            $headerTtl = $config['guzzlehttp_cache']['use_header_ttl'];
+            $cacheServerErrors = $config['guzzlehttp_cache']['cache_server_errors'];
+            $cacheClientErrors = $config['guzzlehttp_cache']['cache_client_errors'];
+            $ignoreCacheErrors = $config['guzzlehttp_cache']['ignore_cache_errors'];
+
+            $curlHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors, $ignoreCacheErrors]);
+            $curlMultiHandler->addMethodCall('setCache', [$cacheService, $defaultTtl, $headerTtl, $cacheServerErrors, $cacheClientErrors, $ignoreCacheErrors]);
         }
 
         $proxyHandler = new Definition('%m6web_guzzlehttp.guzzle.proxyhandler.class%');
         $proxyHandler->setPublic(true);
         $proxyHandler->setFactory(['%m6web_guzzlehttp.guzzle.proxyhandler.class%', 'wrapSync']);
-        $proxyHandler->setArguments([$curlMultihandler, $curlhandler]);
+        $proxyHandler->setArguments([$curlMultiHandler, $curlHandler]);
 
         $container->setDefinition('m6web_guzzlehttp.guzzle.proxyhandler_'.$clientId, $proxyHandler);
     }
@@ -190,7 +201,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $curlInfo = [
             CURLOPT_FOLLOWLOCATION => $followLocation,
             CURLOPT_MAXREDIRS => $maxRedir,
-            CURLOPT_AUTOREFERER => $autoReferer
+            CURLOPT_AUTOREFERER => $autoReferer,
         ];
 
         // There is a bug/"feature" on "Unix-like systems" that causes libcurl to timeout immediately
@@ -265,13 +276,5 @@ class M6WebGuzzleHttpExtension extends Extension
         });
 
         return $newHeaders;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias()
-    {
-        return 'm6web_guzzlehttp';
     }
 }

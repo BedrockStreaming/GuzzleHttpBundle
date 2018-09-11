@@ -1,7 +1,6 @@
 <?php
 namespace M6Web\Bundle\GuzzleHttpBundle\Middleware;
 
-
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Middleware;

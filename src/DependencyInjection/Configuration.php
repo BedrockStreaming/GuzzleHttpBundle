@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('guzzlehttp_cache')
                                 ->children()
                                     ->integerNode('default_ttl')->defaultValue(3600)->end()
+                                    ->booleanNode('ignore_cache_errors')->defaultValue(false)->end()
                                     ->booleanNode('use_header_ttl')->defaultValue(false)->end()
                                     ->booleanNode('cache_server_errors')->defaultValue(true)->end()
                                     ->booleanNode('cache_client_errors')->defaultValue(true)->end()

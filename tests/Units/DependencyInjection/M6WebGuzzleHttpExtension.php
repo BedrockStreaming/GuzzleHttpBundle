@@ -125,7 +125,7 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
-    public function testMulticlientConfig()
+    public function testMultiClientConfig()
     {
         $container = $this->getContainerForConfiguration('multiclient-config');
         $container->compile();
@@ -185,7 +185,7 @@ class M6WebGuzzleHttpExtension extends test
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
                 ->hasSize(10)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
-                ->hasSize(5)
+                ->hasSize(6)
             ->integer($cacheConfig['default_ttl'])
                 ->isEqualTo(100)
             ->boolean($cacheConfig['use_header_ttl'])
@@ -202,7 +202,7 @@ class M6WebGuzzleHttpExtension extends test
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
                 ->hasSize(9)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
-                ->hasSize(5)
+                ->hasSize(6)
             ->integer($cacheConfig['default_ttl'])
                 ->isEqualTo(300)
             ->boolean($cacheConfig['use_header_ttl'])
@@ -225,7 +225,7 @@ class M6WebGuzzleHttpExtension extends test
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
                 ->hasSize(9)
             ->array($cacheConfig = $arguments['guzzlehttp_cache'])
-                ->hasSize(5)
+                ->hasSize(6)
             ->integer($cacheConfig['default_ttl'])
                 ->isEqualTo(100)
             ->boolean($cacheConfig['use_header_ttl'])
@@ -250,7 +250,7 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
-    public function testClietnConfigurationWithHeaders()
+    public function testClientConfigurationWithHeaders()
     {
         $container = $this->getContainerForConfiguration('override-config');
         $container->compile();
@@ -295,7 +295,7 @@ class M6WebGuzzleHttpExtension extends test
         ;
     }
 
-    public function testEventDispatcherMulticlient()
+    public function testEventDispatcherMultiClient()
     {
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
 

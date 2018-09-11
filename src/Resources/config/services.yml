@@ -1,14 +1,13 @@
 parameters:
-    m6web_guzlehttp.handler.curlfactory.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory
-    m6web_guzlehttp.handler.curlhandler.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlHandler
-    m6web_guzlehttp.handler.curlmultihandler.class: M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler
+    m6web_guzlehttp.handler.curlfactory.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory'
+    m6web_guzlehttp.handler.curlhandler.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlHandler'
+    m6web_guzlehttp.handler.curlmultihandler.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler'
 
-    m6web_guzzlehttp.guzzle.proxyhandler.class: GuzzleHttp\Handler\Proxy
-    m6web_guzzlehttp.guzzle.handlerstack.class: GuzzleHttp\HandlerStack
-    m6web_guzzlehttp.guzzle.client.class: GuzzleHttp\Client
+    m6web_guzzlehttp.guzzle.proxyhandler.class: 'GuzzleHttp\Handler\Proxy'
+    m6web_guzzlehttp.guzzle.handlerstack.class: 'GuzzleHttp\HandlerStack'
+    m6web_guzzlehttp.guzzle.client.class: 'GuzzleHttp\Client'
 
-
-    m6web_guzzlehttp.middleware.eventdispatcher.class: M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware
+    m6web_guzzlehttp.middleware.eventdispatcher.class: 'M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware'
 
 services:
 
