@@ -32,7 +32,7 @@ public function registerBundles()
 Then install the bundle :
 
 ```shell
-$ composer update m6web/guzzle-http-bundle
+$ composer require m6web/guzzle-http-bundle
 ```
 
 ## Usage
