@@ -251,6 +251,18 @@ m6web_guzzlehttp:
 
 For the `headers` options, the key in array represent the header name. The underscore will be transformed to hyphen except if it's escaped by a backslash.
 
+## Adding a middleware
+
+Implement `M6Web\Bundle\GuzzleHttpBundle\Middleware\MiddlewareInterface`.
+
+Tag your service with `m6web_guzzlehttp.middleware` and specify the client as follows: 
+
+```
+Acme\Infra\GraphQL\Client\MyMiddleware:
+        tags:
+            - {name: 'm6web_guzzlehttp.middleware', client: 'myclient' }
+``` 
+
 ## Contributing
 
 First of all, thank you for contributing !
