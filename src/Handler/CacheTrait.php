@@ -147,9 +147,14 @@ trait CacheTrait
         $cached = new \SplFixedArray(5);
         $cached[0] = $statusCode;
         $cached[1] = $response->getHeaders();
-        $cached[2] = $response->getBody()->__toString();
+        $body = $response->getBody();
+        $cached[2] = $body->__toString();
         $cached[3] = $response->getProtocolVersion();
         $cached[4] = $response->getReasonPhrase();
+        // Rewind the body of the response if possible.
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
 
         return $this->cache->set(
             self::getKey($request),
