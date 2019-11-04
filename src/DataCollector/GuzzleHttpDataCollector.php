@@ -4,7 +4,7 @@ namespace M6Web\Bundle\GuzzleHttpBundle\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
 
 /**
  * Collect information about guzzlehttp client
@@ -54,9 +54,9 @@ class GuzzleHttpDataCollector extends DataCollector
     /**
      * Collect data for GuzzleHttp
      *
-     * @param GuzzleHttpEvent $event
+     * @param AbstractGuzzleHttpEvent $event
      */
-    public function onGuzzleHttpCommand(GuzzleHttpEvent $event)
+    public function onGuzzleHttpCommand(AbstractGuzzleHttpEvent $event)
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
