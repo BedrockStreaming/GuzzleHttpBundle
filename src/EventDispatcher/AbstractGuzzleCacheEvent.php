@@ -17,6 +17,7 @@ abstract class AbstractGuzzleCacheEvent extends Event
 
     /** @var RequestInterface  */
     protected $request;
+
     /** @var \Exception|null */
     protected $exception;
 
@@ -53,9 +54,9 @@ abstract class AbstractGuzzleCacheEvent extends Event
     /**
      * Get Exception if isset
      *
-     * @return mixed
+     * @return \Exception|null
      */
-    public function getException()
+    public function getException() : ?\Exception
     {
         return $this->exception;
     }

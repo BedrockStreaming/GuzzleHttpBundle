@@ -15,38 +15,22 @@ abstract class AbstractGuzzleHttpEvent extends Event
     const EVENT_NAME = 'm6web.guzzlehttp';
     const EVENT_ERROR_NAME = 'm6web.guzzlehttp.error';
 
-    /**
-     * Command start time
-     *
-     * @var float
-     */
+    /** @var float Command start time  */
     protected $executionStart;
 
-    /**
-     * Command execution time
-     *
-     * @var float
-     */
+    /** @var float Command execution time */
     protected $executionTime;
 
-    /**
-     * @var Request
-     */
+    /** @var Request */
     protected $request;
 
-    /**
-     * @var Response
-     */
+    /** @var Response */
     protected $response;
 
-    /**
-     * @var mixed
-     */
+    /** @var \Exception|null */
     protected $reason;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $clientId;
 
     /**
@@ -66,9 +50,9 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * Return request
      *
-     * @return Request
+     * @return RequestInterface
      */
-    public function getRequest()
+    public function getRequest() : RequestInterface
     {
         return $this->request;
     }
@@ -76,7 +60,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * Set Response
      *
-     * @param Response $response
+     * @param ResponseInterface $response
      *
      * @return static
      */
@@ -90,9 +74,9 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * Return response
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse() : ResponseInterface
     {
         return $this->response;
     }
@@ -100,11 +84,11 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * Set reason
      *
-     * @param mixed $reason
+     * @param \Exception $reason
      *
      * @return static
      */
-    public function setReason($reason)
+    public function setReason(\Exception $reason)
     {
         $this->reason = $reason;
 
@@ -114,9 +98,9 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * Return reason
      *
-     * @return mixed
+     * @return \Exception|null
      */
-    public function getReason()
+    public function getReason() : ?\Exception
     {
         return $this->reason;
     }
@@ -124,7 +108,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * @return float
      */
-    public function getExecutionStart()
+    public function getExecutionStart() : float
     {
         return $this->executionStart;
     }
@@ -157,7 +141,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
     /**
      * @return float
      */
-    public function getExecutionTime()
+    public function getExecutionTime() : float
     {
         return $this->executionTime;
     }
@@ -167,7 +151,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
      *
      * @return float
      */
-    public function getTiming()
+    public function getTiming() : float
     {
         return $this->getExecutionTime() * 1000;
     }
@@ -177,7 +161,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
      *
      * @return string
      */
-    public function getClientId()
+    public function getClientId() : string
     {
         return $this->clientId;
     }
