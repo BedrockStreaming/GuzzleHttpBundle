@@ -16,7 +16,7 @@
     "ext-curl": "*",
     "guzzlehttp/guzzle": "^6.3.0",
     "symfony/dependency-injection": "~2.3||~3.0||~4.0",
-    "symfony/event-dispatcher": "~2.3||~3.0||~4.0",
+    "symfony/event-dispatcher": "~4.3-stable",
     "symfony/config" : "~2.3||~3.0||~4.0",
     "symfony/yaml" : "~2.3||~3.0||~4.0"
   },

@@ -3,6 +3,7 @@ namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Handler\CurlHandler as GuzzleCurlHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * Extends the guzzle curl handler
@@ -22,7 +23,7 @@ class CurlHandler extends GuzzleCurlHandler
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, array $options)
     {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
 
         parent::__construct($options);
     }

@@ -17,7 +17,7 @@ class EventDispatcherMiddleware extends test
         // Mock dispatcher
         $eventSend = null;
         $dispatcherMock = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
-        $dispatcherMock->getMockController()->dispatch = function($name, $event) use (&$eventSend) {
+        $dispatcherMock->getMockController()->dispatch = function($event, $name) use (&$eventSend) {
             $eventSend = $event;
         };
 
@@ -73,9 +73,9 @@ class EventDispatcherMiddleware extends test
                 ->mock($dispatcherMock)
                     ->call('dispatch')
                         ->once()
-                        ->withArguments(GuzzleHttpEvent::EVENT_NAME, $eventSend)
+                        ->withArguments($eventSend, GuzzleHttpEvent::EVENT_NAME)
                             ->once()
-                         ->withArguments(GuzzleHttpErrorEvent::EVENT_ERROR_NAME)
+                         ->withArguments($eventSend, GuzzleHttpErrorEvent::EVENT_ERROR_NAME)
                             ->never()
 
         // 2nd event : error
@@ -100,7 +100,7 @@ class EventDispatcherMiddleware extends test
                     ->hasMessage('connexion error')
                 ->mock($dispatcherMock)
                     ->call('dispatch')
-                        ->withArguments(GuzzleHttpErrorEvent::EVENT_ERROR_NAME, $eventSend)
+                        ->withArguments($eventSend, GuzzleHttpErrorEvent::EVENT_ERROR_NAME)
                             ->once()
             ;
     }
