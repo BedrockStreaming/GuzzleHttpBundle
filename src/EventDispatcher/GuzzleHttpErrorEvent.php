@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace M6Web\Bundle\GuzzleHttpBundle\EventDispatcher;
 
 /**
- * Class GuzzleCacheEvent
+ * Class GuzzleHttpErrorEvent
  */
-class GuzzleCacheEvent extends AbstractGuzzleCacheEvent
+class GuzzleHttpErrorEvent extends AbstractGuzzleHttpEvent
 {
 }

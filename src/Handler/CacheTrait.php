@@ -3,7 +3,7 @@ namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface;
 use GuzzleHttp\Psr7\Response;
-use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleCacheEvent;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleCacheErrorEvent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
@@ -229,9 +229,9 @@ trait CacheTrait
             }
 
             // Send event, when cache error is ignored.
-            $ignoreCacheEvent = new GuzzleCacheEvent($request);
+            $ignoreCacheEvent = new GuzzleCacheErrorEvent($request);
             $ignoreCacheEvent->setException($e);
-            $this->getEventDispatcher()->dispatch(GuzzleCacheEvent::NAME_ERROR, $ignoreCacheEvent);
+            $this->getEventDispatcher()->dispatch(GuzzleCacheErrorEvent::NAME_ERROR, $ignoreCacheEvent);
         }
 
         // no response in cache so we ask parent for response

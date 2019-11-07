@@ -5,10 +5,12 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpErrorEvent;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
 
 /**
  * Handler for event dispatching
@@ -54,12 +56,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      */
     public function push(HandlerStack $stack)
     {
-        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
-            $this->initEvent($request);
-
-            return $request;
-        }), 'eventDispatcher_initEvent');
-
         $stack->push(function (callable $handler) {
             return function (
                 RequestInterface $request,
@@ -98,21 +94,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Initialize event
-     *
-     * @param RequestInterface $request
-     */
-    protected function initEvent(RequestInterface $request)
-    {
-        $event = new GuzzleHttpEvent();
-        $event->setExecutionStart();
-        $event->setRequest($request);
-        $event->setClientId($this->clientId);
-
-        $this->events[$this->getEventKey($request)] = $event;
-    }
-
-    /**
      * Dispatch event
      *
      * @param RequestInterface  $request
@@ -120,11 +101,10 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      */
     protected function sendEvent(RequestInterface $request, ResponseInterface $response)
     {
-        $key = $this->getEventKey($request);
-        $event = $this->events[$key];
-
-        unset($this->events[$key]);
-
+        $event = new GuzzleHttpEvent();
+        $event->setExecutionStart();
+        $event->setRequest($request);
+        $event->setClientId($this->clientId);
         $event->setExecutionStop();
         $event->setResponse($response);
         $this->eventDispatcher->dispatch(GuzzleHttpEvent::EVENT_NAME, $event);
@@ -138,13 +118,12 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      */
     protected function sendErrorEvent(RequestInterface $request, $reason)
     {
-        $key = $this->getEventKey($request);
-        $event = $this->events[$key];
-
-        unset($this->events[$key]);
-
+        $event = new GuzzleHttpEvent();
+        $event->setExecutionStart();
+        $event->setRequest($request);
+        $event->setClientId($this->clientId);
         $event->setExecutionStop();
         $event->setReason($reason);
-        $this->eventDispatcher->dispatch(GuzzleHttpEvent::EVENT_ERROR_NAME, $event);
+        $this->eventDispatcher->dispatch(GuzzleHttpErrorEvent::EVENT_ERROR_NAME, $event);
     }
 }

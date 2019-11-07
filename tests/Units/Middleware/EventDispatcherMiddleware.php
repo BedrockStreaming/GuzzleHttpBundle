@@ -2,8 +2,10 @@
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Middleware;
 
 use atoum\test;
-use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpErrorEvent;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
+use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
+use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
 
 /**
  * Class EventDispatcherMiddleware test
@@ -20,14 +22,9 @@ class EventDispatcherMiddleware extends test
         };
 
         // Mock HandlerStack
-        $initCallable  = null;
         $eventCallable = null;
         $handlerStackMock = new \mock\GuzzleHttp\HandlerStack();
-        $handlerStackMock->getMockController()->push = function($callable, $str) use (&$initCallable, &$eventCallable) {
-            if ($str == "eventDispatcher_initEvent") {
-                $initCallable  = $callable;
-            }
-
+        $handlerStackMock->getMockController()->push = function($callable, $str) use (&$eventCallable) {
             if ($str == "eventDispatcher_dispatch") {
                 $eventCallable = $callable;
             }
@@ -46,11 +43,6 @@ class EventDispatcherMiddleware extends test
             $errorCallable   = $error;
         };
 
-        // Handler for init of event
-        $handlerInit = function($request) {
-            return $request;
-        };
-
         // Handler for end of event
         $handlerEvent = function() use( $promiseMock) {
             return $promiseMock;
@@ -64,12 +56,7 @@ class EventDispatcherMiddleware extends test
                     ->isEqualTo($handlerStackMock)
                 ->mock($handlerStackMock)
                     ->call('push')
-                        ->twice()
-
-                ->object($callableHandler = $initCallable($handlerInit))
-                    ->isCallable()
-                ->object($callableHandler($requestMock, []))
-                    ->isEqualTo($requestMock)
+                        ->once()
 
                 ->object($callableHandler = $eventCallable($handlerEvent))
                     ->isCallable()
@@ -88,17 +75,12 @@ class EventDispatcherMiddleware extends test
                         ->once()
                         ->withArguments(GuzzleHttpEvent::EVENT_NAME, $eventSend)
                             ->once()
-                         ->withArguments(GuzzleHttpEvent::EVENT_ERROR_NAME)
+                         ->withArguments(GuzzleHttpErrorEvent::EVENT_ERROR_NAME)
                             ->never()
 
         // 2nd event : error
                 ->object($eventMid->push($handlerStackMock))
                     ->isEqualTo($handlerStackMock)
-
-                ->object($callableHandler = $initCallable($handlerInit))
-                    ->isCallable()
-                ->object($callableHandler($requestMock, []))
-                    ->isEqualTo($requestMock)
 
                 ->object($callableHandler = $eventCallable($handlerEvent))
                     ->isCallable()
@@ -118,7 +100,7 @@ class EventDispatcherMiddleware extends test
                     ->hasMessage('connexion error')
                 ->mock($dispatcherMock)
                     ->call('dispatch')
-                        ->withArguments(GuzzleHttpEvent::EVENT_ERROR_NAME, $eventSend)
+                        ->withArguments(GuzzleHttpErrorEvent::EVENT_ERROR_NAME, $eventSend)
                             ->once()
             ;
     }
