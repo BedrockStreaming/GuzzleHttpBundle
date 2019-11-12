@@ -231,7 +231,7 @@ trait CacheTrait
             // Send event, when cache error is ignored.
             $ignoreCacheEvent = new GuzzleCacheErrorEvent($request);
             $ignoreCacheEvent->setException($e);
-            $this->getEventDispatcher()->dispatch(GuzzleCacheErrorEvent::NAME_ERROR, $ignoreCacheEvent);
+            $this->getEventDispatcher()->dispatch($ignoreCacheEvent, GuzzleCacheErrorEvent::NAME_ERROR);
         }
 
         // no response in cache so we ask parent for response

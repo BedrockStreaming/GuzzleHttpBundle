@@ -3,6 +3,7 @@ namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Handler\CurlMultiHandler as GuzzleCurlMultiHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * Extends guzzle CurlMultiHandler
@@ -22,7 +23,7 @@ class CurlMultiHandler extends GuzzleCurlMultiHandler
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, array $options)
     {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
 
         parent::__construct($options);
     }
