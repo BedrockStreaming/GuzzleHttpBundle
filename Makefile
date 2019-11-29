@@ -2,8 +2,6 @@ SHELL=bash
 SOURCE_DIR = $(shell pwd)
 BIN_DIR = ${SOURCE_DIR}/bin
 COMPOSER = composer
-CI_DIR = ${BIN_DIR}/tool-php-ci
-AWS_SHARED_CREDENTIALS_FILE ?= $(HOME)/.aws/credentials
 
 define printSection
 	@printf "\033[36m\n==================================================\n\033[0m"
@@ -62,8 +60,7 @@ composer-install: ${SOURCE_DIR}/vendor/composer/installed.json
 ${SOURCE_DIR}/vendor/composer/installed.json:
 	$(call printSection,COMPOSER INSTALL)
 	$(COMPOSER) --no-interaction install --ansi --no-progress --prefer-dist
-	$(call replaceDotenv,AWS_SHARED_CREDENTIALS_FILE,$(AWS_SHARED_CREDENTIALS_FILE))
-	$(call replaceDotenv,AWS_ROLE_ARN,$(shell aws configure get role_arn --profile 6cloud-dev))
+``````suggestion
 
 # CI TOOLS
 
@@ -110,4 +107,3 @@ env-update:
 atoum:
 	$(call printSection,TEST atoum)
 	${BIN_DIR}/atoum
-
