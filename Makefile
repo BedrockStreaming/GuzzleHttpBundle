@@ -25,7 +25,7 @@ ci: quality test test-dependencies
 install: clean-vendor composer-install
 
 .PHONY: quality
-quality: git-commit-checker cs-ci
+quality: cs-ci
 
 .PHONY: test
 test: atoum

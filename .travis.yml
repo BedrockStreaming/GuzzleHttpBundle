@@ -29,5 +29,4 @@ install:
   - if [ "$COMPOSER_PREFER" = "lowest" ]; then composer update --prefer-lowest -n; fi;
 
 script:
-  - bin/coke
-  - bin/atoum
+  - make ci
