@@ -60,50 +60,17 @@ composer-install: ${SOURCE_DIR}/vendor/composer/installed.json
 ${SOURCE_DIR}/vendor/composer/installed.json:
 	$(call printSection,COMPOSER INSTALL)
 	$(COMPOSER) --no-interaction install --ansi --no-progress --prefer-dist
-``````suggestion
 
 # CI TOOLS
-
-.PHONY: sf-security-checker
-sf-security-checker: ${CI_DIR}
-	$(call printSection,COMPOSER SECURITY CHECKER)
-	${CI_DIR}/security-checker.phar security:check --ansi
 
 .PHONY: composer-source-checker
 composer-source-checker: ${SOURCE_DIR}/vendor/composer/installed.json ${CI_DIR}
 	$(call printSection,COMPOSER SOURCE CHECKER)
 	${CI_DIR}/composer-source-checker.sh ${SOURCE_DIR}/vendor/composer/installed.json
 
-git-commit-checker: ${CI_DIR}
-	$(call printSection, GIT COMMIT MESSAGES CHECKER)
-	${CI_DIR}/git-commit-checker.sh
-
-# Whatever you need in CI_DIR => download corresponding content on Git
-${CI_DIR}:
-	git clone --depth=1 https://github.m6web.fr/m6web/tool-php-ci.git ${CI_DIR}
-
-# ENV VARS
-.PHONY: env
-env: env-diff env-update
-
-# Waiting from https://github.com/Tekill/env-diff/pull/6 to be merged.
-#.PHONY: env-clean
-#env-clean: env-diff env-update-clean
-
-.PHONY: env-diff
-env-diff:
-	${BIN_DIR}/env-diff diff
-
-.PHONY: env-update
-env-update:
-	${BIN_DIR}/env-diff actualize
-
-#.PHONY: env-update-clean
-#env-update-clean:
-#	${BIN_DIR}/env-diff actualize -r
-
 # TEST
 .PHONY: atoum
 atoum:
 	$(call printSection,TEST atoum)
 	${BIN_DIR}/atoum
+
