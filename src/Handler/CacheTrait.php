@@ -1,17 +1,17 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
-use M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface;
+use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Psr7\Response;
+use M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleCacheErrorEvent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\FulfilledPromise;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Trait CacheTrait
- * @package M6Web\Bundle\GuzzleHttpBundle\Handler
  */
 trait CacheTrait
 {
@@ -24,29 +24,21 @@ trait CacheTrait
     /** @var bool Do we have to cache 5* responses */
     protected $cacheServerErrors;
 
-    /** @var bool  */
+    /** @var bool */
     protected $debug = false;
 
     /** @var int */
     protected $defaultTtl;
 
-    /** @var bool  */
+    /** @var bool */
     protected $isIgnoreCacheErrors = false;
 
-    /** @var array  */
+    /** @var array */
     protected static $methods = ['GET', 'HEAD', 'OPTIONS'];
 
     /** @var bool */
     protected $useHeaderTtl;
 
-    /**
-     * @param CacheInterface $cache
-     * @param int            $defaultTtl
-     * @param bool           $useHeaderTtl
-     * @param bool           $cacheServerErrors
-     * @param bool           $cacheClientErrors
-     * @param bool           $isIgnoreCacheErrors
-     */
     public function setCache(CacheInterface $cache, int $defaultTtl, bool $useHeaderTtl, bool $cacheServerErrors = true, bool $cacheClientErrors = true, bool $isIgnoreCacheErrors = false)
     {
         $this->cache = $cache;
@@ -70,8 +62,6 @@ trait CacheTrait
     /**
      * Get cache key
      *
-     * @param RequestInterface $request
-     *
      * @return string
      */
     protected static function getKey(RequestInterface $request)
@@ -83,9 +73,9 @@ trait CacheTrait
             array_filter(
                 array_keys($request->getHeaders()),
                 function ($header) use ($vary) {
-                    return (0 !== stripos($header, 'x-')
+                    return 0 !== stripos($header, 'x-')
                         || array_key_exists($header, $vary)
-                    );
+                    ;
                 }
             )
         ));
@@ -96,14 +86,12 @@ trait CacheTrait
     /**
      * Get cache ttl value
      *
-     * @param Response $response
-     *
      * @return int
      */
     protected function getCacheTtl(Response $response)
     {
         if ($this->useHeaderTtl && $response->hasHeader('Cache-Control')) {
-            $cacheControl =  $response->getHeader('Cache-Control')[0];
+            $cacheControl = $response->getHeader('Cache-Control')[0];
 
             if (preg_match('`max-age=(\d+)`', $cacheControl, $match)) {
                 return intval($match[1]);
@@ -116,9 +104,7 @@ trait CacheTrait
     /**
      * Cache response
      *
-     * @param RequestInterface $request
-     * @param Response         $response
-     * @param int              $ttl
+     * @param int $ttl
      *
      * @return mixed
      */
@@ -161,8 +147,6 @@ trait CacheTrait
     /**
      * Get response if available in cache
      *
-     * @param RequestInterface $request
-     *
      * @return Response|null
      */
     protected function getCached(RequestInterface $request)
@@ -196,15 +180,12 @@ trait CacheTrait
         return $response;
     }
 
-
     /**
      * Check if request is in cache and return the response in this case
      * otherwise send request then cache the response
      *
-     * @param RequestInterface $request
-     * @param array            $options
-     *
      * @return FulfilledPromise
+     *
      * @throws \Exception
      */
     public function __invoke(RequestInterface $request, array $options)
@@ -250,9 +231,7 @@ trait CacheTrait
     /**
      * Check if request method is cachable
      *
-     * @param RequestInterface $request
-     *
-     * @return boolean
+     * @return bool
      */
     protected function isSupportedMethod(RequestInterface $request)
     {
@@ -261,8 +240,6 @@ trait CacheTrait
 
     /**
      * Classes implementing this trait must to have an EventDispatcher.
-     *
-     * @return EventDispatcherInterface
      */
     abstract public function getEventDispatcher(): EventDispatcherInterface;
 }

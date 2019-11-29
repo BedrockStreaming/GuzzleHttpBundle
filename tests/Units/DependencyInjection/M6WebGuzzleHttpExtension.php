@@ -1,14 +1,15 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\DependencyInjection;
 
 use atoum\test;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use GuzzleHttp\Promise;
-use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
 use GuzzleHttp\Psr7\Response;
+use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class M6WebGuzzleHttpExtension extends test
 {
@@ -50,7 +51,7 @@ class M6WebGuzzleHttpExtension extends test
             ->integer($curlOpt[CURLOPT_MAXREDIRS])
                 ->isEqualTo(5)
             ->integer($curlOpt[CURLOPT_REDIR_PROTOCOLS])
-                ->isEqualTo((CURLPROTO_HTTP|CURLPROTO_HTTPS))
+                ->isEqualTo((CURLPROTO_HTTP | CURLPROTO_HTTPS))
             ->boolean($curlOpt[CURLOPT_AUTOREFERER])
                 ->isTrue()
         ;
@@ -235,8 +236,6 @@ class M6WebGuzzleHttpExtension extends test
             ->boolean($cacheConfig['cache_server_errors'])
                 ->isFalse()
         ;
-
-
     }
 
     public function testClientConfiguration()
@@ -282,7 +281,7 @@ class M6WebGuzzleHttpExtension extends test
             ->if($client = $container->get('m6web_guzzlehttp'))
             ->and($promises = [
                 'test' => $client->getAsync('http://httpbin.org'),
-                'test2' => $client->getAsync('http://httpbin.org/ip')
+                'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
             ->and($rep = Promise\unwrap($promises))
             ->then
@@ -302,7 +301,7 @@ class M6WebGuzzleHttpExtension extends test
             ->and($client2 = $container->get('m6web_guzzlehttp_myclient'))
             ->and($promises = [
                 'test' => $client->getAsync('http://httpbin.org'),
-                'test2' => $client->getAsync('http://httpbin.org/ip')
+                'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
             ->and($rep = Promise\unwrap($promises))
             ->and($client2->get('http://httpbin.org'))
@@ -349,9 +348,7 @@ class M6WebGuzzleHttpExtension extends test
                         ->withAnyArguments()
                             ->twice()
         ;
-
     }
-
 
     public function testNoServerErrorsCache()
     {
@@ -369,7 +366,6 @@ class M6WebGuzzleHttpExtension extends test
                         ->never()
             ->and($this->resetMock($mockCache))
         ;
-
 
         $this
             ->if($client = $container->get('m6web_guzzlehttp'))
@@ -407,7 +403,7 @@ class M6WebGuzzleHttpExtension extends test
     public function testRequestConfig()
     {
         $container = $this->getContainerBuilder();
-        $container->set('invokable.service.id', new \StdClass);
+        $container->set('invokable.service.id', new \StdClass());
 
         $container = $this->getContainerForConfiguration('request-config', $container);
         $container->compile();
@@ -455,8 +451,8 @@ class M6WebGuzzleHttpExtension extends test
                         'headers' => [
                             'X-foo' => 'bar',
                             'X-bar' => 'foo',
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
             ->object($arguments['on_headers'])
                 ->isInstanceOf('Symfony\Component\DependencyInjection\Reference')
@@ -480,7 +476,7 @@ class M6WebGuzzleHttpExtension extends test
                 ->isEqualTo(1.0)
             ->object($cookiesReference = $arguments['cookies'])
                 ->isInstanceOf('Symfony\Component\DependencyInjection\Reference')
-            ->string($cookiesServiceId = (string)$cookiesReference)
+            ->string($cookiesServiceId = (string) $cookiesReference)
                 ->isEqualTo('m6web_guzzlehttp.guzzle.cookies_jar.default')
             ->object($cookiesJar = $container->get($cookiesServiceId))
                 ->isInstanceOf('GuzzleHttp\Cookie\CookieJar')
@@ -538,7 +534,8 @@ class M6WebGuzzleHttpExtension extends test
 
     protected function getContainerBuilder()
     {
-        $parameterBag = new ParameterBag(array('kernel.debug' => true));
+        $parameterBag = new ParameterBag(['kernel.debug' => true]);
+
         return new ContainerBuilder($parameterBag);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Middleware;
 
 use GuzzleHttp\HandlerStack;
@@ -10,8 +11,6 @@ interface MiddlewareInterface
 {
     /**
      * Push function to middleware handler
-     *
-     * @param HandlerStack $stack
      *
      * @return HandlerStack
      */

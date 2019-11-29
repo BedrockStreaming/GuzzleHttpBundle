@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Middleware;
 
 use GuzzleHttp\HandlerStack;
@@ -13,7 +14,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class EventDispatcherMiddleware implements MiddlewareInterface
 {
-
     /**
      * @var EventDispatcherInterface
      */
@@ -32,8 +32,7 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Constructor
      *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param string                   $clientId
+     * @param string $clientId
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, $clientId)
     {
@@ -44,8 +43,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
 
     /**
      * Push function to middleware handler
-     *
-     * @param HandlerStack $stack
      *
      * @return HandlerStack
      */
@@ -79,8 +76,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Get key for request object
      *
-     * @param RequestInterface $request
-     *
      * @return string
      */
     protected function getEventKey(RequestInterface $request)
@@ -90,9 +85,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
 
     /**
      * Dispatch event
-     *
-     * @param RequestInterface  $request
-     * @param ResponseInterface $response
      */
     protected function sendEvent(RequestInterface $request, ResponseInterface $response)
     {
@@ -108,8 +100,7 @@ class EventDispatcherMiddleware implements MiddlewareInterface
     /**
      * Dispatch event
      *
-     * @param RequestInterface $request
-     * @param mixed            $reason
+     * @param mixed $reason
      */
     protected function sendErrorEvent(RequestInterface $request, $reason)
     {

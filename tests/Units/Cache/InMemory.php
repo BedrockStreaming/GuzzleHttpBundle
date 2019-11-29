@@ -1,8 +1,8 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Cache;
 
 use atoum\test;
-use M6Web\Bundle\GuzzleHttpBundle\Cache\InMemory as TestedClass;
 
 class InMemory extends test
 {

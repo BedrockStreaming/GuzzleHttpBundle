@@ -1,12 +1,13 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * This is the class that loads and manages bundle configuration
@@ -16,7 +17,7 @@ use Symfony\Component\Config\FileLocator;
 class M6WebGuzzleHttpExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -36,7 +37,6 @@ class M6WebGuzzleHttpExtension extends Extension
         }
     }
 
-
     /**
      * @return string
      */
@@ -46,9 +46,7 @@ class M6WebGuzzleHttpExtension extends Extension
     }
 
     /**
-     * @param ContainerBuilder $container
-     * @param string           $clientId
-     * @param array            $config
+     * @param string $clientId
      */
     protected function loadClient(ContainerBuilder $container, $clientId, array $config)
     {
@@ -118,11 +116,7 @@ class M6WebGuzzleHttpExtension extends Extension
         foreach (['on_headers', 'on_stats'] as $key) {
             if (!empty($config[$key])) {
                 if (is_null($serviceReference = $this->getServiceReference($container, $config[$key]))) {
-                    throw new \InvalidArgumentException(sprintf(
-                        '"%s" configuration entry requires a valid service reference, "%s" given',
-                        $key,
-                        $config[$key]
-                    ));
+                    throw new \InvalidArgumentException(sprintf('"%s" configuration entry requires a valid service reference, "%s" given', $key, $config[$key]));
                 }
                 $config[$key] = $serviceReference;
             }
@@ -140,9 +134,7 @@ class M6WebGuzzleHttpExtension extends Extension
     /**
      * Set proxy handler definition for the client
      *
-     * @param ContainerBuilder $container
-     * @param string           $clientId
-     * @param array            $config
+     * @param string $clientId
      */
     protected function setGuzzleProxyHandler(ContainerBuilder $container, $clientId, array $config)
     {
@@ -158,20 +150,17 @@ class M6WebGuzzleHttpExtension extends Extension
 
         $curlHandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
         $curlHandler->setPublic(true);
-        $curlHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactorySync] ]);
+        $curlHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactorySync]]);
         $curlHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
         $curlMultiHandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
         $curlMultiHandler->setPublic(true);
-        $curlMultiHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactoryNormal] ]);
+        $curlMultiHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactoryNormal]]);
         $curlMultiHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
 
         if (array_key_exists('guzzlehttp_cache', $config)) {
             if (is_null($cacheService = $this->getServiceReference($container, $config['guzzlehttp_cache']['service']))) {
-                throw new \InvalidArgumentException(sprintf(
-                    '"guzzlehttp_cache.service" requires a valid service reference, "%s" given',
-                    $config['guzzlehttp_cache']['service']
-                ));
+                throw new \InvalidArgumentException(sprintf('"guzzlehttp_cache.service" requires a valid service reference, "%s" given', $config['guzzlehttp_cache']['service']));
             }
 
             $defaultTtl = $config['guzzlehttp_cache']['default_ttl'];

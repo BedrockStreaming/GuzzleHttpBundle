@@ -1,8 +1,9 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
@@ -13,7 +14,7 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * http://symfony.com/fr/doc/current/components/config/definition.html
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -27,7 +28,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('id', false)
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('base_uri')->defaultValue("")->end()
+                            ->scalarNode('base_uri')->defaultValue('')->end()
                             ->enumNode('redirect_handler')
                                 ->values(['curl', 'guzzle'])
                                 ->defaultValue('curl')
@@ -42,7 +43,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('service')->cannotBeEmpty()->end()
                                 ->end()
                             ->end()
-                            ->scalarNode('proxy')->defaultValue("")->end()
+                            ->scalarNode('proxy')->defaultValue('')->end()
                             ->booleanNode('http_errors')->defaultValue(true)->end()
                             ->floatNode('timeout')->defaultValue(5.0)->end()
                             ->arrayNode('headers')

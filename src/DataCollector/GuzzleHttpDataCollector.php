@@ -1,10 +1,11 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\DataCollector;
 
-use Symfony\Component\HttpKernel\DataCollector\DataCollector;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 /**
  * Collect information about guzzlehttp client
@@ -21,6 +22,7 @@ class GuzzleHttpDataCollector extends DataCollector
 
     /**
      * Collect the data
+     *
      * @param Request    $request   The request object
      * @param Response   $response  The response object
      * @param \Exception $exception An exception
@@ -53,8 +55,6 @@ class GuzzleHttpDataCollector extends DataCollector
 
     /**
      * Collect data for GuzzleHttp
-     *
-     * @param AbstractGuzzleHttpEvent $event
      */
     public function onGuzzleHttpCommand(AbstractGuzzleHttpEvent $event)
     {
@@ -140,7 +140,7 @@ class GuzzleHttpDataCollector extends DataCollector
     {
         $totalExecutionTime = $this->getTotalExecutionTime();
 
-        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getCommands()) ) : 0;
+        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getCommands())) : 0;
     }
 
     /**
@@ -194,6 +194,6 @@ class GuzzleHttpDataCollector extends DataCollector
     {
         $totalExecutionTime = $this->getTotalRedirectionTime();
 
-        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getRedirects()) ) : 0;
+        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getRedirects())) : 0;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\EventDispatcher;
 
 use Psr\Http\Message\RequestInterface;
@@ -15,7 +16,7 @@ abstract class AbstractGuzzleCacheEvent extends Event
     /** @const string Name of Error event */
     const NAME_ERROR = 'm6web.guzzlecache.error';
 
-    /** @var RequestInterface  */
+    /** @var RequestInterface */
     protected $request;
 
     /** @var \Exception|null */
@@ -23,8 +24,6 @@ abstract class AbstractGuzzleCacheEvent extends Event
 
     /**
      * GuzzleCacheEvent constructor.
-     *
-     * @param RequestInterface $request
      */
     public function __construct(RequestInterface $request)
     {
@@ -33,8 +32,6 @@ abstract class AbstractGuzzleCacheEvent extends Event
 
     /**
      * Get Request
-     *
-     * @return RequestInterface
      */
     public function getRequest(): RequestInterface
     {
@@ -43,8 +40,6 @@ abstract class AbstractGuzzleCacheEvent extends Event
 
     /**
      * Set Exception
-     *
-     * @param \Exception $e
      */
     public function setException(\Exception $e)
     {
@@ -53,18 +48,14 @@ abstract class AbstractGuzzleCacheEvent extends Event
 
     /**
      * Get Exception if isset
-     *
-     * @return \Exception|null
      */
-    public function getException() : ?\Exception
+    public function getException(): ?\Exception
     {
         return $this->exception;
     }
 
     /**
      * Get domain from Request, with graphite compatibility (remove point)
-     *
-     * @return string
      */
     public function getDomain(): string
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Cache;
 
 /**
@@ -7,10 +8,10 @@ namespace M6Web\Bundle\GuzzleHttpBundle\Cache;
 class InMemory implements CacheInterface
 {
     protected $cache = [];
-    protected $ttl   = [];
+    protected $ttl = [];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -25,7 +26,7 @@ class InMemory implements CacheInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -37,16 +38,16 @@ class InMemory implements CacheInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function set($key, $value, $ttl = null)
     {
         $this->cache[$key] = $value;
-        $this->ttl[$key]   = is_null($ttl) ? null : microtime(true) + $ttl;
+        $this->ttl[$key] = is_null($ttl) ? null : microtime(true) + $ttl;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -57,7 +58,7 @@ class InMemory implements CacheInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function ttl($key)
     {

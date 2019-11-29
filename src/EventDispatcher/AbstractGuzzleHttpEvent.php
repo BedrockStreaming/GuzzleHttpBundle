@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\EventDispatcher;
 
 use GuzzleHttp\Psr7\Request;
@@ -15,7 +16,7 @@ abstract class AbstractGuzzleHttpEvent extends Event
     const EVENT_NAME = 'm6web.guzzlehttp';
     const EVENT_ERROR_NAME = 'm6web.guzzlehttp.error';
 
-    /** @var float Command start time  */
+    /** @var float Command start time */
     protected $executionStart;
 
     /** @var float Command execution time */
@@ -49,18 +50,14 @@ abstract class AbstractGuzzleHttpEvent extends Event
 
     /**
      * Return request
-     *
-     * @return RequestInterface
      */
-    public function getRequest() : RequestInterface
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
 
     /**
      * Set Response
-     *
-     * @param ResponseInterface $response
      *
      * @return static
      */
@@ -73,18 +70,14 @@ abstract class AbstractGuzzleHttpEvent extends Event
 
     /**
      * Return response
-     *
-     * @return ResponseInterface
      */
-    public function getResponse() : ResponseInterface
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
 
     /**
      * Set reason
-     *
-     * @param \Exception $reason
      *
      * @return static
      */
@@ -97,18 +90,13 @@ abstract class AbstractGuzzleHttpEvent extends Event
 
     /**
      * Return reason
-     *
-     * @return \Exception|null
      */
-    public function getReason() : ?\Exception
+    public function getReason(): ?\Exception
     {
         return $this->reason;
     }
 
-    /**
-     * @return float
-     */
-    public function getExecutionStart() : float
+    public function getExecutionStart(): float
     {
         return $this->executionStart;
     }
@@ -138,30 +126,23 @@ abstract class AbstractGuzzleHttpEvent extends Event
         return $this;
     }
 
-    /**
-     * @return float
-     */
-    public function getExecutionTime() : float
+    public function getExecutionTime(): float
     {
         return $this->executionTime;
     }
 
     /**
      * Return execution time in milliseconds
-     *
-     * @return float
      */
-    public function getTiming() : float
+    public function getTiming(): float
     {
         return $this->getExecutionTime() * 1000;
     }
 
     /**
      * Get client ID
-     *
-     * @return string
      */
-    public function getClientId() : string
+    public function getClientId(): string
     {
         return $this->clientId;
     }
