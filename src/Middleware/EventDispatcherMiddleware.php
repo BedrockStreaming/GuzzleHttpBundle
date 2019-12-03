@@ -2,17 +2,11 @@
 namespace M6Web\Bundle\GuzzleHttpBundle\Middleware;
 
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpErrorEvent;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
-use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
-use Symfony\Component\EventDispatcher\LegacyEventProxy;
 
 /**
  * Handler for event dispatching
@@ -43,8 +37,7 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, $clientId)
     {
-
-        $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
+        $this->eventDispatcher = $eventDispatcher;
         $this->events = [];
         $this->clientId = $clientId;
     }
@@ -109,7 +102,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
         $event->setClientId($this->clientId);
         $event->setExecutionStop();
         $event->setResponse($response);
-        $event = new LegacyEventProxy($event);
         $this->eventDispatcher->dispatch($event, GuzzleHttpEvent::EVENT_NAME);
     }
 
@@ -127,7 +119,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
         $event->setClientId($this->clientId);
         $event->setExecutionStop();
         $event->setReason($reason);
-        $event = new LegacyEventProxy($event);
         $this->eventDispatcher->dispatch($event, GuzzleHttpErrorEvent::EVENT_ERROR_NAME);
     }
 }
