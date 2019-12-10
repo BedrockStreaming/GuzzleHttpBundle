@@ -19,7 +19,7 @@ endef
 all: install quality test test-dependencies
 
 .PHONY: ci
-ci: quality test test-dependencies
+ci: quality test
 
 .PHONY: install
 install: clean-vendor composer-install
@@ -29,9 +29,6 @@ quality: cs-ci
 
 .PHONY: test
 test: atoum
-
-.PHONY: test-dependencies
-test-dependencies: composer-source-checker
 
 # Coding Style
 
@@ -62,11 +59,6 @@ ${SOURCE_DIR}/vendor/composer/installed.json:
 	$(COMPOSER) --no-interaction install --ansi --no-progress --prefer-dist
 
 # CI TOOLS
-
-.PHONY: composer-source-checker
-composer-source-checker: ${SOURCE_DIR}/vendor/composer/installed.json ${CI_DIR}
-	$(call printSection,COMPOSER SOURCE CHECKER)
-	${CI_DIR}/composer-source-checker.sh ${SOURCE_DIR}/vendor/composer/installed.json
 
 # TEST
 .PHONY: atoum
