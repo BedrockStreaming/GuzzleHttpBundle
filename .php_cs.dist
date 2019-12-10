@@ -1,5 +1,5 @@
 <?php
-$config = new M6Web\CS\Config\Php72();
+$config = new M6Web\CS\Config\Php71();
 $config
     ->getFinder()
     ->in(
