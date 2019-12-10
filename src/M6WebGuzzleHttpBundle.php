@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class M6WebGuzzleHttpBundle extends Bundle
 {
     /**
-     * @return DependencyInjection\M6WebCassandraExtension|null|\Symfony\Component\DependencyInjection\Extension\ExtensionInterface
+     * {@inheritdoc}
      */
     public function getContainerExtension()
     {
@@ -19,7 +19,7 @@ class M6WebGuzzleHttpBundle extends Bundle
     }
 
     /**
-     * @param ContainerBuilder $container
+     * {@inheritdoc}
      */
     public function build(ContainerBuilder $container)
     {

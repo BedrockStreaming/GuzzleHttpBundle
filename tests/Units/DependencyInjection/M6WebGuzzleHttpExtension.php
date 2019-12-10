@@ -275,10 +275,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testEventDispatcherMiddleWare()
     {
-        $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
-
         $container = $this->getContainerForConfiguration('default-config');
-        $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
 
         $this
@@ -289,7 +286,7 @@ class M6WebGuzzleHttpExtension extends test
             ])
             ->and($rep = Promise\unwrap($promises))
             ->then
-                ->mock($mockDispatcher)
+                ->mock($container->get('event_dispatcher'))
                     ->call('dispatch')
                         ->twice()
         ;
@@ -297,10 +294,7 @@ class M6WebGuzzleHttpExtension extends test
 
     public function testEventDispatcherMultiClient()
     {
-        $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
-
         $container = $this->getContainerForConfiguration('multiclient-config');
-        $container->set('event_dispatcher', $mockDispatcher);
         $container->compile();
 
         $this
@@ -313,7 +307,7 @@ class M6WebGuzzleHttpExtension extends test
             ->and($rep = Promise\unwrap($promises))
             ->and($client2->get('http://httpbin.org'))
             ->then
-                ->mock($mockDispatcher)
+                ->mock($container->get('event_dispatcher'))
                 ->call('dispatch')
                     ->exactly(3)
         ;
@@ -527,7 +521,11 @@ class M6WebGuzzleHttpExtension extends test
             $container = $this->getContainerBuilder();
         }
 
-        $container->set('event_dispatcher', new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface());
+        $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
+        $mockDispatcher->getMockController()->dispatch = function($event) {
+            return $event;
+        };
+        $container->set('event_dispatcher', $mockDispatcher);
         $container->set('cache_service', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
         $container->set('cache_service2', new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface());
         $container->registerExtension($extension);

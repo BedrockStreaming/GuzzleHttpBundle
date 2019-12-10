@@ -12,19 +12,20 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.1",
     "ext-curl": "*",
-    "guzzlehttp/guzzle": "^6.3.0",
-    "symfony/dependency-injection": "~2.3||~3.0||~4.0",
-    "symfony/event-dispatcher": "~4.3-stable",
-    "symfony/config" : "~2.3||~3.0||~4.0",
-    "symfony/yaml" : "~2.3||~3.0||~4.0"
+    "guzzlehttp/guzzle": "~6.3",
+    "symfony/config" : "~4.3||~5.0",
+    "symfony/dependency-injection": "~3.4||~4.3||~5.0",
+    "symfony/event-dispatcher": "~4.3||~5.0",
+    "symfony/http-kernel": "~3.4||~4.3||~5.0",
+    "symfony/yaml" : "~3.4||~4.3||~5.0"
   },
   "require-dev": {
-    "atoum/atoum": "^2.8||^3.0",
+    "atoum/atoum": "~3.1",
     "atoum/stubs": "*",
-    "m6web/coke": "~1.2||^2.2",
-    "m6web/symfony2-coding-standard": "~2.0||^3.3"
+    "m6web/coke": "~2.2",
+    "m6web/symfony2-coding-standard": "~3.3"
   },
   "autoload": {
     "psr-4": {"M6Web\\Bundle\\GuzzleHttpBundle\\": "src/"}

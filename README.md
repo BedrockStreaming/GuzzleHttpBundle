@@ -11,10 +11,12 @@ Require the bundle in your composer.json file :
 ```json
 {
     "require": {
-        "m6web/guzzle-http-bundle": "~2.0"
+        "m6web/guzzle-http-bundle": "~3.0"
     }
 }
 ```
+
+> For older Symfony versions, you can try to install an older version of this bundle.
 
 Register the bundle in your kernel :
 
