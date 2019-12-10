@@ -31,7 +31,7 @@ quality: cs-ci
 test: atoum
 
 .PHONY: test-dependencies
-test-dependencies: sf-security-checker composer-source-checker
+test-dependencies: composer-source-checker
 
 # Coding Style
 
