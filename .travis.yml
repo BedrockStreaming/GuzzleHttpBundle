@@ -26,7 +26,6 @@ before_install:
 
 install:
   - composer update $COMPOSER_FLAGS --prefer-dist -n
-  - if [ "$COMPOSER_PREFER" = "lowest" ]; then composer update --prefer-lowest -n; fi;
 
 script:
   - make ci

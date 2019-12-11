@@ -8,12 +8,6 @@ define printSection
 	@printf "\033[36m $1 \033[0m"
 	@printf "\033[36m\n==================================================\n\033[0m"
 endef
-define replaceDotenv
-	test -f .env.dev.local || cp .env.dev .env.dev.local
-	TEMPFILE="$(shell mktemp)" && \
-	sed -e 's@^$1=.*@$1=$2@' .env.dev.local > "$$TEMPFILE" && \
-	mv "$$TEMPFILE" .env.dev.local
-endef
 
 .PHONY: all
 all: install quality test test-dependencies
