@@ -1,5 +1,7 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Handler;
+
 use atoum\test;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -55,7 +57,7 @@ class CurlMultiHandler extends test
                     ->isNotEmpty()
                 ->mock($cacheMock)
                     ->call('set')
-                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response),'2' =>  500])
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 500])
                             ->once()
         ;
     }
@@ -66,10 +68,10 @@ class CurlMultiHandler extends test
 
         $cacheData = [];
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
-        $cacheMock->getMockController()->set = function($key, $value) use (&$cacheData) {
+        $cacheMock->getMockController()->set = function ($key, $value) use (&$cacheData) {
             $cacheData[$key] = $value;
         };
-        $cacheMock->getMockController()->get = function($key) use (&$cacheData) {
+        $cacheMock->getMockController()->get = function ($key) use (&$cacheData) {
             if (isset($cacheData[$key])) {
                 return $cacheData[$key];
             }
@@ -105,8 +107,8 @@ class CurlMultiHandler extends test
                     ->thrice()
                 ->call('set')
                     ->twice()
-                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1),'2' =>  500])
-                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2),'2' =>  500])
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1), '2' => 500])
+                        ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2), '2' => 500])
             ;
 
         // A header in the Vary should be in the cache even if it's an X-
@@ -136,7 +138,7 @@ class CurlMultiHandler extends test
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = true;
-        $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], "The answer is 42", '1.1', 'OK'));
+        $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], 'The answer is 42', '1.1', 'OK'));
         $cacheMock->getMockController()->ttl = 256;
 
         $this
@@ -190,7 +192,6 @@ class CurlMultiHandler extends test
                     ->call('release')
                         ->once()
         ;
-
     }
 
     public function testForceCache()
@@ -198,7 +199,6 @@ class CurlMultiHandler extends test
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
-
 
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
@@ -221,7 +221,6 @@ class CurlMultiHandler extends test
                     ->call('release')
                         ->once()
         ;
-
     }
 
     public function testCacheCustomTtl()
@@ -229,7 +228,6 @@ class CurlMultiHandler extends test
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
-
 
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
@@ -256,7 +254,6 @@ class CurlMultiHandler extends test
         $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
-
 
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
@@ -322,8 +319,6 @@ class CurlMultiHandler extends test
                     ->once()
             ->and($this->resetMock($cacheMock))
         ;
-
-
     }
 
     public function testCacheGetDebugOff()
@@ -332,9 +327,8 @@ class CurlMultiHandler extends test
 
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
-
         $cacheMock->getMockController()->has = true;
-        $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], "The answer is 42", '1.1', 'OK'));
+        $cacheMock->getMockController()->get = $this->getSerializedResponse(new Response(200, [], 'The answer is 42', '1.1', 'OK'));
         $cacheMock->getMockController()->ttl = 256;
 
         $this
@@ -363,7 +357,6 @@ class CurlMultiHandler extends test
                     ->call('release')
                         ->never()
         ;
-
     }
 
     protected function getSerializedResponse(Response $response)
@@ -420,7 +413,8 @@ class CurlMultiHandler extends test
     /**
      * @return \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
-    private function getMockDispatcher() {
+    private function getMockDispatcher()
+    {
         return new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
     }
 }

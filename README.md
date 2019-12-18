@@ -271,7 +271,7 @@ First of all, thank you for contributing !
 
 Here are few rules to follow for a easier code review before the maintainers accept and merge your request.
 
-- you MUST follow the Symfony2 coding standard : you can use `./bin/coke` to validate
+- you MUST follow the Symfony2 coding standard : you can use `make cs-fix` to fix the files
 - you MUST run the test
 - you MUST write or update tests
 - you MUST write or update documentation
@@ -281,11 +281,11 @@ Here are few rules to follow for a easier code review before the maintainers acc
 Install the composer dev dependencies
 
 ```shell
-$ composer install --dev
+make install
 ```
 
 Then run the test with [atoum](https://github.com/atoum/atoum) unit test framework
 
 ```shell
-./bin/atoum
+make test
 ```

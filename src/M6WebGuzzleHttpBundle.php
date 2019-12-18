@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle;
 
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\MiddlewarePass;

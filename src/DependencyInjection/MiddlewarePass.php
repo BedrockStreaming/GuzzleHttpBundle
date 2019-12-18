@@ -8,13 +8,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class MiddlewarePass
- * @package M6Web\Bundle\GuzzleHttpBundle\DependencyInjection
  */
 class MiddlewarePass implements CompilerPassInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         $services = $container->findTaggedServiceIds('m6web_guzzlehttp.middleware');
@@ -32,12 +28,6 @@ class MiddlewarePass implements CompilerPassInterface
         }
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param string $serviceId
-     * @param string $clientId
-     * @param array $middlewareArguments
-     */
     private function registerMiddleware(ContainerBuilder $container, string $serviceId, string $clientId, array &$middlewareArguments)
     {
         $middlewareDefinition = $container->getDefinition($serviceId);

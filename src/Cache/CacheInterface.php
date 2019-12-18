@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Cache;
 
 /**
@@ -11,7 +12,7 @@ interface CacheInterface
      *
      * @param string $key A unique key
      *
-     * @return Boolean Whether the cache has a value for this key
+     * @return bool Whether the cache has a value for this key
      */
     public function has($key);
 
@@ -27,9 +28,9 @@ interface CacheInterface
     /**
      * Sets a value in the cache.
      *
-     * @param string  $key   A unique key
-     * @param string  $value The value to cache
-     * @param integer $ttl   Time to live in seconds
+     * @param string $key   A unique key
+     * @param string $value The value to cache
+     * @param int    $ttl   Time to live in seconds
      */
     public function set($key, $value, $ttl = null);
 
@@ -45,7 +46,7 @@ interface CacheInterface
      *
      * @param string $key The key
      *
-     * @return integer|false the ttl or false
+     * @return int|false the ttl or false
      */
     public function ttl($key);
 }

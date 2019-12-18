@@ -1,4 +1,5 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Handler\CurlHandler as GuzzleCurlHandler;
@@ -16,9 +17,6 @@ class CurlHandler extends GuzzleCurlHandler
 
     /**
      * CurlHandler constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param array                    $options
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, array $options)
     {
@@ -27,9 +25,6 @@ class CurlHandler extends GuzzleCurlHandler
         parent::__construct($options);
     }
 
-    /**
-     * @return EventDispatcherInterface
-     */
     public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;

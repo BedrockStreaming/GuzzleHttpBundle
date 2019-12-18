@@ -24,8 +24,7 @@
   "require-dev": {
     "atoum/atoum": "~3.1",
     "atoum/stubs": "*",
-    "m6web/coke": "~2.2",
-    "m6web/symfony2-coding-standard": "~3.3"
+    "m6web/php-cs-fixer-config": "^1.0"
   },
   "autoload": {
     "psr-4": {"M6Web\\Bundle\\GuzzleHttpBundle\\": "src/"}
