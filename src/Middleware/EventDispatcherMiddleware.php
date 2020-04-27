@@ -14,19 +14,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class EventDispatcherMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $events;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $clientId;
 
     /**

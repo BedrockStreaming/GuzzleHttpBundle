@@ -137,6 +137,10 @@ trait CacheTrait
         $cached[3] = $response->getProtocolVersion();
         $cached[4] = $response->getReasonPhrase();
 
+        // we need to rewind the response body, because the response
+        // is a stream and is already read before
+        $response->getBody()->rewind();
+
         return $this->cache->set(
             self::getKey($request),
             serialize($cached),
