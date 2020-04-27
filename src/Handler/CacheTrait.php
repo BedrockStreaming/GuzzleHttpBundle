@@ -233,7 +233,7 @@ trait CacheTrait
     }
 
     /**
-     * Check if request method is cachable
+     * Check if request method is cacheable
      *
      * @return bool
      */

@@ -109,7 +109,7 @@ Datacollector is available when the symfony profiler is enabled. The collector a
  - Cache ttl
 
 **NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero.
-Cache informations are available when a cache system is set.
+Cache information are available when a cache system is set.
 
 ## Cache system
 
@@ -169,7 +169,7 @@ m6_redis:
 
 For more information on how to setup the RedisBundle, refer to the README in the project.
 
-We provide also the same cache system for APCU throught the [ApcuBundle](https://github.com/M6Web/ApcuBundle).
+We provide also the same cache system for APCU through the [ApcuBundle](https://github.com/M6Web/ApcuBundle).
 
 ## Configuration reference
 

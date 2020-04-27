@@ -98,7 +98,7 @@ class GuzzleHttpDataCollector extends DataCollector
     }
 
     /**
-     * Return true error 400 occured
+     * Return true error 400 occurred
      *
      * @return bool
      */
@@ -108,7 +108,7 @@ class GuzzleHttpDataCollector extends DataCollector
     }
 
     /**
-     * Return true error 500 occured
+     * Return true error 500 occurred
      *
      * @return bool
      */
