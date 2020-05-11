@@ -48,7 +48,7 @@ class EventDispatcherMiddleware extends test
             return $promiseMock;
         };
 
-        // 1st event : sucesss
+        // 1st event : success
         $this
             ->if($eventMid = new Base($dispatcherMock, 'id'))
             ->then
