@@ -27,11 +27,13 @@ class M6WebGuzzleHttpExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
+        $isDebugEnabled = $container->getParameter('kernel.debug');
+
         foreach ($config['clients'] as $clientId => $clientConfig) {
-            $this->loadClient($container, $clientId, $clientConfig);
+            $this->loadClient($container, $clientId, $clientConfig, $isDebugEnabled);
         }
 
-        if ($container->getParameter('kernel.debug')) {
+        if ($isDebugEnabled) {
             $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('datacollector.yml');
         }
@@ -47,8 +49,9 @@ class M6WebGuzzleHttpExtension extends Extension
 
     /**
      * @param string $clientId
+     * @param bool   $isDebugEnabled
      */
-    protected function loadClient(ContainerBuilder $container, $clientId, array $config)
+    protected function loadClient(ContainerBuilder $container, $clientId, array $config, $isDebugEnabled)
     {
         // clear empty arrays
         foreach ($config as $key => $item) {
@@ -61,7 +64,7 @@ class M6WebGuzzleHttpExtension extends Extension
             $config['allow_redirects'] = false;
         }
 
-        $this->setGuzzleProxyHandler($container, $clientId, $config);
+        $this->setGuzzleProxyHandler($container, $clientId, $config, $isDebugEnabled);
 
         $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
         $handlerStackDefinition->setPublic(true);
@@ -106,7 +109,7 @@ class M6WebGuzzleHttpExtension extends Extension
         // String or service entries
         foreach (['body', 'sink'] as $key) {
             if (!empty($config[$key])
-                && $service = $this->getServiceReference($container, $config[$key])
+                && $service = $this->getServiceReference($config[$key])
             ) {
                 $config[$key] = $service;
             }
@@ -115,7 +118,7 @@ class M6WebGuzzleHttpExtension extends Extension
         // Services entries
         foreach (['on_headers', 'on_stats'] as $key) {
             if (!empty($config[$key])) {
-                if (is_null($serviceReference = $this->getServiceReference($container, $config[$key]))) {
+                if (is_null($serviceReference = $this->getServiceReference($config[$key]))) {
                     throw new \InvalidArgumentException(sprintf('"%s" configuration entry requires a valid service reference, "%s" given', $key, $config[$key]));
                 }
                 $config[$key] = $serviceReference;
@@ -135,11 +138,12 @@ class M6WebGuzzleHttpExtension extends Extension
      * Set proxy handler definition for the client
      *
      * @param string $clientId
+     * @param bool   $isDebugEnabled
      */
-    protected function setGuzzleProxyHandler(ContainerBuilder $container, $clientId, array $config)
+    protected function setGuzzleProxyHandler(ContainerBuilder $container, $clientId, array $config, $isDebugEnabled)
     {
         // arguments (3 and 50) in handler factories below represents the maximum number of idle handles.
-        // the values are the default defined in guzzle CurlHanddler and CurlMultiHandler
+        // the values are the default defined in guzzle CurlHandler and CurlMultiHandler
         $handlerFactorySync = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
         $handlerFactorySync->setPublic(true);
         $handlerFactorySync->setArguments([3]);
@@ -151,15 +155,15 @@ class M6WebGuzzleHttpExtension extends Extension
         $curlHandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
         $curlHandler->setPublic(true);
         $curlHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactorySync]]);
-        $curlHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+        $curlHandler->addMethodCall('setDebug', [$isDebugEnabled]);
 
         $curlMultiHandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
         $curlMultiHandler->setPublic(true);
         $curlMultiHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactoryNormal]]);
-        $curlMultiHandler->addMethodCall('setDebug', [$container->getParameter('kernel.debug')]);
+        $curlMultiHandler->addMethodCall('setDebug', [$isDebugEnabled]);
 
-        if (array_key_exists('guzzlehttp_cache', $config)) {
-            if (is_null($cacheService = $this->getServiceReference($container, $config['guzzlehttp_cache']['service']))) {
+        if (isset($config['guzzlehttp_cache'])) {
+            if (is_null($cacheService = $this->getServiceReference($config['guzzlehttp_cache']['service']))) {
                 throw new \InvalidArgumentException(sprintf('"guzzlehttp_cache.service" requires a valid service reference, "%s" given', $config['guzzlehttp_cache']['service']));
             }
 
@@ -219,7 +223,7 @@ class M6WebGuzzleHttpExtension extends Extension
         return $curlInfo;
     }
 
-    protected function getServiceReference(ContainerBuilder $container, $id)
+    protected function getServiceReference($id)
     {
         if (substr($id, 0, 1) == '@') {
             return new Reference(substr($id, 1));
