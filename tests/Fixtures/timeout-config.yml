@@ -2,5 +2,9 @@ m6web_guzzlehttp:
     clients:
         default:
             timeout: 0.6
+            connect_timeout: 0.5
+            read_timeout: 1.0
         myclient:
             timeout: 1.2
+            connect_timeout: 3.0
+            read_timeout: 0.9

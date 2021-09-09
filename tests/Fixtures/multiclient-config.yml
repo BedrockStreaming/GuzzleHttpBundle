@@ -3,6 +3,8 @@ m6web_guzzlehttp:
         default:
             base_uri: "http://domain.tld"
             timeout: 2
+            connect_timeout: 8
+            read_timeout: 12
             allow_redirects: false
         myclient:
             base_uri: "http://domain2.tld"
