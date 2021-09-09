@@ -3,6 +3,8 @@ m6web_guzzlehttp:
         default:
             base_uri: "http://domain.tld"
             timeout: 2
+            connect_timeout: 7
+            read_timeout: 12
             http_errors: false
             proxy: 127.0.0.1:80
             redirect_handler: guzzle
