@@ -1,75 +1,110 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
 {% block toolbar %}
-    {% set icon %}
-    <img width="28" height="28" alt="Guzzle" style="vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z"/>
-    <span class="sf-toolbar-status {% if collector.has5x %}sf-toolbar-status-red{% elseif collector.has4x %}sf-toolbar-status-yellow{% else %}sf-toolbar-status-green{% endif %}">{{ collector.commands | length }}</span>
-    {% endset %}
-    {% set text %}
-    <div class="sf-toolbar-info-piece">
-        <b>Total commands</b>
-        <span>{{ collector.commands | length }}</span>
-    </div>
-    <div class="sf-toolbar-info-piece">
-        <b>Time</b>
-        <span>avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }}</span>
-    </div>
-    <div class="sf-toolbar-info-piece">
-        <b>Redirect</b>
-        <span>avg : {{ collector.getAvgRedirectionTime|number_format(4) }} - total {{ collector.getTotalRedirectionTime|number_format(4) }}</tot></span>
-    </div>
-    <div class="sf-toolbar-info-piece">
-        <b>Cache hits</b>
-        <span>{{ collector.getCacheHits }}</span>
-    </div>
-    {% endset %}
-    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': true } %}
-{% endblock %}
+    {% if collector.requestCount %}
+        {% set icon %}
+            {{ include('@WebProfiler/Icon/http-client.svg') }}
+            {% set status_color = '' %}
+            <span class="sf-toolbar-value">{{ collector.requestCount }}</span>
+        {% endset %}
 
-{% block head %}
-    {{ parent() }}
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status_color }) }}
+    {% endif %}
 {% endblock %}
 
 {% block menu %}
-    <span class="label">
+    <span class="label {{ collector.requestCount == 0 ? 'disabled' }}">
     <span class="icon">
-    <img height="28" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z" alt="GuzzleHttp" />
+        <img width="28" height="28" alt="Guzzle" style="vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAAjACMBAREA/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHBAAC/8QAMxAAAQMDAwIDBAoDAAAAAAAAAQIDBAUGEQAHIRIxExQiF1RxlQgVFjIzNEFhYtORorH/2gAIAQEAAD8AT7Ytap3jVU02kRhKmqbU4GvESjKU9zlRA0NRHcckJYSnLqlhsJ/kTjH+dEbltmpWhWHaXVo/lZzSUqW11pXgKGRykkdtC9dqhfR/neR3dt4k4S84uOf36m1D/uNP7W01Kbt+NOSyftEmuJkLPWr8oZ5ZHpzjHHfGdaE2pSNxd+b6NUaNQ+r0Axqcl7wvMrSlKcFXfAx/tzwNT3dCJAgQGWFbfyrMqnj8OmQt1h5vBykE8FWek5GdTjRqyqyi3rwolUdUUNQ5jTzikjJCQodXHwzq3N7222neN2oqkqFrmlphh3y6vxA54uejGfvk841NKfUbduW+rhqVWuCbQDIkuSYM+G0pZClOE+oJ9QHTjtjTZuFuBRXNr02uxckq8qkuWh8T5MdTYYQk5xlXJPcDufUcnUW0C9pNne/Vf5Wj+/VB22uC3a7Blv0NblQqbSsPonxEpXHaOMKQ11LBCjwV544TgZyWuS5HehyTWWIzNJbbLkqSuOhjy6B3cDiUAgj9Bz1EhODnGoq5uRZgcUEVCsLQCQlRpSASM8HHj8fDXn2k2d79V/laP79RTWmnVCXS5SZEKW/CkJBAejOqbWAe4CkkHnWypXNWatFMedWalOjlQUWZUxx1BI7HpUojI0K12v/Z"/>
     </span>
-    <strong>GuzzleHttp</strong>
-    <span class="count">
-        <span>{{ collector.commands|length }}</span>
-    </span>
+    <strong>Guzzle HTTP</strong>
+    {% if collector.requestCount %}
+        <span class="count">
+            {{ collector.requestCount }}
+        </span>
+    {% endif %}
 </span>
 {% endblock %}
 
 {% block panel %}
-    <h2>GuzzleHttp</h2>
-    <p>avg : {{ collector.avgexecutiontime|number_format(4) }} - total : {{ collector.totalexecutiontime|number_format(4) }}</p>
-    <table class="routing inline">
-        <thead>
-            <th colspan="2">Method</th>
-            <th>Url</th>
-            <th>Response</th>
-            <th>Execution time</th>
-            <th>Redirect</th>
-            <th>Redirect time</th>
-            <th>Cache Hit</th>
-            <th>Cache Ttl</th>
-        </thead>
-        <tbody>
-        {% for command in collector.commands %}
-            <tr>
-                <td style="width:5px; margin:0;padding:0;border-right: 0; background-color: {% if command.responseCode > 499 %}#a33{% elseif command.responseCode >= 400 and command.responseCode < 500 %}#fa0{% else %}#fff{% endif %};"></td>
-                <td style="border-left:0;">{{ command.method }}</td>
-                <td>{{ command.uri }}</td>
-                <td>{{ command.responseCode }} {{ command.responseReason }}</td>
-                <td>{{ command.executionTime }}</td>
-                <td>{{ command.curl.redirectCount }}</td>
-                <td>{{ command.curl.redirectTime }}</td>
-                <td>{{ command.cache }}</td>
-                <td>{{ command.cacheTtl }}</td>
-            </tr>
+    <h2>Guzzle HTTP</h2>
+    {% if collector.requestCount == 0 %}
+        <div class="empty">
+            <p>No Guzzle requests were made.</p>
+        </div>
+    {% else %}
+        <div class="metrics">
+            <div class="metric">
+                <span class="value">{{ collector.requestCount }}</span>
+                <span class="label">Total requests</span>
+            </div>
+            <div class="metric">
+                <span class="value">{{ collector.errorCount }}</span>
+                <span class="label">Errors</span>
+            </div>
+        </div>
+        <h2>Clients</h2>
+        <div class="sf-tabs">
+        {% for name, client in collector.clients %}
+            <div class="tab {{ client.requests|length == 0 ? 'disabled' }}">
+                {% if client.requests|length > 0 and client.requests|length == client.errors %}
+                    {% set clientStatus = 'error' %}
+                {% elseif client.errors > 0 %}
+                    {% set clientStatus = 'warning' %}
+                {% elseif client.errors == 0 and client.requests|length > 0 %}
+                    {% set clientStatus = 'success' %}
+                {% else %}
+                    {% set clientStatus = '' %}
+                {% endif %}
+                <h3 class="tab-title">{{ name }} <span class="label status-{{ clientStatus }}">{{ client.requests|length }}</span></h3>
+                <div class="tab-content">
+                    {% if client.requests|length == 0 %}
+                        <div class="empty">
+                            <p>No requests were made with the "{{ name }}" service.</p>
+                        </div>
+                    {% else %}
+                        <h4>Requests</h4>
+                        {% for request in client.requests %}
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <span class="label">{{ request.method }}</span>
+                                    </th>
+                                    <th class="full-width">
+                                        {{ request.uri }}
+                                        {% if request.options is not empty %}
+                                            {{ profiler_dump(request.options, maxDepth=1) }}
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th>
+                                        {% if request.responseCode >= 500 %}
+                                            {% set responseStatus = 'error' %}
+                                        {% elseif request.responseCode >= 400 %}
+                                            {% set responseStatus = 'warning' %}
+                                        {% else %}
+                                            {% set responseStatus = 'success' %}
+                                        {% endif %}
+                                        <span class="label status-{{ responseStatus }}">
+                                            {{ request.responseCode }}
+                                        </span>
+                                        <span>{{ request.responseReason }}</span>
+                                    </th>
+                                    <td>
+                                        {{ profiler_dump(request.response, maxDepth=1) }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
+    {% endif %}
+    </div>
 {% endblock %}

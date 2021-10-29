@@ -125,6 +125,7 @@ class M6WebGuzzleHttpExtension extends Extension
         $guzzleClientDefinition = new Definition('%m6web_guzzlehttp.guzzle.client.class%');
         $guzzleClientDefinition->setPublic(true);
         $guzzleClientDefinition->addArgument($config);
+        $guzzleClientDefinition->addTag('m6web_guzzlehttp.client');
 
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
 

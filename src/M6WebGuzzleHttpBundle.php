@@ -2,6 +2,7 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle;
 
+use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\GuzzleHttpPass;
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\MiddlewarePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -24,5 +25,6 @@ class M6WebGuzzleHttpBundle extends Bundle
     {
         parent::build($container);
         $container->addCompilerPass(new MiddlewarePass());
+        $container->addCompilerPass(new GuzzleHttpPass());
     }
 }

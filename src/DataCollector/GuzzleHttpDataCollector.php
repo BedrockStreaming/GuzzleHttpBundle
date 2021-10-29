@@ -2,6 +2,7 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\DataCollector;
 
+use GuzzleHttp\Client as GuzzleHttpClient;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,11 +14,20 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class GuzzleHttpDataCollector extends DataCollector
 {
     /**
-     * Constructor
+     * @var GuzzleHttpClient[]
      */
+    private $clients = [];
+
     public function __construct()
     {
         $this->reset();
+    }
+
+    public function registerClient(string $name, GuzzleHttpClient $client)
+    {
+        $this->clients[$name] = $client;
+        $this->data['clients'][$name]['requests'] = new \SplQueue();
+        $this->data['clients'][$name]['errors'] = 0;
     }
 
     /**
@@ -36,10 +46,10 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function reset()
     {
-        $this->data['guzzleHttp'] = [
-            'commands' => new \SplQueue(),
-            'has5x' => false,
-            'has4x' => false,
+        $this->data = [
+            'clients' => [],
+            'request_count' => 0,
+            'error_count' => 0,
         ];
     }
 
@@ -58,16 +68,15 @@ class GuzzleHttpDataCollector extends DataCollector
      */
     public function onGuzzleHttpCommand(AbstractGuzzleHttpEvent $event)
     {
+        $client = 'm6web_guzzlehttp_'.$event->getClientId();
+
         $request = $event->getRequest();
         $response = $event->getResponse();
         $statusCode = $response->getStatusCode();
 
-        if ($statusCode > 499) {
-            $this->data['guzzleHttp']['has5x'] = true;
-        }
-
-        if ($statusCode > 399 && $statusCode < 500) {
-            $this->data['guzzleHttp']['has4x'] = true;
+        if ($statusCode >= Response::HTTP_BAD_REQUEST) {
+            $this->data['error_count']++;
+            $this->data['clients'][$client]['errors']++;
         }
 
         $data = [
@@ -75,125 +84,26 @@ class GuzzleHttpDataCollector extends DataCollector
             'method' => $request->getMethod(),
             'responseCode' => $statusCode,
             'responseReason' => $response->getReasonPhrase(),
-            'executionTime' => $event->getExecutionTime(),
-            'curl' => [
-                'redirectCount' => (isset($response->curlInfo['redirect_count'])) ? $response->curlInfo['redirect_count'] : 0,
-                'redirectTime' => (isset($response->curlInfo['redirect_time'])) ? $response->curlInfo['redirect_time'] : 0,
-            ],
-            'cache' => (isset($response->cached)) ? 1 : 0,
-            'cacheTtl' => (isset($response->cacheTtl)) ? $response->cacheTtl : 0,
+            'options' => $this->cloneVar($request->getHeaders()),
+            'response' => $this->cloneVar($response->getHeaders()),
         ];
 
-        $this->data['guzzleHttp']['commands']->enqueue($data);
+        $this->data['request_count']++;
+        $this->data['clients'][$client]['requests']->enqueue($data);
     }
 
-    /**
-     * Return GuzzleHttp command list
-     *
-     * @return array
-     */
-    public function getCommands()
+    public function getClients(): array
     {
-        return $this->data['guzzleHttp']['commands'];
+        return $this->data['clients'] ?? [];
     }
 
-    /**
-     * Return true error 400 occurred
-     *
-     * @return bool
-     */
-    public function has4x()
+    public function getRequestCount(): int
     {
-        return $this->data['guzzleHttp']['has4x'];
+        return $this->data['request_count'] ?? 0;
     }
 
-    /**
-     * Return true error 500 occurred
-     *
-     * @return bool
-     */
-    public function has5x()
+    public function getErrorCount(): int
     {
-        return $this->data['guzzleHttp']['has5x'];
-    }
-
-    /**
-     * Return the total time spent by guzzlehttp
-     *
-     * @return float
-     */
-    public function getTotalExecutionTime()
-    {
-        return array_reduce(iterator_to_array($this->getCommands()), function ($time, $value) {
-            $time += $value['executionTime'];
-
-            return $time;
-        });
-    }
-
-    /**
-     * Return average time spent by guzzlehttp command
-     *
-     * @return float
-     */
-    public function getAvgExecutionTime()
-    {
-        $totalExecutionTime = $this->getTotalExecutionTime();
-
-        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getCommands())) : 0;
-    }
-
-    /**
-     * Return total cache hits
-     *
-     * @return int
-     */
-    public function getCacheHits()
-    {
-        return array_reduce(iterator_to_array($this->getCommands()), function ($hits, $value) {
-            $hits += $value['cache'];
-
-            return $hits;
-        });
-    }
-
-    /**
-     * Return total cache hits
-     *
-     * @return int
-     */
-    public function getRedirects()
-    {
-        return array_reduce(iterator_to_array($this->getCommands()), function ($redirect, $value) {
-            $redirect += $value['curl']['redirectCount'];
-
-            return $redirect;
-        });
-    }
-
-    /**
-     * Return the total time spent by redirection
-     *
-     * @return float
-     */
-    public function getTotalRedirectionTime()
-    {
-        return array_reduce(iterator_to_array($this->getCommands()), function ($time, $value) {
-            $time += $value['curl']['redirectTime'];
-
-            return $time;
-        });
-    }
-
-    /**
-     * Return average time spent by redirection
-     *
-     * @return float
-     */
-    public function getAvgRedirectionTime()
-    {
-        $totalExecutionTime = $this->getTotalRedirectionTime();
-
-        return ($totalExecutionTime) ? ($totalExecutionTime / count($this->getRedirects())) : 0;
+        return $this->data['error_count'] ?? 0;
     }
 }
