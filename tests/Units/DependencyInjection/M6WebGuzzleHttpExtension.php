@@ -2,7 +2,7 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\DependencyInjection;
 
-use atoum\test;
+use atoum;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-class M6WebGuzzleHttpExtension extends test
+class M6WebGuzzleHttpExtension extends atoum
 {
     public function testDefaultConfig()
     {
