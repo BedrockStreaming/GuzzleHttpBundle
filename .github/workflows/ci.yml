@@ -4,7 +4,7 @@ on: [push]
 jobs:
   linter:
     name: Code style
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@master
       - uses: shivammathur/setup-php@v2
@@ -15,7 +15,7 @@ jobs:
 
   tests:
     name: Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         version: [ '7.1', '7.2', '7.3', '7.4', '8.0' ]
