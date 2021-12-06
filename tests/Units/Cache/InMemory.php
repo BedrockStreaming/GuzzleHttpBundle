@@ -2,9 +2,9 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Cache;
 
-use atoum\test;
+use atoum;
 
-class InMemory extends test
+class InMemory extends atoum
 {
     public function testEmptyCache()
     {

@@ -2,7 +2,7 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Handler;
 
-use atoum\test;
+use atoum;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler as TestedClass;
@@ -13,7 +13,7 @@ require_once 'FakeCurlMultiHandler.php';
  * Class CurlMultiHandler
  * Used for testing trait and curlFactory
  */
-class CurlMultiHandler extends test
+class CurlMultiHandler extends atoum
 {
     public function testNoCache()
     {

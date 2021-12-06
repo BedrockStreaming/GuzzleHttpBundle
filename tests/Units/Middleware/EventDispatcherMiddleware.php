@@ -1,7 +1,7 @@
 <?php
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Middleware;
 
-use atoum\test;
+use atoum;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpErrorEvent;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
 use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
@@ -9,7 +9,7 @@ use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
 /**
  * Class EventDispatcherMiddleware test
  */
-class EventDispatcherMiddleware extends test
+class EventDispatcherMiddleware extends atoum
 {
     public function testPush()
     {

@@ -1,6 +1,6 @@
 # GuzzleHttpBundle
 
-[![Build Status](https://travis-ci.org/M6Web/GuzzleHttpBundle.svg?branch=master)](https://travis-ci.org/M6Web/GuzzleHttpBundle)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FBedrockStreaming%2FGuzzleHttpBundle%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/BedrockStreaming/GuzzleHttpBundle/goto?ref=master)
 
 The GuzzleHttpBundle provide a guzzle client as symfony service.
 
