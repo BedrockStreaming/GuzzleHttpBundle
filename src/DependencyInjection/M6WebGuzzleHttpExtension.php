@@ -39,10 +39,7 @@ class M6WebGuzzleHttpExtension extends Extension
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'm6web_guzzlehttp';
     }

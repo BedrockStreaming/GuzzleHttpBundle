@@ -6,35 +6,22 @@ The GuzzleHttpBundle provide a guzzle client as symfony service.
 
 ## Installation
 
-Require the bundle in your composer.json file :
+Require the bundle with Composer :
 
-```json
-{
-    "require": {
-        "m6web/guzzle-http-bundle": "~3.0"
-    }
-}
+```bash
+$ composer require m6web/guzzle-http-bundle 
 ```
 
 > For older Symfony versions, you can try to install an older version of this bundle.
 
-Register the bundle in your kernel :
+If you don't use Symfony Flex, register the bundle in your kernel :
 
 ```php
-// app/AppKernel.php
 
-public function registerBundles()
-{
-    $bundles = array(
-        new M6Web\Bundle\GuzzleHttpBundle\M6WebGuzzleHttpBundle()
-    );
-}
-```
-
-Then install the bundle :
-
-```shell
-$ composer require m6web/guzzle-http-bundle
+return [
+    // ...
+    M6Web\Bundle\GuzzleHttpBundle\M6WebGuzzleHttpBundle => ['all' => true],
+]
 ```
 
 ## Usage
