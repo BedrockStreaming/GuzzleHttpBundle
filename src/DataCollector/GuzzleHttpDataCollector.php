@@ -13,9 +13,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
  */
 class GuzzleHttpDataCollector extends DataCollector
 {
-    /**
-     * @var GuzzleHttpClient[]
-     */
+    /** @var GuzzleHttpClient[] */
     private $clients = [];
 
     public function __construct()
