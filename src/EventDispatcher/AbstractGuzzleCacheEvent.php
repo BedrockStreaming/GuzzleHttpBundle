@@ -11,10 +11,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 abstract class AbstractGuzzleCacheEvent extends Event
 {
     /** @const string Name of standard event */
-    const NAME = 'm6web.guzzlecache';
+    public const NAME = 'm6web.guzzlecache';
 
     /** @const string Name of Error event */
-    const NAME_ERROR = 'm6web.guzzlecache.error';
+    public const NAME_ERROR = 'm6web.guzzlecache.error';
 
     /** @var RequestInterface */
     protected $request;

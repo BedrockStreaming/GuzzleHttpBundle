@@ -1,7 +1,7 @@
 <?php
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\Middleware;
 
-use atoum;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpErrorEvent;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleHttpEvent;
 use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
@@ -9,42 +9,43 @@ use M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware as Base;
 /**
  * Class EventDispatcherMiddleware test
  */
-class EventDispatcherMiddleware extends atoum
+class EventDispatcherMiddleware extends \atoum
 {
     public function testPush()
     {
         // Mock dispatcher
         $eventSend = null;
         $dispatcherMock = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
-        $dispatcherMock->getMockController()->dispatch = function($event, $name) use (&$eventSend) {
+        $dispatcherMock->getMockController()->dispatch = function ($event, $name) use (&$eventSend) {
             $eventSend = $event;
+
             return $event;
         };
 
         // Mock HandlerStack
         $eventCallable = null;
         $handlerStackMock = new \mock\GuzzleHttp\HandlerStack();
-        $handlerStackMock->getMockController()->push = function($callable, $str) use (&$eventCallable) {
-            if ($str == "eventDispatcher_dispatch") {
+        $handlerStackMock->getMockController()->push = function ($callable, $str) use (&$eventCallable) {
+            if ($str == 'eventDispatcher_dispatch') {
                 $eventCallable = $callable;
             }
         };
 
         // Response & request
-        $requestMock  = new \mock\Psr\Http\Message\RequestInterface();
+        $requestMock = new \mock\Psr\Http\Message\RequestInterface();
         $responseMock = new \mock\Psr\Http\Message\ResponseInterface();
 
         // Mock guzzle promise
         $successCallable = null;
-        $errorCallable   = null;
+        $errorCallable = null;
         $promiseMock = new \mock\GuzzleHttp\Promise();
-        $promiseMock->getMockController()->then = function($success, $error) use (&$successCallable, &$errorCallable) {
+        $promiseMock->getMockController()->then = function ($success, $error) use (&$successCallable, &$errorCallable) {
             $successCallable = $success;
-            $errorCallable   = $error;
+            $errorCallable = $error;
         };
 
         // Handler for end of event
-        $handlerEvent = function() use( $promiseMock) {
+        $handlerEvent = function () use ($promiseMock) {
             return $promiseMock;
         };
 
@@ -93,8 +94,8 @@ class EventDispatcherMiddleware extends atoum
                 ->object($errorCallable)
                     ->isCallable()
                 ->exception(
-                    function() use ($errorCallable) {
-                        $errorCallable(new \Exception("connexion error"));
+                    function () use ($errorCallable) {
+                        $errorCallable(new \Exception('connexion error'));
                     }
                 )
                     ->hasMessage('connexion error')

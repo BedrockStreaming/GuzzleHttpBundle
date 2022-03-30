@@ -198,7 +198,7 @@ trait CacheTrait
             return parent::__invoke($request, $options);
         }
 
-        //user want to force cache reload
+        // user want to force cache reload
         // so we remove existing cache
         if (array_key_exists('cache_force', $options)) {
             $this->cache->remove(self::getKey($request));
@@ -223,7 +223,7 @@ trait CacheTrait
         $result = parent::__invoke($request, $options);
         // then ask promise to cache the response when she's resolved
         $result->then(function (ResponseInterface $response) use ($request, $options) {
-            //check if user want a specific cache duration
+            // check if user want a specific cache duration
             $ttl = (!empty($options['cache_ttl'])) ? $options['cache_ttl'] : null;
 
             $this->cacheResponse($request, $response, $ttl);

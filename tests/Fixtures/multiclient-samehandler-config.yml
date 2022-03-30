@@ -1,5 +1,5 @@
 m6web_guzzlehttp:
-    clients_share_the_same_handler: false
+    clients_share_the_same_handler: true
     clients:
         default:
             base_uri: "http://domain.tld"
