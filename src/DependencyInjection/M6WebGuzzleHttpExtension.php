@@ -48,11 +48,7 @@ class M6WebGuzzleHttpExtension extends Extension
         return 'm6web_guzzlehttp';
     }
 
-    /**
-     * @param string $clientId
-     * @param bool   $isDebugEnabled
-     */
-    protected function loadClient(ContainerBuilder $container, $clientId, array $config, $isDebugEnabled, bool $useSameHandler)
+    protected function loadClient(ContainerBuilder $container, string $clientId, array $config, $isDebugEnabled, bool $useSameHandler)
     {
         // clear empty arrays
         foreach ($config as $key => $item) {
@@ -171,7 +167,10 @@ class M6WebGuzzleHttpExtension extends Extension
         $curlMultiHandler->addMethodCall('setDebug', [$isDebugEnabled]);
 
         if (isset($config['guzzlehttp_cache'])) {
-            if (is_null($cacheService = $this->getServiceReference($config['guzzlehttp_cache']['service']))) {
+            if (
+                !isset($config['guzzlehttp_cache']['service'])
+                || is_null($cacheService = $this->getServiceReference($config['guzzlehttp_cache']['service']))
+            ) {
                 throw new \InvalidArgumentException(sprintf('"guzzlehttp_cache.service" requires a valid service reference, "%s" given', $config['guzzlehttp_cache']['service']));
             }
 
@@ -231,7 +230,7 @@ class M6WebGuzzleHttpExtension extends Extension
         return $curlInfo;
     }
 
-    protected function getServiceReference($id)
+    protected function getServiceReference(string $id)
     {
         if (substr($id, 0, 1) == '@') {
             return new Reference(substr($id, 1));
@@ -279,14 +278,16 @@ class M6WebGuzzleHttpExtension extends Extension
         return $newHeaders;
     }
 
-    private function buildGuzzleProxyHandlerServiceName(?string $clientId): string {
+    private function buildGuzzleProxyHandlerServiceName(?string $clientId): string
+    {
         return sprintf(
             'm6web_guzzlehttp.guzzle.proxyhandler%s',
             !empty($clientId) ? '_'.$clientId : ''
         );
     }
 
-    private function buildGuzzleHandlerStackServiceName(?string $clientId): string {
+    private function buildGuzzleHandlerStackServiceName(?string $clientId): string
+    {
         return sprintf(
             'm6web_guzzlehttp.guzzle.handlerstack%s',
             !empty($clientId) ? '.'.$clientId : ''
