@@ -1,6 +1,6 @@
 # GuzzleHttpBundle
 
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FBedrockStreaming%2FGuzzleHttpBundle%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/BedrockStreaming/GuzzleHttpBundle/goto?ref=master)
+[![Build Status](https://github.com/BedrockStreaming/GuzzleHttpBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/BedrockStreaming/GuzzleHttpBundle/actions/workflows/ci.yml) [![Latest Stable Version](http://poser.pugx.org/m6web/guzzle-http-bundle/v)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![Total Downloads](http://poser.pugx.org/m6web/guzzle-http-bundle/downloads)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![License](http://poser.pugx.org/m6web/guzzle-http-bundle/license)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![PHP Version Require](http://poser.pugx.org/m6web/guzzle-http-bundle/require/php)](https://packagist.org/packages/m6web/guzzle-http-bundle)
 
 The GuzzleHttpBundle provide a guzzle client as symfony service.
 
