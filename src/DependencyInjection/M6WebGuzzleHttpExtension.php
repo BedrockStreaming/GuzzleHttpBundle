@@ -48,7 +48,7 @@ class M6WebGuzzleHttpExtension extends Extension
         return 'm6web_guzzlehttp';
     }
 
-    protected function loadClient(ContainerBuilder $container, string $clientId, array $config, $isDebugEnabled, bool $useSameHandler)
+    protected function loadClient(ContainerBuilder $container, string $clientId, array $config, bool $isDebugEnabled, bool $useSameHandler)
     {
         // clear empty arrays
         foreach ($config as $key => $item) {
