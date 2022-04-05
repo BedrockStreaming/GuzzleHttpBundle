@@ -21,6 +21,9 @@ install: clean-vendor composer-install
 .PHONY: quality
 quality: cs-ci
 
+.PHONY: quality-fix
+quality-fix: cs-fix
+
 .PHONY: test
 test: atoum
 
@@ -59,4 +62,3 @@ ${SOURCE_DIR}/vendor/composer/installed.json:
 atoum:
 	$(call printSection,TEST atoum)
 	${BIN_DIR}/atoum
-

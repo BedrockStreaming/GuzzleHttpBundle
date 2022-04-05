@@ -14,12 +14,12 @@ class CurlFactory extends GuzzleCurlFactory
     /**
      * {@inheritdoc}
      */
-    public function release(EasyHandle $easy)
+    public function release(EasyHandle $easy): void
     {
         if (!is_null($easy->response)) {
             $easy->response->curlInfo = curl_getinfo($easy->handle);
         }
 
-        return parent::release($easy);
+        parent::release($easy);
     }
 }

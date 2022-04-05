@@ -13,6 +13,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
+                ->booleanNode('clients_share_the_same_handler')->defaultTrue()->end()
                 ->arrayNode('clients')
                     ->isRequired()
                     ->requiresAtLeastOneElement()

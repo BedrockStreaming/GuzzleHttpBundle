@@ -3,6 +3,7 @@
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\GuzzleCacheErrorEvent;
@@ -188,17 +189,15 @@ trait CacheTrait
      * Check if request is in cache and return the response in this case
      * otherwise send request then cache the response
      *
-     * @return FulfilledPromise
-     *
      * @throws \Exception
      */
-    public function __invoke(RequestInterface $request, array $options)
+    public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         if (is_null($this->cache)) {
             return parent::__invoke($request, $options);
         }
 
-        //user want to force cache reload
+        // user want to force cache reload
         // so we remove existing cache
         if (array_key_exists('cache_force', $options)) {
             $this->cache->remove(self::getKey($request));
@@ -223,7 +222,7 @@ trait CacheTrait
         $result = parent::__invoke($request, $options);
         // then ask promise to cache the response when she's resolved
         $result->then(function (ResponseInterface $response) use ($request, $options) {
-            //check if user want a specific cache duration
+            // check if user want a specific cache duration
             $ttl = (!empty($options['cache_ttl'])) ? $options['cache_ttl'] : null;
 
             $this->cacheResponse($request, $response, $ttl);

@@ -2,7 +2,6 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\DependencyInjection;
 
-use atoum;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
 use M6Web\Bundle\GuzzleHttpBundle\DependencyInjection\M6WebGuzzleHttpExtension as TestedClass;
@@ -11,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-class M6WebGuzzleHttpExtension extends atoum
+class M6WebGuzzleHttpExtension extends \atoum
 {
     public function testDefaultConfig()
     {
@@ -142,9 +141,9 @@ class M6WebGuzzleHttpExtension extends atoum
         ;
     }
 
-    public function testMultiClientConfig()
+    public function testMultiClientSameHandlerConfig()
     {
-        $container = $this->getContainerForConfiguration('multiclient-config');
+        $container = $this->getContainerForConfiguration('multiclient-samehandler-config');
         $container->compile();
 
         $this
@@ -164,6 +163,8 @@ class M6WebGuzzleHttpExtension extends atoum
                 ->isTrue()
             ->boolean($arguments['allow_redirects'])
                 ->isFalse()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.default'))
+                ->isTrue()
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
@@ -191,6 +192,68 @@ class M6WebGuzzleHttpExtension extends atoum
             ->array($headers = $arguments['headers'])
                 ->hasSize(1)
                 ->hasKey('User-Agent')
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
+                ->isTrue()
+            ->object($container->get('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
+                ->isIdenticalTo($container->get('m6web_guzzlehttp.guzzle.handlerstack.default'))
+        ;
+    }
+
+    public function testMultiClientConfig()
+    {
+        $container = $this->getContainerForConfiguration('multiclient-config');
+        $container->compile();
+
+        $this
+            ->boolean($container->has('m6web_guzzlehttp'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp')->getArgument(0))
+                ->hasSize(10)
+            ->string($arguments['base_uri'])
+                ->isEqualTo('http://domain.tld')
+            ->integer($arguments['timeout'])
+                ->isEqualTo(2)
+            ->integer($arguments['connect_timeout'])
+                ->isEqualTo(8)
+            ->integer($arguments['read_timeout'])
+                ->isEqualTo(12)
+            ->boolean($arguments['http_errors'])
+                ->isTrue()
+            ->boolean($arguments['allow_redirects'])
+                ->isFalse()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.default'))
+                ->isTrue()
+            ->boolean($container->has('m6web_guzzlehttp_myclient'))
+                ->isTrue()
+            ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
+                ->hasSize(11)
+            ->string($arguments['base_uri'])
+                ->isEqualTo('http://domain2.tld')
+            ->float($arguments['timeout'])
+                ->isEqualTo(5.0)
+            ->float($arguments['connect_timeout'])
+                ->isEqualTo(5.0)
+            ->float($arguments['read_timeout'])
+                ->isEqualTo(5.0)
+            ->array($redirect = $arguments['allow_redirects'])
+                ->hasSize(4)
+                ->hasKeys(['max', 'strict', 'referer', 'protocols'])
+            ->integer($redirect['max'])
+                ->isEqualTo(5)
+            ->boolean($redirect['strict'])
+                ->isFalse()
+            ->boolean($redirect['referer'])
+                ->isTrue()
+            ->array($redirect['protocols'])
+                ->hasSize(2)
+                ->isEqualTo(['http', 'https'])
+            ->array($headers = $arguments['headers'])
+                ->hasSize(1)
+                ->hasKey('User-Agent')
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
+                ->isTrue()
+            ->object($container->get('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
+                ->isNotIdenticalTo($container->get('m6web_guzzlehttp.guzzle.handlerstack.default'))
         ;
     }
 
@@ -427,7 +490,7 @@ class M6WebGuzzleHttpExtension extends atoum
     public function testRequestConfig()
     {
         $container = $this->getContainerBuilder();
-        $container->set('invokable.service.id', new \StdClass());
+        $container->set('invokable.service.id', new \stdClass());
 
         $container = $this->getContainerForConfiguration('request-config', $container);
         $container->compile();
@@ -544,7 +607,7 @@ class M6WebGuzzleHttpExtension extends atoum
         }
 
         $mockDispatcher = new \mock\Symfony\Component\EventDispatcher\EventDispatcherInterface();
-        $mockDispatcher->getMockController()->dispatch = function($event) {
+        $mockDispatcher->getMockController()->dispatch = function ($event) {
             return $event;
         };
         $container->set('event_dispatcher', $mockDispatcher);

@@ -13,8 +13,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 abstract class AbstractGuzzleHttpEvent extends Event
 {
-    const EVENT_NAME = 'm6web.guzzlehttp';
-    const EVENT_ERROR_NAME = 'm6web.guzzlehttp.error';
+    public const EVENT_NAME = 'm6web.guzzlehttp';
+    public const EVENT_ERROR_NAME = 'm6web.guzzlehttp.error';
 
     /** @var float Command start time */
     protected $executionStart;
