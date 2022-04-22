@@ -46,6 +46,7 @@ cs-ci:
 .PHONY: clean-vendor
 clean-vendor:
 	$(call printSection,CLEAN-VENDOR)
+	rm -f ${SOURCE_DIR}/composer.lock
 	rm -rf ${SOURCE_DIR}/vendor
 
 .PHONY: composer-install

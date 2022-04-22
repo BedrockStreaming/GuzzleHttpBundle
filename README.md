@@ -164,17 +164,18 @@ As some configuration options accept multiples data types, all services referenc
 
 ```yaml
 m6web_guzzlehttp:
+    clients_share_the_same_handler: false          # Use "true" if you want all your clients to share the same Guzzle handler. It means that both your asynchronous requests context AND your middlewares will be shared between clients.
     clients:
         default:
             base_uri: ""                           # Base uri to prepend on request uri
             timeout: 5.0                           # request timeout
-            http_errors: true                      # set to false to disable throwing exceptions on HTTP protocol errors
+            http_errors: true                      # Use "false" to disable throwing exceptions on HTTP protocol errors
             redirect_handler: curl                 # guzzle or curl
             guzzlehttp_cache:                      # optional cache
                 cache_server_errors: true          # at false, no server errors will be cached
                 cache_client_errors: true          # at false, no client errors will be cached
                 default_ttl: 3600                  # default ttl for cache entry in seconds
-                ignore_cache_errors: false          # at true, no Exception would be throw when cache is unavailable
+                ignore_cache_errors: false         # at true, no Exception would be throw when cache is unavailable
                 use_header_ttl: false              # use the cache-control header to set the ttl
                 service: '@my_cache_service'       # reference to service who implements the cache interface
             headers:                               # optional. Default request headers
@@ -205,7 +206,7 @@ m6web_guzzlehttp:
                     value: tracker
             connect_timeout: 1                     # float, Float describing the number of seconds to wait while trying to connect to a server
             debug: true                            # boolean, Set to true to enable debug output with the handler used to send a request
-            decode_content: true                   # string | boolean, specify whether or not Content-Encoding responses are automatically decoded
+            decode_content: true                   # string | boolean, specify whether Content-Encoding responses are automatically decoded
             delay: 10                              # boolean | float, the number of milliseconds to delay before sending the request
             expect: true                           # boolean | integer, controls the behavior of the "Expect: 100-Continue" header
             force_ip_resolve:                      # Set to "v4" if you want the HTTP handlers to use only ipv4 protocol or "v6" for ipv6 protocol.
