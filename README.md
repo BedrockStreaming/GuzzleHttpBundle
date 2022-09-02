@@ -2,11 +2,11 @@
 
 [![Build Status](https://github.com/BedrockStreaming/GuzzleHttpBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/BedrockStreaming/GuzzleHttpBundle/actions/workflows/ci.yml) [![Latest Stable Version](http://poser.pugx.org/m6web/guzzle-http-bundle/v)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![Total Downloads](http://poser.pugx.org/m6web/guzzle-http-bundle/downloads)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![License](http://poser.pugx.org/m6web/guzzle-http-bundle/license)](https://packagist.org/packages/m6web/guzzle-http-bundle) [![PHP Version Require](http://poser.pugx.org/m6web/guzzle-http-bundle/require/php)](https://packagist.org/packages/m6web/guzzle-http-bundle)
 
-The GuzzleHttpBundle provide a guzzle client as symfony service.
+The GuzzleHttpBundle provide Guzzle clients as Symfony services.
 
 ## Installation
 
-Require the bundle with Composer :
+Require the bundle with Composer:
 
 ```bash
 $ composer require m6web/guzzle-http-bundle 
@@ -14,7 +14,7 @@ $ composer require m6web/guzzle-http-bundle
 
 > For older Symfony versions, you can try to install an older version of this bundle.
 
-If you don't use Symfony Flex, register the bundle in your kernel :
+If you don't use Symfony Flex, register the bundle in your kernel:
 
 ```php
 
@@ -40,7 +40,7 @@ m6web_guzzlehttp:
 All subkey under clients defines an instance of guzzle http client. These services are named `m6web_guzzlehttp_`+subkey expect for the
  `default` subkey that define the main service `m6web_guzzlehttp`.
 
-Then you can ask container for your client :
+Then you can ask container for your client:
 
 ```php
 // in a controller
@@ -84,7 +84,9 @@ When a cache system is available, you can use `cache_force` and `cache_ttl` in a
 
 ## DataCollector
 
-Datacollector is available when the symfony profiler is enabled. The collector allows you to see the following data :
+A data collector is available when the Symfony profiler is enabled. 
+
+It allows you to inspect the following data:
 
  - Method
  - Url
@@ -93,9 +95,9 @@ Datacollector is available when the symfony profiler is enabled. The collector a
  - Redirect count
  - Redirect time
  - Cache hit
- - Cache ttl
+ - Cache TTL
 
-**NOTE :** If you choose guzzle for `redirect_handler`, The redirect count and redirect time will always set to zero.
+**NOTE:** If you choose Guzzle for `redirect_handler`, The redirect count and redirect time will always be zero.
 Cache information are available when a cache system is set.
 
 ## Cache system
@@ -113,7 +115,7 @@ m6web_guzzlehttp:
                 service: my_cache_service
 ```
 
-We provide an "In memory" cache class that you can use by defining a new cache service and use it in Guzzle configuration :
+We provide an "In memory" cache class that you can use by defining a new cache service and use it in Guzzle configuration:
 
 ```yaml
 # app/config/config.yml
@@ -154,17 +156,17 @@ m6_redis:
 
 ```
 
-For more information on how to setup the RedisBundle, refer to the README in the project.
+For more information on how to set up the RedisBundle, refer to the README in the project.
 
 We provide also the same cache system for APCU through the [ApcuBundle](https://github.com/M6Web/ApcuBundle).
 
 ## Configuration reference
 
-As some configuration options accept multiples data types, all services references must sart with a `@` character.
+As some configuration options accept multiples data types, all services references must start with a `@` character.
 
 ```yaml
 m6web_guzzlehttp:
-    clients_share_the_same_handler: false          # Use "true" if you want all your clients to share the same Guzzle handler. It means that both your asynchronous requests context AND your middlewares will be shared between clients.
+    clients_share_the_same_handler: false          # Use "true" if you want all your clients to share the same Guzzle handler. It means that your different clients will be able to send asynchronous requests altogether.
     clients:
         default:
             base_uri: ""                           # Base uri to prepend on request uri
@@ -175,7 +177,7 @@ m6web_guzzlehttp:
                 cache_server_errors: true          # at false, no server errors will be cached
                 cache_client_errors: true          # at false, no client errors will be cached
                 default_ttl: 3600                  # default ttl for cache entry in seconds
-                ignore_cache_errors: false         # at true, no Exception would be throw when cache is unavailable
+                ignore_cache_errors: false         # if true, no exception would be thrown when cache is unavailable
                 use_header_ttl: false              # use the cache-control header to set the ttl
                 service: '@my_cache_service'       # reference to service who implements the cache interface
             headers:                               # optional. Default request headers
@@ -255,14 +257,13 @@ Acme\Infra\GraphQL\Client\MyMiddleware:
 
 ## Contributing
 
-First of all, thank you for contributing !
+First, thank you for contributing!
 
-Here are few rules to follow for a easier code review before the maintainers accept and merge your request.
+Here are few rules to follow for an easier code review before the maintainers accept and merge your pull request:
 
-- you MUST follow the Symfony2 coding standard : you can use `make cs-fix` to fix the files
-- you MUST run the test
 - you MUST write or update tests
 - you MUST write or update documentation
+- the CI must pass on your pull request
 
 ## Running the test
 

@@ -103,6 +103,6 @@ class EventDispatcherMiddleware extends \atoum
                     ->call('dispatch')
                         ->withArguments($eventSend, GuzzleHttpErrorEvent::EVENT_ERROR_NAME)
                             ->once()
-            ;
+        ;
     }
 }

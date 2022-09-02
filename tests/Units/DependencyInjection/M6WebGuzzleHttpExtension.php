@@ -54,7 +54,7 @@ class M6WebGuzzleHttpExtension extends \atoum
             ->integer($curlOpt[CURLOPT_MAXREDIRS])
                 ->isEqualTo(5)
             ->integer($curlOpt[CURLOPT_REDIR_PROTOCOLS])
-                ->isEqualTo((CURLPROTO_HTTP | CURLPROTO_HTTPS))
+                ->isEqualTo(CURLPROTO_HTTP | CURLPROTO_HTTPS)
             ->boolean($curlOpt[CURLOPT_AUTOREFERER])
                 ->isTrue()
         ;
@@ -165,6 +165,8 @@ class M6WebGuzzleHttpExtension extends \atoum
                 ->isFalse()
             ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.default'))
                 ->isTrue()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.proxyhandler_default'))
+                ->isTrue()
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
@@ -194,8 +196,12 @@ class M6WebGuzzleHttpExtension extends \atoum
                 ->hasKey('User-Agent')
             ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
                 ->isTrue()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.proxyhandler_myclient'))
+                ->isTrue()
             ->object($container->get('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
-                ->isIdenticalTo($container->get('m6web_guzzlehttp.guzzle.handlerstack.default'))
+                ->isNotIdenticalTo($container->get('m6web_guzzlehttp.guzzle.handlerstack.default'))
+            ->object($container->get('m6web_guzzlehttp.guzzle.proxyhandler_myclient'))
+                ->isIdenticalTo($container->get('m6web_guzzlehttp.guzzle.proxyhandler_default'))
         ;
     }
 
@@ -223,6 +229,8 @@ class M6WebGuzzleHttpExtension extends \atoum
                 ->isFalse()
             ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.default'))
                 ->isTrue()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.proxyhandler_default'))
+                ->isTrue()
             ->boolean($container->has('m6web_guzzlehttp_myclient'))
                 ->isTrue()
             ->array($arguments = $container->getDefinition('m6web_guzzlehttp_myclient')->getArgument(0))
@@ -252,8 +260,12 @@ class M6WebGuzzleHttpExtension extends \atoum
                 ->hasKey('User-Agent')
             ->boolean($container->has('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
                 ->isTrue()
+            ->boolean($container->has('m6web_guzzlehttp.guzzle.proxyhandler_myclient'))
+                ->isTrue()
             ->object($container->get('m6web_guzzlehttp.guzzle.handlerstack.myclient'))
                 ->isNotIdenticalTo($container->get('m6web_guzzlehttp.guzzle.handlerstack.default'))
+            ->object($container->get('m6web_guzzlehttp.guzzle.proxyhandler_myclient'))
+                ->isNotIdenticalTo($container->get('m6web_guzzlehttp.guzzle.proxyhandler_default'))
         ;
     }
 

@@ -108,7 +108,7 @@ class CurlMultiHandler extends \atoum
                     ->twice()
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response1), '2' => 500])
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response2), '2' => 500])
-            ;
+        ;
 
         // A header in the Vary should be in the cache even if it's an X-
         $cacheMock->getMockController()->resetCalls();
@@ -127,7 +127,7 @@ class CurlMultiHandler extends \atoum
                     ->twice()
                 ->call('set')
                     ->twice()
-            ;
+        ;
     }
 
     public function testCacheGet()
@@ -384,7 +384,7 @@ class CurlMultiHandler extends \atoum
             ->then
                 ->string($testedClass->getPublicKey($request))
                 ->isEqualTo('GET-https://httpbin.org/get-012c059df30be6f6c77e1b8447d7a15c')
-            ;
+        ;
 
         $this->if(
             $request = new \mock\GuzzleHttp\Psr7\Request(
