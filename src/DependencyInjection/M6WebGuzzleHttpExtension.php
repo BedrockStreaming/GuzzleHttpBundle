@@ -30,7 +30,8 @@ class M6WebGuzzleHttpExtension extends Extension
         $isDebugEnabled = $container->getParameter('kernel.debug');
 
         if ($useSameHandler = $config['clients_share_the_same_handler']) {
-            $this->addGuzzleProxyHandlerAndHandlerStack($container, null, $config, $isDebugEnabled);
+            // this Handler will be used by all clients
+            $this->setGuzzleProxyHandler($container, null, $config, $isDebugEnabled);
         }
 
         foreach ($config['clients'] as $clientId => $clientConfig) {
@@ -60,12 +61,22 @@ class M6WebGuzzleHttpExtension extends Extension
         if ($config['allow_redirects']['max'] == 0) {
             $config['allow_redirects'] = false;
         }
+
         if ($useSameHandler) {
-            $container->setAlias($this->buildGuzzleProxyHandlerServiceName($clientId), $this->buildGuzzleProxyHandlerServiceName(null))->setPublic(true);
-            $container->setAlias($this->buildGuzzleHandlerStackServiceName($clientId), $this->buildGuzzleHandlerStackServiceName(null))->setPublic(true);
+            $container
+                ->setAlias($this->buildGuzzleProxyHandlerServiceName($clientId), $this->buildGuzzleProxyHandlerServiceName(null))
+                ->setPublic(true);
         } else {
-            $this->addGuzzleProxyHandlerAndHandlerStack($container, $clientId, $config, $isDebugEnabled);
+            $this->setGuzzleProxyHandler($container, $clientId, $config, $isDebugEnabled);
         }
+
+        // a different HandlerStack is built for each client because each client has its own middlewares,
+        // but all HandlerStacks may use the same underlying Handler depending on the value of $useSameHandler
+        $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
+        $handlerStackDefinition->setPublic(true);
+        $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
+        $handlerStackDefinition->setArguments([new Reference($this->buildGuzzleProxyHandlerServiceName($clientId))]);
+        $container->setDefinition($this->buildGuzzleHandlerStackServiceName($clientId), $handlerStackDefinition);
 
         $handlerStackReference = new Reference($this->buildGuzzleHandlerStackServiceName($clientId));
 
@@ -127,18 +138,6 @@ class M6WebGuzzleHttpExtension extends Extension
         $containerKey = ($clientId == 'default') ? 'm6web_guzzlehttp' : 'm6web_guzzlehttp_'.$clientId;
 
         $container->setDefinition($containerKey, $guzzleClientDefinition);
-    }
-
-    private function addGuzzleProxyHandlerAndHandlerStack(ContainerBuilder $container, ?string $clientId, array $config, bool $isDebugEnabled): void
-    {
-        $this->setGuzzleProxyHandler($container, $clientId, $config, $isDebugEnabled);
-        $handlerStackDefinition = new Definition('%m6web_guzzlehttp.guzzle.handlerstack.class%');
-
-        $handlerStackDefinition->setPublic(true);
-        $handlerStackDefinition->setFactory(['%m6web_guzzlehttp.guzzle.handlerstack.class%', 'create']);
-        $handlerStackDefinition->setArguments([new Reference($this->buildGuzzleProxyHandlerServiceName($clientId))]);
-
-        $container->setDefinition($this->buildGuzzleHandlerStackServiceName($clientId), $handlerStackDefinition);
     }
 
     /**
@@ -282,7 +281,7 @@ class M6WebGuzzleHttpExtension extends Extension
     {
         return sprintf(
             'm6web_guzzlehttp.guzzle.proxyhandler%s',
-            !empty($clientId) ? '_'.$clientId : ''
+            null !== $clientId ? '_'.$clientId : ''
         );
     }
 
@@ -290,7 +289,7 @@ class M6WebGuzzleHttpExtension extends Extension
     {
         return sprintf(
             'm6web_guzzlehttp.guzzle.handlerstack%s',
-            !empty($clientId) ? '.'.$clientId : ''
+            null !== $clientId ? '.'.$clientId : ''
         );
     }
 }
