@@ -68,7 +68,7 @@ class GuzzleHttpDataCollector extends DataCollector
     {
         $client = 'm6web_guzzlehttp';
         if ($event->getClientId() !== 'default') {
-            $client = $client.'_'.$event->getClientId();
+            $client .= '_'.$event->getClientId();
         }
 
         $request = $event->getRequest();
