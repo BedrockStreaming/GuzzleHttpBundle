@@ -67,10 +67,9 @@ class GuzzleHttpDataCollector extends DataCollector
     public function onGuzzleHttpCommand(AbstractGuzzleHttpEvent $event)
     {
         $client = 'm6web_guzzlehttp';
-        if($event->getClientId() !== 'default'){
+        if ($event->getClientId() !== 'default') {
             $client = $client.'_'.$event->getClientId();
         }
-
 
         $request = $event->getRequest();
         $response = $event->getResponse();
