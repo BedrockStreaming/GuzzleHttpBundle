@@ -2,7 +2,7 @@
 
 namespace M6Web\Bundle\GuzzleHttpBundle\DataCollector;
 
-use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\ClientInterface as GuzzleHttpClient;
 use M6Web\Bundle\GuzzleHttpBundle\EventDispatcher\AbstractGuzzleHttpEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
