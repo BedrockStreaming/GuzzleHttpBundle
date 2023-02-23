@@ -85,8 +85,14 @@ class M6WebGuzzleHttpExtension extends Extension
         $middlewareEventDispatcherDefinition->setArguments([new Reference('event_dispatcher'), $clientId]);
         $middlewareEventDispatcherDefinition->addMethodCall('push', [$handlerStackReference]);
 
+        $middlewareHostForwarderDefinition = new Definition('%m6web_guzzlehttp.middleware.hostforwarder.class%');
+        $middlewareHostForwarderDefinition->setPublic(true);
+        $middlewareHostForwarderDefinition->setArguments([$config]);
+        $middlewareHostForwarderDefinition->addMethodCall('push', [$handlerStackReference]);
+
         // we must assign middleware for build process
         $config['middleware'][] = $middlewareEventDispatcherDefinition;
+        $config['middleware'][] = $middlewareHostForwarderDefinition;
         $config['handler'] = $handlerStackReference;
 
         if ($config['redirect_handler'] == 'curl') {

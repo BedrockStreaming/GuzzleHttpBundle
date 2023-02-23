@@ -8,6 +8,7 @@ parameters:
     m6web_guzzlehttp.guzzle.client.class: 'GuzzleHttp\Client'
 
     m6web_guzzlehttp.middleware.eventdispatcher.class: 'M6Web\Bundle\GuzzleHttpBundle\Middleware\EventDispatcherMiddleware'
+    m6web_guzzlehttp.middleware.hostforwarder.class: 'M6Web\Bundle\GuzzleHttpBundle\Middleware\HostForwarderMiddleware'
 
 services:
 
