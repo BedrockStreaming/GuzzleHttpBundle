@@ -26,16 +26,9 @@ class HostForwarderMiddleware extends \atoum
         // Response & request
         $requestMock = new \mock\Psr\Http\Message\RequestInterface();
 
-        // Mock guzzle promise
-        $promiseMock = new \mock\GuzzleHttp\Promise();
-        $promiseMock->getMockController()->then = function ($success, $error) use (&$successCallable, &$errorCallable) {
-            $successCallable = $success;
-            $errorCallable = $error;
-        };
-
         // Handler for end of event
-        $handlerEvent = function () use ($promiseMock) {
-            return $promiseMock;
+        $handlerEvent = function () {
+            return new \mock\GuzzleHttp\Promise();
         };
 
         $this
