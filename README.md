@@ -55,7 +55,7 @@ try {
         'second' => $client->getAsync('http://domain.tld/path/to/other/resource')
     ];
 
-    $result = \GuzzleHttp\Promise\unwrap($promises);
+    $result = \GuzzleHttp\Promise\Utils::unwrap($promises);
 } catch(\GuzzleHttp\Exception\ConnectException $e) {
     // connection problem like timeout
 }

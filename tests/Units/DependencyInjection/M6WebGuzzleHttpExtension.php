@@ -382,7 +382,7 @@ class M6WebGuzzleHttpExtension extends \atoum
                 'test' => $client->getAsync('http://httpbin.org'),
                 'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
-            ->and($rep = Promise\unwrap($promises))
+            ->and($rep = Promise\Utils::unwrap($promises))
             ->then
                 ->mock($container->get('event_dispatcher'))
                     ->call('dispatch')
@@ -402,7 +402,7 @@ class M6WebGuzzleHttpExtension extends \atoum
                 'test' => $client->getAsync('http://httpbin.org'),
                 'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
-            ->and($rep = Promise\unwrap($promises))
+            ->and($rep = Promise\Utils::unwrap($promises))
             ->and($client2->get('http://httpbin.org'))
             ->then
                 ->mock($container->get('event_dispatcher'))
