@@ -75,8 +75,7 @@ trait CacheTrait
             $request->getHeaderLine(...),
             array_filter(
                 array_keys($request->getHeaders()),
-                fn ($header) => 0 !== stripos((string) $header, 'x-')
-                    || \array_key_exists($header, $vary)
+                fn ($header) => !str_starts_with(strtolower((string) $header), 'x-') || \array_key_exists($header, $vary)
             )
         ));
 
