@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -50,7 +52,7 @@ class M6WebGuzzleHttpExtension extends Extension
     {
         // clear empty arrays
         foreach ($config as $key => $item) {
-            if (is_array($item) && count($item) == 0) {
+            if (\is_array($item) && \count($item) == 0) {
                 unset($config[$key]);
             }
         }
@@ -110,7 +112,7 @@ class M6WebGuzzleHttpExtension extends Extension
             }
         }
         // Create cookies jar if required
-        if (!empty($config['cookies']) && is_array($config['cookies'])) {
+        if (!empty($config['cookies']) && \is_array($config['cookies'])) {
             $config['cookies'] = $this->getCookiesJarServiceReference($container, $config['cookies'], $clientId);
         }
 
@@ -126,7 +128,7 @@ class M6WebGuzzleHttpExtension extends Extension
         // Services entries
         foreach (['on_headers', 'on_stats'] as $key) {
             if (!empty($config[$key])) {
-                if (is_null($serviceReference = $this->getServiceReference($config[$key]))) {
+                if (\is_null($serviceReference = $this->getServiceReference($config[$key]))) {
                     throw new \InvalidArgumentException(sprintf('"%s" configuration entry requires a valid service reference, "%s" given', $key, $config[$key]));
                 }
                 $config[$key] = $serviceReference;
@@ -171,7 +173,7 @@ class M6WebGuzzleHttpExtension extends Extension
         if (isset($config['guzzlehttp_cache'])) {
             if (
                 !isset($config['guzzlehttp_cache']['service'])
-                || is_null($cacheService = $this->getServiceReference($config['guzzlehttp_cache']['service']))
+                || \is_null($cacheService = $this->getServiceReference($config['guzzlehttp_cache']['service']))
             ) {
                 throw new \InvalidArgumentException(sprintf('"guzzlehttp_cache.service" requires a valid service reference, "%s" given', $config['guzzlehttp_cache']['service']));
             }
@@ -218,11 +220,11 @@ class M6WebGuzzleHttpExtension extends Extension
 
             $protocols = array_map('strtolower', $config['allow_redirects']['protocols']);
 
-            if (in_array('http', $protocols)) {
+            if (\in_array('http', $protocols)) {
                 $redirProtocols |= CURLPROTO_HTTP;
             }
 
-            if (in_array('https', $protocols)) {
+            if (\in_array('https', $protocols)) {
                 $redirProtocols |= CURLPROTO_HTTPS;
             }
 

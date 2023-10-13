@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Handler\CurlFactory as GuzzleCurlFactory;
@@ -16,7 +18,7 @@ class CurlFactory extends GuzzleCurlFactory
 {
     public function release(EasyHandle $easy): void
     {
-        if (!is_null($easy->response)) {
+        if (!\is_null($easy->response)) {
             $easy->response->curlInfo = curl_getinfo($easy->handle);
         }
 

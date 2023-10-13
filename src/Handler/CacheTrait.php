@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Promise\FulfilledPromise;
@@ -75,7 +77,7 @@ trait CacheTrait
                 array_keys($request->getHeaders()),
                 function ($header) use ($vary) {
                     return 0 !== stripos($header, 'x-')
-                        || array_key_exists($header, $vary)
+                        || \array_key_exists($header, $vary)
                     ;
                 }
             )
@@ -95,7 +97,7 @@ trait CacheTrait
             $cacheControl = $response->getHeader('Cache-Control')[0];
 
             if (preg_match('`max-age=(\d+)`', $cacheControl, $match)) {
-                return intval($match[1]);
+                return \intval($match[1]);
             }
         }
 
@@ -159,13 +161,13 @@ trait CacheTrait
         }
 
         $cacheKey = self::getKey($request);
-        if (is_null($cachedContent = $this->cache->get($cacheKey))) {
+        if (\is_null($cachedContent = $this->cache->get($cacheKey))) {
             return null;
         }
 
         $cached = unserialize($cachedContent);
         foreach ($cached as $value) {
-            if (is_null($value)) {
+            if (\is_null($value)) {
                 return null;
             }
         }
@@ -191,13 +193,13 @@ trait CacheTrait
      */
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
-        if (is_null($this->cache)) {
+        if (\is_null($this->cache)) {
             return parent::__invoke($request, $options);
         }
 
         // user want to force cache reload
         // so we remove existing cache
-        if (array_key_exists('cache_force', $options)) {
+        if (\array_key_exists('cache_force', $options)) {
             $this->cache->remove(self::getKey($request));
         }
 
@@ -236,7 +238,7 @@ trait CacheTrait
      */
     protected function isSupportedMethod(RequestInterface $request)
     {
-        return in_array(strtoupper($request->getMethod()), self::$methods);
+        return \in_array(strtoupper($request->getMethod()), self::$methods);
     }
 
     /**

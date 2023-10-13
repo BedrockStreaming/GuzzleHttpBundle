@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\DependencyInjection;
 
 use GuzzleHttp\Promise;
@@ -614,7 +616,7 @@ class M6WebGuzzleHttpExtension extends \atoum
     {
         $extension = new TestedClass();
 
-        if (is_null($container)) {
+        if (\is_null($container)) {
             $container = $this->getContainerBuilder();
         }
 
