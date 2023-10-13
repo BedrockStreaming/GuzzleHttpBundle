@@ -72,14 +72,11 @@ trait CacheTrait
         // Generate headerline for the cache key. X- headers are ignored except those included in the Vary
         $vary = array_flip($request->getHeader('Vary'));
         $headerLine = implode('', array_map(
-            [$request, 'getHeaderLine'],
+            $request->getHeaderLine(...),
             array_filter(
                 array_keys($request->getHeaders()),
-                function ($header) use ($vary) {
-                    return 0 !== stripos($header, 'x-')
-                        || \array_key_exists($header, $vary)
-                    ;
-                }
+                fn ($header) => 0 !== stripos((string) $header, 'x-')
+                    || \array_key_exists($header, $vary)
             )
         ));
 

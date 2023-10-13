@@ -52,34 +52,26 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('body')->end()
                             ->variableNode('cert')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_string($v) && (!\is_array($v) || \count($v) != 2);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_string($v) && (!\is_array($v) || \count($v) != 2))
                                     ->theninvalid('Requires a string or a two entries array')
                                 ->end()
                             ->end()
                             ->variableNode('debug')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_string($v) && !\is_bool($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_string($v) && !\is_bool($v))
                                     ->theninvalid('Requires an invokable service id or a bolean value')
                                 ->end()
                             ->end()
                             ->variableNode('decode_content')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_string($v) && !\is_bool($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_string($v) && !\is_bool($v))
                                     ->theninvalid('Requires a string or a boolean')
                                 ->end()
                             ->end()
                             ->floatNode('delay')->end()
                             ->variableNode('expect')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_int($v) && !\is_bool($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_int($v) && !\is_bool($v))
                                     ->theninvalid('Requires an integer or a boolean')
                                 ->end()
                             ->end()
@@ -91,9 +83,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->variableNode('cookies')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_array($v) && !\is_bool($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_array($v) && !\is_bool($v))
                                     ->theninvalid('Requires an array or a boolean')
                                 ->end()
                             ->end()
@@ -114,9 +104,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('on_stats')->end()
                             ->variableNode('proxy')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_array($v) && !\is_string($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_array($v) && !\is_string($v))
                                     ->theninvalid('Requires an array or a string')
                                 ->end()
                             ->end()
@@ -127,9 +115,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('sink')->end()
                             ->variableNode('ssl_key')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_string($v) && (!\is_array($v) || \count($v) != 2);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_string($v) && (!\is_array($v) || \count($v) != 2))
                                     ->theninvalid('Requires a string or a two entries array')
                                 ->end()
                             ->end()
@@ -137,9 +123,7 @@ class Configuration implements ConfigurationInterface
                             ->booleanNode('synchronous')->end()
                             ->variableNode('verify')
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !\is_string($v) && !\is_bool($v);
-                                    })
+                                    ->ifTrue(fn ($v) => !\is_string($v) && !\is_bool($v))
                                     ->theninvalid('Requires a string or a boolean')
                                 ->end()
                             ->end()
@@ -147,9 +131,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('allow_redirects')
                                 ->beforeNormalization()
                                     ->ifInArray([true, false])
-                                    ->then(function ($v) {
-                                        return ['max' => 0];
-                                    })
+                                    ->then(fn ($v) => ['max' => 0])
                                 ->end()
                                 ->addDefaultsIfNotSet()
                                 ->children()
