@@ -1,5 +1,4 @@
 parameters:
-    m6web_guzlehttp.handler.curlfactory.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory'
     m6web_guzlehttp.handler.curlhandler.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlHandler'
     m6web_guzlehttp.handler.curlmultihandler.class: 'M6Web\Bundle\GuzzleHttpBundle\Handler\CurlMultiHandler'
 

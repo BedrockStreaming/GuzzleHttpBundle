@@ -12,38 +12,29 @@ require_once 'FakeCurlMultiHandler.php';
 
 /**
  * Class CurlMultiHandler
- * Used for testing trait and curlFactory
+ * Used for testing trait
  */
 class CurlMultiHandler extends \atoum
 {
     public function testNoCache()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
                 ->object($response = $testedClass($request, [])->wait())
                     ->isInstanceOf('GuzzleHttp\Psr7\Response')
                 ->integer($response->getStatusCode())
                     ->isEqualTo(200)
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
-                ->array($response->curlInfo)
-                    ->isNotEmpty()
         ;
     }
 
     public function testCacheSet()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
                 ->then
@@ -51,11 +42,6 @@ class CurlMultiHandler extends \atoum
                     ->isInstanceOf('GuzzleHttp\Psr7\Response')
                 ->integer($response->getStatusCode())
                     ->isEqualTo(200)
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
-                ->array($response->curlInfo)
-                    ->isNotEmpty()
                 ->mock($cacheMock)
                     ->call('set')
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 500])
@@ -65,8 +51,6 @@ class CurlMultiHandler extends \atoum
 
     public function testCacheSetWithHeader()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheData = [];
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
         $cacheMock->getMockController()->set = function ($key, $value) use (&$cacheData) {
@@ -82,7 +66,7 @@ class CurlMultiHandler extends \atoum
 
         // Add Header as part of the cache key but "X-" headers must be ignored
         $this
-        ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+        ->if($testedClass = new TestedClass($this->getMockDispatcher()))
         ->and($testedClass->setCache($cacheMock, 500, false))
         ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
         ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Ddos-Me' => uniqid()]))
@@ -100,9 +84,6 @@ class CurlMultiHandler extends \atoum
                 ->isEqualTo(200)
             ->integer($response3->getStatusCode())
                 ->isEqualTo(200)
-            ->mock($curlFactoryMock)
-                ->call('release')
-                    ->twice()
             ->mock($cacheMock)
                 ->call('get')
                     ->thrice()
@@ -115,7 +96,7 @@ class CurlMultiHandler extends \atoum
         // A header in the Vary should be in the cache even if it's an X-
         $cacheMock->getMockController()->resetCalls();
         $this
-        ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+        ->if($testedClass = new TestedClass($this->getMockDispatcher()))
         ->and($testedClass->setCache($cacheMock, 500, false))
         ->and($request1 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul', 'Vary' => 'X-Important']))
         ->and($request2 = new Request('GET', 'http://httpbin.org', ['user-agent' => 'Netscape 1', 'X-Important' => 'raoul2', 'Vary' => 'X-Important']))
@@ -134,8 +115,6 @@ class CurlMultiHandler extends \atoum
 
     public function testCacheGet()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = true;
@@ -143,7 +122,7 @@ class CurlMultiHandler extends \atoum
         $cacheMock->getMockController()->ttl = 256;
 
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($testedClass->setDebug(true))
             ->and($request = new Request('GET', 'http://httpbin.org'))
@@ -167,9 +146,6 @@ class CurlMultiHandler extends \atoum
                     ->call('ttl')
                         ->withAnyArguments()
                             ->once()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->never()
         ;
 
         // Test unserialize issue
@@ -189,23 +165,18 @@ class CurlMultiHandler extends \atoum
                     ->call('ttl')
                         ->withAnyArguments()
                             ->once()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
         ;
     }
 
     public function testForceCache()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
 
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
@@ -218,23 +189,18 @@ class CurlMultiHandler extends \atoum
                     ->call('set')
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 500])
                             ->once()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
         ;
     }
 
     public function testCacheCustomTtl()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = false;
         $cacheMock->getMockController()->get = null;
 
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
             ->then
@@ -244,16 +210,11 @@ class CurlMultiHandler extends \atoum
                     ->call('set')
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 200])
                             ->once()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
         ;
     }
 
     public function testCacheUseHeader()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = false;
@@ -261,7 +222,7 @@ class CurlMultiHandler extends \atoum
 
         // use header ttl
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, true))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/200'))
             ->then
@@ -271,15 +232,12 @@ class CurlMultiHandler extends \atoum
                     ->call('set')
                         ->withAtLeastArguments(['1' => $this->getSerializedResponse($response), '2' => 200])
                             ->once()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->once()
             ->and($this->resetMock($cacheMock))
         ;
 
         // 200s of cache but force to 500
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/200'))
             ->then
@@ -294,7 +252,7 @@ class CurlMultiHandler extends \atoum
 
         // use header ttl and no cache
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, true))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
             ->then
@@ -308,7 +266,7 @@ class CurlMultiHandler extends \atoum
 
         // no cache in header but forced to 500
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($request = new Request('GET', 'http://httpbin.org/cache/0'))
             ->then
@@ -324,8 +282,6 @@ class CurlMultiHandler extends \atoum
 
     public function testCacheGetDebugOff()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
         $cacheMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Cache\CacheInterface();
 
         $cacheMock->getMockController()->has = true;
@@ -333,7 +289,7 @@ class CurlMultiHandler extends \atoum
         $cacheMock->getMockController()->ttl = 256;
 
         $this
-            ->if($testedClass = new TestedClass($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]))
+            ->if($testedClass = new TestedClass($this->getMockDispatcher()))
             ->and($testedClass->setCache($cacheMock, 500, false))
             ->and($testedClass->setDebug(false))
             ->and($request = new Request('GET', 'http://httpbin.org'))
@@ -354,9 +310,6 @@ class CurlMultiHandler extends \atoum
                         ->once()
                     ->call('ttl')
                         ->never()
-                ->mock($curlFactoryMock)
-                    ->call('release')
-                        ->never()
         ;
     }
 
@@ -374,9 +327,7 @@ class CurlMultiHandler extends \atoum
 
     public function testGetKey()
     {
-        $curlFactoryMock = new \mock\M6Web\Bundle\GuzzleHttpBundle\Handler\CurlFactory(3);
-
-        $testedClass = new FakeCurlMultiHandler($this->getMockDispatcher(), ['handle_factory' => $curlFactoryMock]);
+        $testedClass = new FakeCurlMultiHandler($this->getMockDispatcher());
 
         $this->if(
             $request = new \mock\GuzzleHttp\Psr7\Request(
