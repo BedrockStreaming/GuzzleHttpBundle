@@ -29,3 +29,20 @@ jobs:
           coverage: xdebug2
       - run: composer update --prefer-dist --no-interaction ${{ matrix.flags }}
       - run: bin/atoum
+
+  phpstan:
+    name: PHPStan checks
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        version: [ 8.1, 8.2 ]
+        flags: [ '', '--prefer-lowest' ]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@master
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.version }}
+          coverage: xdebug2
+      - run: composer update --prefer-dist --no-interaction ${{ matrix.flags }}
+      - run: bin/phpstan
