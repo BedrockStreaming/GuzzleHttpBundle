@@ -25,7 +25,8 @@
     "atoum/atoum": "4.0.3",
     "atoum/stubs": "*",
     "m6web/php-cs-fixer-config": "2.0.0",
-    "friendsofphp/php-cs-fixer": "3.34.1"
+    "friendsofphp/php-cs-fixer": "3.34.1",
+    "guzzlehttp/promises": "^1"
   },
   "autoload": {
     "psr-4": {"M6Web\\Bundle\\GuzzleHttpBundle\\": "src/"}
