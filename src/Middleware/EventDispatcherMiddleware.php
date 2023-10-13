@@ -93,8 +93,6 @@ class EventDispatcherMiddleware implements MiddlewareInterface
 
     /**
      * Dispatch event
-     *
-     * @param mixed $reason
      */
     protected function sendErrorEvent(RequestInterface $request, $reason)
     {

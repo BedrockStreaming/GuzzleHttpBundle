@@ -16,9 +16,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class M6WebGuzzleHttpExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();

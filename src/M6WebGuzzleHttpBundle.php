@@ -10,17 +10,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class M6WebGuzzleHttpBundle extends Bundle
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension(): ?ExtensionInterface
     {
         return new DependencyInjection\M6WebGuzzleHttpExtension();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
