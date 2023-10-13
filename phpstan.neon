@@ -409,8 +409,3 @@ parameters:
             message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\HostForwarderMiddleware\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
             count: 1
             path: src/Middleware/HostForwarderMiddleware.php
-
-        -
-            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\HostForwarderMiddleware\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
-            count: 1
-            path: src/Middleware/HostForwarderMiddleware.php
