@@ -45,7 +45,9 @@ jobs:
     strategy:
       matrix:
         version: [ 8.1, 8.2 ]
-        flags: [ '', '--prefer-lowest' ]
+        flags:
+          - ''
+          # TODO add --prefer-lowest once we're ready to handle it
       fail-fast: false
     steps:
       - uses: actions/checkout@master
