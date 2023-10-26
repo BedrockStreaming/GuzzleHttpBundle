@@ -11,9 +11,6 @@ use GuzzleHttp\Handler\EasyHandle;
  */
 class CurlFactory extends GuzzleCurlFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function release(EasyHandle $easy): void
     {
         if (!is_null($easy->response)) {

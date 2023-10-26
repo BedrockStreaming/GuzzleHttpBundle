@@ -10,9 +10,6 @@ class InMemory implements CacheInterface
     protected $cache = [];
     protected $ttl = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function has($key)
     {
         if (array_key_exists($key, $this->cache)) {
@@ -25,9 +22,6 @@ class InMemory implements CacheInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get($key)
     {
         if ($this->has($key)) {
@@ -37,18 +31,12 @@ class InMemory implements CacheInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function set($key, $value, $ttl = null)
     {
         $this->cache[$key] = $value;
         $this->ttl[$key] = is_null($ttl) ? null : microtime(true) + $ttl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove($key)
     {
         unset(
@@ -57,9 +45,6 @@ class InMemory implements CacheInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function ttl($key)
     {
         if ($this->has($key)) {

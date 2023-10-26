@@ -106,8 +106,6 @@ trait CacheTrait
      * Cache response
      *
      * @param int $ttl
-     *
-     * @return mixed
      */
     protected function cacheResponse(RequestInterface $request, Response $response, $ttl = null)
     {
