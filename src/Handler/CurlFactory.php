@@ -8,6 +8,9 @@ use GuzzleHttp\Handler\EasyHandle;
 
 /**
  * Extends the Guzzle curl factory to set curl info in response
+ *
+ * @deprecated the curlInfo dynamic property will be deleted
+ * in favor of [the native on_stat option](https://docs.guzzlephp.org/en/latest/request-options.html#on-stats)
  */
 class CurlFactory extends GuzzleCurlFactory
 {
