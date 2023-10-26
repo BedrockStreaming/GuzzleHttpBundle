@@ -150,24 +150,14 @@ class M6WebGuzzleHttpExtension extends Extension
      */
     protected function setGuzzleProxyHandler(ContainerBuilder $container, ?string $clientId, array $config, bool $isDebugEnabled)
     {
-        // arguments (3 and 50) in handler factories below represents the maximum number of idle handles.
-        // the values are the default defined in guzzle CurlHandler and CurlMultiHandler
-        $handlerFactorySync = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
-        $handlerFactorySync->setPublic(true);
-        $handlerFactorySync->setArguments([3]);
-
-        $handlerFactoryNormal = new Definition('%m6web_guzlehttp.handler.curlfactory.class%');
-        $handlerFactoryNormal->setPublic(true);
-        $handlerFactoryNormal->setArguments([50]);
-
         $curlHandler = new Definition('%m6web_guzlehttp.handler.curlhandler.class%');
         $curlHandler->setPublic(true);
-        $curlHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactorySync]]);
+        $curlHandler->setArguments([new Reference('event_dispatcher')]);
         $curlHandler->addMethodCall('setDebug', [$isDebugEnabled]);
 
         $curlMultiHandler = new Definition('%m6web_guzlehttp.handler.curlmultihandler.class%');
         $curlMultiHandler->setPublic(true);
-        $curlMultiHandler->setArguments([new Reference('event_dispatcher'), ['handle_factory' => $handlerFactoryNormal]]);
+        $curlMultiHandler->setArguments([new Reference('event_dispatcher')]);
         $curlMultiHandler->addMethodCall('setDebug', [$isDebugEnabled]);
 
         if (isset($config['guzzlehttp_cache'])) {

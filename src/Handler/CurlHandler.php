@@ -20,7 +20,7 @@ class CurlHandler extends GuzzleCurlHandler
     /**
      * CurlHandler constructor.
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, array $options)
+    public function __construct(EventDispatcherInterface $eventDispatcher, array $options = [])
     {
         $this->eventDispatcher = $eventDispatcher;
 
