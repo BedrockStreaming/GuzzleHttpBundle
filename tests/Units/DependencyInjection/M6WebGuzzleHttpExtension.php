@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\tests\Units\DependencyInjection;
 
 use GuzzleHttp\Promise;
@@ -382,7 +384,7 @@ class M6WebGuzzleHttpExtension extends \atoum
                 'test' => $client->getAsync('http://httpbin.org'),
                 'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
-            ->and($rep = Promise\unwrap($promises))
+            ->and($rep = Promise\Utils::unwrap($promises))
             ->then
                 ->mock($container->get('event_dispatcher'))
                     ->call('dispatch')
@@ -402,7 +404,7 @@ class M6WebGuzzleHttpExtension extends \atoum
                 'test' => $client->getAsync('http://httpbin.org'),
                 'test2' => $client->getAsync('http://httpbin.org/ip'),
             ])
-            ->and($rep = Promise\unwrap($promises))
+            ->and($rep = Promise\Utils::unwrap($promises))
             ->and($client2->get('http://httpbin.org'))
             ->then
                 ->mock($container->get('event_dispatcher'))
@@ -614,7 +616,7 @@ class M6WebGuzzleHttpExtension extends \atoum
     {
         $extension = new TestedClass();
 
-        if (is_null($container)) {
+        if (\is_null($container)) {
             $container = $this->getContainerBuilder();
         }
 

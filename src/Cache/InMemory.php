@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Cache;
 
 /**
@@ -12,8 +14,8 @@ class InMemory implements CacheInterface
 
     public function has($key)
     {
-        if (array_key_exists($key, $this->cache)) {
-            if (is_null($this->ttl[$key]) || $this->ttl[$key] > microtime(true)) {
+        if (\array_key_exists($key, $this->cache)) {
+            if (\is_null($this->ttl[$key]) || $this->ttl[$key] > microtime(true)) {
                 return true;
             }
             $this->remove($key);
@@ -34,7 +36,7 @@ class InMemory implements CacheInterface
     public function set($key, $value, $ttl = null)
     {
         $this->cache[$key] = $value;
-        $this->ttl[$key] = is_null($ttl) ? null : microtime(true) + $ttl;
+        $this->ttl[$key] = \is_null($ttl) ? null : microtime(true) + $ttl;
     }
 
     public function remove($key)
@@ -48,7 +50,7 @@ class InMemory implements CacheInterface
     public function ttl($key)
     {
         if ($this->has($key)) {
-            if (!is_null($this->ttl[$key])) {
+            if (!\is_null($this->ttl[$key])) {
                 return (int) round($this->ttl[$key] - microtime(true));
             }
 

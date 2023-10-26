@@ -13,12 +13,12 @@ jobs:
       - run: composer install --prefer-dist --no-interaction
       - run: bin/php-cs-fixer fix --ansi --dry-run --using-cache=no --verbose
 
-  tests:
-    name: Tests
+  atoum-tests:
+    name: Atoum tests
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        version: [ '7.4', '8.0', '8.1' ]
+        version: [ 8.1, 8.2 ]
         flags: [ '', '--prefer-lowest' ]
       fail-fast: false
     steps:

@@ -1,7 +1,7 @@
 {
   "name": "m6web/guzzle-http-bundle",
   "type" : "symfony-bundle",
-  "description": "Symfony2 bundle on top of guzzle 6",
+  "description": "Symfony bundle on top of Guzzle",
   "keywords": ["bundle", "http", "client", "HTTP client"],
   "license" : "MIT",
   "authors": [
@@ -12,21 +12,21 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.1",
     "ext-curl": "*",
-    "guzzlehttp/guzzle": "^6.3||^7.0",
-    "symfony/config" : "^4.4||^5.0||^6.0",
-    "symfony/dependency-injection": "^4.4||^5.0||^6.0",
-    "symfony/event-dispatcher": "^4.4||^5.0||^6.0",
-    "symfony/http-kernel": "^4.4||^5.0||^6.0",
-    "symfony/yaml" : "^4.4||^5.0||^6.0"
+    "guzzlehttp/guzzle": "^7",
+    "symfony/config" : "^5.4||^6.0",
+    "symfony/dependency-injection": "^5.4||^6.0",
+    "symfony/event-dispatcher": "^5.4||^6.0",
+    "symfony/http-kernel": "^5.4||^6.0",
+    "symfony/yaml" : "^5.4||^6.0"
   },
   "require-dev": {
-    "atoum/atoum": "4.0.3",
+    "atoum/atoum": "4.2.0",
     "atoum/stubs": "*",
-    "m6web/php-cs-fixer-config": "2.0.0",
-    "friendsofphp/php-cs-fixer": "3.34.1",
-    "guzzlehttp/promises": "^1"
+    "m6web/php-cs-fixer-config": "3.2.0",
+    "friendsofphp/php-cs-fixer": "3.35.1",
+    "guzzlehttp/promises": "^2"
   },
   "autoload": {
     "psr-4": {"M6Web\\Bundle\\GuzzleHttpBundle\\": "src/"}

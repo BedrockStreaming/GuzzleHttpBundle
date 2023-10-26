@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\Handler;
 
 use GuzzleHttp\Handler\CurlMultiHandler as GuzzleCurlMultiHandler;

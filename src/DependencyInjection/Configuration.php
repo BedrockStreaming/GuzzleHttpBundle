@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace M6Web\Bundle\GuzzleHttpBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -51,7 +53,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('cert')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_string($v) && (!is_array($v) || count($v) != 2);
+                                        return !\is_string($v) && (!\is_array($v) || \count($v) != 2);
                                     })
                                     ->theninvalid('Requires a string or a two entries array')
                                 ->end()
@@ -59,7 +61,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('debug')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_string($v) && !is_bool($v);
+                                        return !\is_string($v) && !\is_bool($v);
                                     })
                                     ->theninvalid('Requires an invokable service id or a bolean value')
                                 ->end()
@@ -67,7 +69,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('decode_content')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_string($v) && !is_bool($v);
+                                        return !\is_string($v) && !\is_bool($v);
                                     })
                                     ->theninvalid('Requires a string or a boolean')
                                 ->end()
@@ -76,7 +78,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('expect')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_int($v) && !is_bool($v);
+                                        return !\is_int($v) && !\is_bool($v);
                                     })
                                     ->theninvalid('Requires an integer or a boolean')
                                 ->end()
@@ -90,7 +92,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('cookies')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_array($v) && !is_bool($v);
+                                        return !\is_array($v) && !\is_bool($v);
                                     })
                                     ->theninvalid('Requires an array or a boolean')
                                 ->end()
@@ -113,7 +115,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('proxy')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_array($v) && !is_string($v);
+                                        return !\is_array($v) && !\is_string($v);
                                     })
                                     ->theninvalid('Requires an array or a string')
                                 ->end()
@@ -126,7 +128,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('ssl_key')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_string($v) && (!is_array($v) || count($v) != 2);
+                                        return !\is_string($v) && (!\is_array($v) || \count($v) != 2);
                                     })
                                     ->theninvalid('Requires a string or a two entries array')
                                 ->end()
@@ -136,7 +138,7 @@ class Configuration implements ConfigurationInterface
                             ->variableNode('verify')
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return !is_string($v) && !is_bool($v);
+                                        return !\is_string($v) && !\is_bool($v);
                                     })
                                     ->theninvalid('Requires a string or a boolean')
                                 ->end()
