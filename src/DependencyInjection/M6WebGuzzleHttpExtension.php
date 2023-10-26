@@ -226,7 +226,7 @@ class M6WebGuzzleHttpExtension extends Extension
 
     protected function getServiceReference(string $id)
     {
-        if (substr($id, 0, 1) == '@') {
+        if (str_starts_with($id, '@')) {
             return new Reference(substr($id, 1));
         }
 
@@ -238,9 +238,7 @@ class M6WebGuzzleHttpExtension extends Extension
         array_walk($cookies, function (&$item) {
             $item = array_combine(
                 array_map(
-                    function ($key) {
-                        return ucwords($key, ' -');
-                    },
+                    fn ($key) => ucwords($key, ' -'),
                     array_keys($item)
                 ),
                 array_values($item)
@@ -249,7 +247,7 @@ class M6WebGuzzleHttpExtension extends Extension
 
         $container->register(
             $id = sprintf('m6web_guzzlehttp.guzzle.cookies_jar.%s', $clientId),
-            'GuzzleHttp\Cookie\CookieJar'
+            \GuzzleHttp\Cookie\CookieJar::class
         )
         ->setArguments([false, $cookies])
         ->setPublic(true);

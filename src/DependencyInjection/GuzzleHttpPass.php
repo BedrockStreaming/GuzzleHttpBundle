@@ -10,12 +10,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class GuzzleHttpPass implements CompilerPassInterface
 {
-    /** @var string */
-    private $clientTag;
-
-    public function __construct(string $clientTag = 'm6web_guzzlehttp.client')
+    public function __construct(private readonly string $clientTag = 'm6web_guzzlehttp.client')
     {
-        $this->clientTag = $clientTag;
     }
 
     public function process(ContainerBuilder $container)

@@ -1,0 +1,411 @@
+parameters:
+    level: max
+    paths:
+        - src
+    
+    # TODO this list may be emptied little by little
+    ignoreErrors:
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\CacheInterface\\:\\:remove\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Cache/CacheInterface.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\CacheInterface\\:\\:set\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Cache/CacheInterface.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\InMemory\\:\\:remove\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Cache/InMemory.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\InMemory\\:\\:set\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Cache/InMemory.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\InMemory\\:\\:ttl\\(\\) should return int\\|false but returns null\\.$#"
+            count: 1
+            path: src/Cache/InMemory.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\InMemory\\:\\:\\$cache has no type specified\\.$#"
+            count: 1
+            path: src/Cache/InMemory.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\InMemory\\:\\:\\$ttl has no type specified\\.$#"
+            count: 1
+            path: src/Cache/InMemory.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DataCollector\\\\GuzzleHttpDataCollector\\:\\:getClients\\(\\) return type has no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DataCollector/GuzzleHttpDataCollector.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DataCollector\\\\GuzzleHttpDataCollector\\:\\:onGuzzleHttpCommand\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DataCollector/GuzzleHttpDataCollector.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DataCollector\\\\GuzzleHttpDataCollector\\:\\:registerClient\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DataCollector/GuzzleHttpDataCollector.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DataCollector\\\\GuzzleHttpDataCollector\\:\\:\\$clients is never read, only written\\.$#"
+            count: 1
+            path: src/DataCollector/GuzzleHttpDataCollector.php
+
+        -
+            message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+            count: 1
+            path: src/DependencyInjection/Configuration.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getCookiesJarServiceReference\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getCookiesJarServiceReference\\(\\) has parameter \\$clientId with no type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getCookiesJarServiceReference\\(\\) has parameter \\$cookies with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getCurlConfig\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getCurlConfig\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:getServiceReference\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:loadClient\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:loadClient\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:parseHeaders\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:parseHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:setGuzzleProxyHandler\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:setGuzzleProxyHandler\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Parameter \\#1 \\$string of function ucwords expects string, int\\|string given\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|null given\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Parameter \\#4 \\$isDebugEnabled of method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:loadClient\\(\\) expects bool, array\\|bool\\|float\\|int\\|string\\|UnitEnum\\|null given\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Parameter \\#4 \\$isDebugEnabled of method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\M6WebGuzzleHttpExtension\\:\\:setGuzzleProxyHandler\\(\\) expects bool, array\\|bool\\|float\\|int\\|string\\|UnitEnum\\|null given\\.$#"
+            count: 1
+            path: src/DependencyInjection/M6WebGuzzleHttpExtension.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\MiddlewarePass\\:\\:registerMiddleware\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/DependencyInjection/MiddlewarePass.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\DependencyInjection\\\\MiddlewarePass\\:\\:registerMiddleware\\(\\) has parameter \\$middlewareArguments with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/DependencyInjection/MiddlewarePass.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\EventDispatcher\\\\AbstractGuzzleCacheEvent\\:\\:setException\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/EventDispatcher/AbstractGuzzleCacheEvent.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\EventDispatcher\\\\AbstractGuzzleHttpEvent\\:\\:\\$response \\(GuzzleHttp\\\\Psr7\\\\Response\\) does not accept Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#"
+            count: 1
+            path: src/EventDispatcher/AbstractGuzzleHttpEvent.php
+
+        -
+            message: "#^Access to an undefined property GuzzleHttp\\\\Psr7\\\\Response\\:\\:\\$cacheTtl\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Access to an undefined property GuzzleHttp\\\\Psr7\\\\Response\\:\\:\\$cached\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Call to function is_null\\(\\) with M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\CacheInterface will always evaluate to false\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Cannot access offset 0 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Cannot access offset 1 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Cannot access offset 2 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Cannot access offset 3 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Cannot access offset 4 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Class M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler extends @final class GuzzleHttp\\\\Handler\\\\CurlHandler\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:__invoke\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:cacheResponse\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:setCache\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:setDebug\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#1 \\$status of class GuzzleHttp\\\\Psr7\\\\Response constructor expects int, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#2 \\$headers of class GuzzleHttp\\\\Psr7\\\\Response constructor expects array\\<string, array\\<string\\>\\|string\\>, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#2 \\$response of method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:cacheResponse\\(\\) expects GuzzleHttp\\\\Psr7\\\\Response, Psr\\\\Http\\\\Message\\\\ResponseInterface given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#4 \\$version of class GuzzleHttp\\\\Psr7\\\\Response constructor expects string, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Parameter \\#5 \\$reason of class GuzzleHttp\\\\Psr7\\\\Response constructor expects string\\|null, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlHandler\\:\\:\\$methods type has no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Handler/CurlHandler.php
+
+        -
+            message: "#^Access to an undefined property GuzzleHttp\\\\Psr7\\\\Response\\:\\:\\$cacheTtl\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Access to an undefined property GuzzleHttp\\\\Psr7\\\\Response\\:\\:\\$cached\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Call to function is_null\\(\\) with M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Cache\\\\CacheInterface will always evaluate to false\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Cannot access offset 0 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Cannot access offset 1 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Cannot access offset 2 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Cannot access offset 3 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Cannot access offset 4 on mixed\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Class M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler extends @final class GuzzleHttp\\\\Handler\\\\CurlMultiHandler\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:__invoke\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:cacheResponse\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:setCache\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:setDebug\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#1 \\$status of class GuzzleHttp\\\\Psr7\\\\Response constructor expects int, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#2 \\$headers of class GuzzleHttp\\\\Psr7\\\\Response constructor expects array\\<string, array\\<string\\>\\|string\\>, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#2 \\$response of method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:cacheResponse\\(\\) expects GuzzleHttp\\\\Psr7\\\\Response, Psr\\\\Http\\\\Message\\\\ResponseInterface given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#4 \\$version of class GuzzleHttp\\\\Psr7\\\\Response constructor expects string, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Parameter \\#5 \\$reason of class GuzzleHttp\\\\Psr7\\\\Response constructor expects string\\|null, mixed given\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Handler\\\\CurlMultiHandler\\:\\:\\$methods type has no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Handler/CurlMultiHandler.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\EventDispatcherMiddleware\\:\\:sendErrorEvent\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Middleware/EventDispatcherMiddleware.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\EventDispatcherMiddleware\\:\\:sendErrorEvent\\(\\) has parameter \\$reason with no type specified\\.$#"
+            count: 1
+            path: src/Middleware/EventDispatcherMiddleware.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\EventDispatcherMiddleware\\:\\:sendEvent\\(\\) has no return type specified\\.$#"
+            count: 1
+            path: src/Middleware/EventDispatcherMiddleware.php
+
+        -
+            message: "#^Parameter \\#1 \\$request of method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\EventDispatcher\\\\AbstractGuzzleHttpEvent\\:\\:setRequest\\(\\) expects GuzzleHttp\\\\Psr7\\\\Request, Psr\\\\Http\\\\Message\\\\RequestInterface given\\.$#"
+            count: 2
+            path: src/Middleware/EventDispatcherMiddleware.php
+
+        -
+            message: "#^Property M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\EventDispatcherMiddleware\\:\\:\\$events type has no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Middleware/EventDispatcherMiddleware.php
+
+        -
+            message: "#^Method M6Web\\\\Bundle\\\\GuzzleHttpBundle\\\\Middleware\\\\HostForwarderMiddleware\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+            count: 1
+            path: src/Middleware/HostForwarderMiddleware.php

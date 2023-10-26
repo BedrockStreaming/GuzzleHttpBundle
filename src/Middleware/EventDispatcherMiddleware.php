@@ -16,25 +16,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class EventDispatcherMiddleware implements MiddlewareInterface
 {
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
     /** @var array */
-    protected $events;
-
-    /** @var string */
-    protected $clientId;
+    protected $events = [];
 
     /**
      * Constructor
      *
      * @param string $clientId
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, $clientId)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher, protected $clientId)
     {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->events = [];
-        $this->clientId = $clientId;
     }
 
     /**
@@ -44,26 +35,24 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      */
     public function push(HandlerStack $stack)
     {
-        $stack->push(function (callable $handler) {
-            return function (
-                RequestInterface $request,
-                array $options
-            ) use ($handler) {
-                $promise = $handler($request, $options);
+        $stack->push(fn (callable $handler) => function (
+            RequestInterface $request,
+            array $options
+        ) use ($handler) {
+            $promise = $handler($request, $options);
 
-                return $promise->then(
-                    function (ResponseInterface $response) use ($request) {
-                        $this->sendEvent($request, $response);
+            return $promise->then(
+                function (ResponseInterface $response) use ($request) {
+                    $this->sendEvent($request, $response);
 
-                        return $response;
-                    },
-                    function (\Exception $reason) use ($request) {
-                        $this->sendErrorEvent($request, $reason);
+                    return $response;
+                },
+                function (\Exception $reason) use ($request): never {
+                    $this->sendErrorEvent($request, $reason);
 
-                        throw $reason;
-                    }
-                );
-            };
+                    throw $reason;
+                }
+            );
         }, 'eventDispatcher_dispatch');
 
         return $stack;
