@@ -16,9 +16,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class EventDispatcherMiddleware implements MiddlewareInterface
 {
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
     /** @var array */
     protected $events = [];
 
@@ -27,9 +24,8 @@ class EventDispatcherMiddleware implements MiddlewareInterface
      *
      * @param string $clientId
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, protected $clientId)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher, protected $clientId)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
